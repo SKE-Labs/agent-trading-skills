@@ -72,12 +72,13 @@ Insider transactions can signal management's view on company value.
 
 ## Data Sources
 
-Use `get_financial_news` to find:
+Use `get_financial_news` and `get_fundamentals` to find:
 
 - Recent insider transaction filings
 - Form 4 SEC filings
 - Transaction patterns
 - Historical comparison
+- Company fundamentals context
 
 ## Limitations
 

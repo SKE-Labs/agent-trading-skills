@@ -52,7 +52,7 @@ FVGs are 3-candle patterns where price moved so fast it left a "gap" between wic
 ## Entry Workflow
 
 1. **Identify FVG** after impulsive move
-2. **Mark the zone** using `draw_on_chart` with type `demand` or `supply`
+2. **Mark the zone** using `draw_chart_analysis` with type `demand` or `supply`
 3. **Wait for retracement** into the gap
 4. **Enter at 50%** (CE) or wait for reaction
 5. **Stop loss** beyond the FVG

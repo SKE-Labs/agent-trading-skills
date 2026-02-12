@@ -68,7 +68,7 @@ Measure the pole, add to breakout level.
 
 ## Chart Drawing
 
-Use `draw_on_chart`:
+Use `draw_chart_analysis`:
 
 - For flags: Draw 2 parallel `trend` lines (channel)
 - For pennants: Draw 2 converging `trend` lines

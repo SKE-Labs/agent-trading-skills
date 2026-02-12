@@ -57,7 +57,7 @@ H&S is a reliable reversal pattern signaling the end of an uptrend (or downtrend
 
 ## Chart Marking
 
-Use `draw_on_chart`:
+Use `draw_chart_analysis`:
 
 1. Mark left shoulder, head, right shoulder with `highlight` (LL, Head, LH labels)
 2. Draw neckline with `support` type

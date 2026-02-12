@@ -43,7 +43,7 @@ Range trading profits from price oscillating between clear support and resistanc
 ## Workflow
 
 1. **Identify range** (minimum 2 touches each side)
-2. **Mark levels** using `draw_on_chart` with `support`/`resistance`
+2. **Mark levels** using `draw_chart_analysis` with `support`/`resistance`
 3. **Wait at boundaries** (don't trade middle of range)
 4. **Enter with confirmation** (reversal candle)
 5. **Target opposite boundary**

@@ -67,7 +67,7 @@ Wait for these before entering:
 
 1. **Confirm trend** on HTF
 2. **Wait for pullback** to key level
-3. **Mark entry zone** using `draw_on_chart`
+3. **Mark entry zone** using `draw_chart_analysis`
 4. **Enter with confirmation**
 5. **Stop** below pullback low
 6. **Target** previous high/low or extension

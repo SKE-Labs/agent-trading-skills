@@ -32,7 +32,7 @@ Order blocks are price zones where significant institutional buy/sell orders exe
 
 ## Entry Workflow
 
-1. **Mark the zone** on chart using `draw_on_chart` with type `demand` (bullish) or `supply` (bearish)
+1. **Mark the zone** on chart using `draw_chart_analysis` with type `demand` (bullish) or `supply` (bearish)
 2. **Wait for price to return** to the order block zone
 3. **Confirm entry** with:
    - Lower timeframe structure shift

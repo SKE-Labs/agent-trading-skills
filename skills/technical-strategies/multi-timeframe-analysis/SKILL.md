@@ -38,7 +38,7 @@ Analyze 3 timeframes to align trend, structure, and entry for high-probability t
 1. Generate chart for primary TF
 2. Find trade setups aligned with HTF bias
 3. Identify patterns, order blocks, FVGs
-4. Mark key levels using `draw_on_chart`
+4. Mark key levels using `draw_chart_analysis`
 
 ### Step 3: Lower Timeframe (Entry)
 

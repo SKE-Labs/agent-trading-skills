@@ -51,12 +51,13 @@ Supply and demand zones mark areas of institutional accumulation (demand) and di
 
 ## Workflow
 
-1. **Identify zones** on HTF (4H/Daily)
-2. **Mark zones** using `draw_on_chart` with `demand` or `supply` type
-3. **Wait for price** to return to zone
-4. **Enter with confirmation** or limit order
-5. **Stop loss** beyond the zone
-6. **Target** next opposing zone
+1. **Identify zones** on HTF (4H/Daily) using `get_candles_around_date`
+2. **Mark zones** using `draw_chart_analysis` with `demand` or `supply` type
+3. **Confirm with indicators**: `get_indicator(indicator="rsi")` for oversold/overbought at zone
+4. **Wait for price** to return to zone
+5. **Enter with confirmation** or limit order
+6. **Stop loss** beyond the zone
+7. **Target** next opposing zone
 
 ## Zone Weakening
 

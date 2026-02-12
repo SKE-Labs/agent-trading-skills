@@ -71,7 +71,7 @@ Measure from cup lip to cup bottom, add to breakout.
 
 ## Chart Marking
 
-Use `draw_on_chart`:
+Use `draw_chart_analysis`:
 
 - Mark cup lip with `resistance`
 - Mark cup bottom with `support`

@@ -55,7 +55,7 @@ Liquidity represents clustered stop losses that institutions target for order fi
 
 ## Chart Marking
 
-Use `draw_on_chart` to mark:
+Use `draw_chart_analysis` to mark:
 
 - `resistance` for BSL levels
 - `support` for SSL levels

@@ -87,7 +87,7 @@ Why this works:
 
 ## Chart Marking
 
-Use `draw_on_chart`:
+Use `draw_chart_analysis`:
 
 - Mark equilibrium with `support`/`resistance`
 - Mark OTE zone with `demand`/`supply`

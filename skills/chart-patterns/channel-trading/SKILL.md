@@ -34,7 +34,7 @@ Channels define price boundaries for trading bounces or anticipating breakouts.
 3. Lines should be **parallel** (or near parallel)
 4. Minimum **4 total touch points**
 
-Use `draw_on_chart` with `trend` type for both lines.
+Use `draw_chart_analysis` with `trend` type for both lines.
 
 ## Trading Strategies
 

@@ -65,7 +65,7 @@ Measure the widest part of the triangle, project from breakout.
 
 ## Chart Drawing
 
-Use `draw_on_chart` with `trend` type:
+Use `draw_chart_analysis` with `trend` type:
 
 - Draw both trendlines (upper and lower)
 - Requires minimum 4 touch points total (2 each)

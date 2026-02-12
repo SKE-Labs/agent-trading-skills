@@ -42,7 +42,7 @@ How to identify the pattern, setup, or condition:
 
 1. Use `tool_name` to [action]
 2. Calculate [value] using [method]
-3. Mark levels using `draw_on_chart`
+3. Mark levels using `draw_chart_analysis`
 4. Monitor for entry trigger
 
 ## Best Practices

@@ -69,19 +69,58 @@ Best Fibonacci trades have confluence:
 
 ## Workflow
 
-1. Use `get_candles_around_date` to get exact swing points
-2. Calculate Fib levels manually or describe levels
-3. Mark key levels using `draw_on_chart`
-4. Wait for price to reach levels
-5. Enter with confirmation
+### 1. Identify Swing Points
 
-### Script
+Use `get_candles_around_date` to get exact OHLCV data around the swing high and swing low.
 
-Alternatively, run the bundled script:
+### 2. Draw Fibonacci Retracement
 
-```bash
-python scripts/calculate_fibonacci.py --high 150 --low 100 --direction bullish
+Use `draw_chart_analysis` with type `fib_retracement` to draw directly on the TradingView chart:
+
+- **Bullish setup:** Point 1 = swing low, Point 2 = swing high
+- **Bearish setup:** Point 1 = swing high, Point 2 = swing low
+
 ```
+draw_chart_analysis(action="create", drawing={
+    "type": "fib_retracement",
+    "points": [
+        {"time": <swing_low_timestamp>, "price": <swing_low_price>},
+        {"time": <swing_high_timestamp>, "price": <swing_high_price>}
+    ],
+    "options": {"text": "Fib Retracement"}
+})
+```
+
+TradingView automatically renders all standard levels (0%, 23.6%, 38.2%, 50%, 61.8%, 78.6%, 100%).
+
+### 3. Mark Key Confluence Zones
+
+Use `draw_chart_analysis` with type `demand` or `supply` to highlight zones where Fibonacci levels overlap with other structures:
+
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "demand",
+    "points": [
+        {"time": <zone_start_time>, "price": <zone_top>},
+        {"time": <zone_end_time>, "price": <zone_bottom>}
+    ],
+    "options": {"text": "61.8% + OB"}
+})
+```
+
+### 4. Confirm with Indicators
+
+Use `get_indicator` to check for confluence:
+
+- `get_indicator(indicator="rsi")` — Look for oversold at fib support
+- `get_indicator(indicator="macd")` — Check for momentum shift
+
+### 5. Position Entry
+
+After confirmation, the orchestrator handles:
+
+- `calculate_position_size` for risk-based sizing
+- `draw_position` with type `long_position` or `short_position`
 
 ## Best Practices
 

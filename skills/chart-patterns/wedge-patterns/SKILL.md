@@ -62,7 +62,7 @@ Wedges are converging trendlines that typically signal reversals (most common) o
 
 ## Chart Drawing
 
-Use `draw_on_chart` with `trend` type:
+Use `draw_chart_analysis` with `trend` type:
 
 - Draw upper trendline
 - Draw lower trendline

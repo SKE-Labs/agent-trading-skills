@@ -55,11 +55,12 @@ Trade around scheduled economic releases that move markets.
 
 ## Pre-Event Workflow
 
-1. **Check calendar** for upcoming events
-2. **Note consensus** expectations
-3. **Assess positioning** (COT, sentiment)
-4. **Plan scenarios** (beat, miss, meet)
-5. **Size appropriately** (smaller)
+1. **Check calendar** using `get_economics_calendar` for upcoming events
+2. **Research context** using `get_financial_news` for market expectations
+3. **Note consensus** expectations
+4. **Assess positioning** (COT, sentiment)
+5. **Plan scenarios** (beat, miss, meet)
+6. **Size appropriately** (smaller)
 
 ## FOMC Special Considerations
 

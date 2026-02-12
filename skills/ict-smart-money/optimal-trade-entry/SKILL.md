@@ -35,15 +35,15 @@ The 62-79% zone balances:
 
 ### Step 2: Draw Fibonacci
 
-Use `get_candles_around_date` to get exact swing points, then:
+Use `get_candles_around_date` to get exact swing points, then use `draw_chart_analysis` with `fib_retracement`:
 
-- **Bullish**: Draw from swing low to swing high
-- **Bearish**: Draw from swing high to swing low
+- **Bullish**: Point 1 = swing low, Point 2 = swing high
+- **Bearish**: Point 1 = swing high, Point 2 = swing low
 
 ### Step 3: Mark OTE Zone
 
 - Zone between 61.8% and 79%
-- Use `draw_on_chart` with `demand`/`supply` type
+- Use `draw_chart_analysis` with `demand`/`supply` type
 
 ### Step 4: Enter at OTE
 

@@ -53,7 +53,7 @@ Trading skills should include these sections:
 | **Identification**  | How to identify the pattern or setup           |
 | **Entry Strategy**  | Step-by-step entry workflow                    |
 | **Risk Management** | Stop loss, position sizing, and target rules   |
-| **Workflow**        | Integration with tools (e.g., `draw_on_chart`) |
+| **Workflow**        | Integration with tools (e.g., `draw_chart_analysis`) |
 | **Best Practices**  | Do's and don'ts, common mistakes               |
 
 ## Formatting Guidelines
@@ -65,10 +65,16 @@ Trading skills should include these sections:
 
 ## Tool References
 
-Skills may reference trading tools. Use consistent naming:
+Skills may reference trading tools available to AI analysts:
 
-| Tool                      | Purpose                            |
-| ------------------------- | ---------------------------------- |
-| `draw_on_chart`           | Draw zones, levels, patterns       |
-| `get_candles_around_date` | Retrieve historical candle data    |
-| `calculate_position_size` | Calculate risk-based position size |
+| Tool                      | Purpose                                                        |
+| ------------------------- | -------------------------------------------------------------- |
+| `draw_chart_analysis`     | Draw zones, levels, trends, fibonacci on chart                 |
+| `draw_position`           | Draw long/short position markers with TP/SL                    |
+| `get_candles_around_date` | Retrieve 21 candles around a target date                       |
+| `generate_chart`          | Generate candlestick chart images                              |
+| `get_indicator`           | Get technical indicator values (RSI, MACD, BBands, etc.)       |
+| `get_financial_news`      | Search financial news from trusted sources                     |
+| `get_fundamentals`        | Get stock fundamentals (valuation, financials, growth)         |
+| `get_economics_calendar`  | Get economic events (NFP, CPI, FOMC)                           |
+| `calculate_position_size` | Calculate risk-based position sizing                           |

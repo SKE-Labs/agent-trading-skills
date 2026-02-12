@@ -74,7 +74,7 @@ Example (Double Top):
 
 ## Chart Marking
 
-Use `draw_on_chart`:
+Use `draw_chart_analysis`:
 
 1. Mark the two peaks/troughs with `highlight`
 2. Draw neckline with `support` or `resistance`

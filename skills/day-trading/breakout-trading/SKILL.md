@@ -60,7 +60,7 @@ Breakout trading captures explosive moves when price breaks out of consolidation
 ## Workflow
 
 1. **Identify consolidation** or key level
-2. **Mark the level** using `draw_on_chart`
+2. **Mark the level** using `draw_chart_analysis`
 3. **Set alerts** at level
 4. **Wait for break** with volume
 5. **Enter with preferred strategy**

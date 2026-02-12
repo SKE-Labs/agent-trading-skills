@@ -35,7 +35,7 @@ Market structure analysis identifies trend direction and potential reversals thr
    - HH + HL = Uptrend
    - LH + LL = Downtrend
 
-2. **Mark swing points** using `draw_on_chart` with `highlight` type
+2. **Mark swing points** using `draw_chart_analysis` with `highlight` type
 
 3. **Watch for structure breaks**:
 
@@ -71,7 +71,7 @@ Market structure analysis identifies trend direction and potential reversals thr
 
 ## Chart Marking
 
-Use `draw_on_chart` with `highlight` type:
+Use `draw_chart_analysis` with `highlight` type:
 
 - Mark HH, HL, LH, LL labels at swing points
 - This visualizes the market structure clearly
