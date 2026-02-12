@@ -106,32 +106,41 @@ def main():
         print("No skills to sync")
         sys.exit(0)
 
-    # POST to Basement sync endpoint
+    # POST to Basement sync endpoint in batches to avoid payload size limits
     sync_url = f"{api_url.rstrip('/')}/api/v1/marketplace/sync"
-    print(f"\nSyncing {len(skills)} skills to {sync_url}")
+    batch_size = 10
+    all_results = []
 
-    response = requests.post(
-        sync_url,
-        json={"author_id": author_id, "skills": skills},
-        headers={
-            "Authorization": f"Bearer {service_key}",
-            "Content-Type": "application/json",
-        },
-        timeout=60,
-    )
+    print(f"\nSyncing {len(skills)} skills to {sync_url} (batches of {batch_size})")
 
-    if response.status_code != 200:
-        print(f"ERROR: Sync failed with status {response.status_code}")
-        print(response.text)
-        sys.exit(1)
+    for i in range(0, len(skills), batch_size):
+        batch = skills[i : i + batch_size]
+        batch_num = i // batch_size + 1
+        total_batches = (len(skills) + batch_size - 1) // batch_size
+        print(f"  Batch {batch_num}/{total_batches} ({len(batch)} skills)...")
 
-    data = response.json()
-    results = data.get("response", [])
+        response = requests.post(
+            sync_url,
+            json={"author_id": author_id, "skills": batch},
+            headers={
+                "Authorization": f"Bearer {service_key}",
+                "Content-Type": "application/json",
+            },
+            timeout=60,
+        )
+
+        if response.status_code != 200:
+            print(f"ERROR: Batch {batch_num} failed with status {response.status_code}")
+            print(response.text)
+            sys.exit(1)
+
+        data = response.json()
+        all_results.extend(data.get("response", []))
 
     # Print summary
-    created = sum(1 for r in results if r["status"] == "created")
-    updated = sum(1 for r in results if r["status"] == "updated")
-    errors = [r for r in results if r["status"] == "error"]
+    created = sum(1 for r in all_results if r["status"] == "created")
+    updated = sum(1 for r in all_results if r["status"] == "updated")
+    errors = [r for r in all_results if r["status"] == "error"]
 
     print(f"\nResults: {created} created, {updated} updated, {len(errors)} errors")
 
