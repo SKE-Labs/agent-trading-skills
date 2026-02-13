@@ -40,17 +40,31 @@ Use `get_candles_around_date` to get exact swing points, then use `draw_chart_an
 - **Bullish**: Point 1 = swing low, Point 2 = swing high
 - **Bearish**: Point 1 = swing high, Point 2 = swing low
 
-### Step 3: Mark OTE Zone
+### Step 3: Calculate OTE Zone
+
+Use the `execute` tool to calculate exact OTE levels:
+
+```
+execute(command='python3 -c "h=52000;l=45000;r=h-l;ote_start=h-r*0.618;ote_mid=h-r*0.705;ote_end=h-r*0.79;print(f\"OTE Start (61.8%): {ote_start:.2f}\\nOTE Mid (70.5%): {ote_mid:.2f}\\nOTE End (79%): {ote_end:.2f}\")"')
+```
+
+Calculate R:R for entry at 70.5%:
+
+```
+execute(command='python3 -c "h=52000;l=45000;r=h-l;e=h-r*0.705;risk=e-l;t1=h;t2=h+r*0.272;t3=h+r*0.618;print(f\"Entry: {e:.2f}\\nRisk: {risk:.2f}\\nR:R to {t1:.2f}: {(t1-e)/risk:.2f}:1\\nR:R to {t2:.2f}: {(t2-e)/risk:.2f}:1\\nR:R to {t3:.2f}: {(t3-e)/risk:.2f}:1\")"')
+```
+
+### Step 4: Mark OTE Zone
 
 - Zone between 61.8% and 79%
 - Use `draw_chart_analysis` with `demand`/`supply` type
 
-### Step 4: Enter at OTE
+### Step 5: Enter at OTE
 
 - Set limit order at 70.5% (midpoint) OR
 - Wait for price action confirmation in zone
 
-### Step 5: Stop & Target
+### Step 6: Stop & Target
 
 - **Stop loss**: Beyond the 100% (swing point)
 - **Target**: Extension levels (1.27, 1.618, 2.0)

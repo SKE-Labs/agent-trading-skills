@@ -60,6 +60,12 @@ Drawdown management protects capital and ensures trading longevity through loss 
 
 ### Mathematics
 
+Calculate recovery requirements:
+
+```
+execute(command='python3 -c "dd=0.20;recovery=dd/(1-dd)*100;print(f\"Drawdown: {dd*100:.0f}%\\nRecovery Needed: {recovery:.1f}%\")"')
+```
+
 | Drawdown | Return Needed |
 | -------- | ------------- |
 | 10%      | 11%           |

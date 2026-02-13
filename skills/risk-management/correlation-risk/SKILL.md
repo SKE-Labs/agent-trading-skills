@@ -48,6 +48,12 @@ Managing correlated positions prevents oversized exposure to single market moves
 
 ### Treat Correlated Trades as One Position
 
+Calculate combined risk for correlated positions:
+
+```
+execute(command='python3 -c "r1=1;r2=1;corr=0.85;combined_risk=(r1**2+r2**2+2*r1*r2*corr)**0.5;print(f\"Position 1: {r1}%\\nPosition 2: {r2}%\\nCorrelation: {corr}\\nCombined Risk: {combined_risk:.2f}%\")"')
+```
+
 If BTC and ETH correlate +0.85:
 
 - Long BTC 1% risk + Long ETH 1% risk

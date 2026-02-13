@@ -73,7 +73,21 @@ Best Fibonacci trades have confluence:
 
 Use `get_candles_around_date` to get exact OHLCV data around the swing high and swing low.
 
-### 2. Draw Fibonacci Retracement
+### 2. Calculate Fibonacci Levels
+
+Use the `execute` tool to calculate exact Fibonacci levels for limit orders:
+
+```
+execute(command='python3 -c "h=52000;l=45000;r=h-l;print(f\"23.6%: {h-r*0.236:.2f}\\n38.2%: {h-r*0.382:.2f}\\n50.0%: {h-r*0.5:.2f}\\n61.8%: {h-r*0.618:.2f}\\n78.6%: {h-r*0.786:.2f}\")"')
+```
+
+For extensions (targets):
+
+```
+execute(command='python3 -c "h=52000;l=45000;r=h-l;print(f\"127.2%: {h+r*0.272:.2f}\\n161.8%: {h+r*0.618:.2f}\\n200%: {h+r:.2f}\\n261.8%: {h+r*1.618:.2f}\")"')
+```
+
+### 3. Draw Fibonacci Retracement
 
 Use `draw_chart_analysis` with type `fib_retracement` to draw directly on the TradingView chart:
 
@@ -93,7 +107,7 @@ draw_chart_analysis(action="create", drawing={
 
 TradingView automatically renders all standard levels (0%, 23.6%, 38.2%, 50%, 61.8%, 78.6%, 100%).
 
-### 3. Mark Key Confluence Zones
+### 4. Mark Key Confluence Zones
 
 Use `draw_chart_analysis` with type `demand` or `supply` to highlight zones where Fibonacci levels overlap with other structures:
 
@@ -108,14 +122,14 @@ draw_chart_analysis(action="create", drawing={
 })
 ```
 
-### 4. Confirm with Indicators
+### 5. Confirm with Indicators
 
 Use `get_indicator` to check for confluence:
 
 - `get_indicator(indicator="rsi")` — Look for oversold at fib support
 - `get_indicator(indicator="macd")` — Check for momentum shift
 
-### 5. Position Entry
+### 6. Position Entry
 
 After confirmation, the orchestrator handles:
 

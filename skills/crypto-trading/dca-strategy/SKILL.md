@@ -20,6 +20,11 @@ Example ($100/week):
 - Week 3: $100 / $60 = 1.67 units
 - Total: 6.17 units for $300 (avg: $48.62)
 
+**Calculate DCA average:**
+```
+execute(command='python3 -c "buys=[(100,50),(100,40),(100,60)];total_cost=sum(c for c,p in buys);total_units=sum(c/p for c,p in buys);avg=total_cost/total_units;print(f\"Total Spent: \${total_cost:.2f}\\nTotal Units: {total_units:.2f}\\nAvg Cost: \${avg:.2f}\")"')
+```
+
 ## DCA Benefits
 
 | Benefit              | Description                   |

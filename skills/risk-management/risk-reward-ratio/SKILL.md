@@ -37,6 +37,16 @@ Example:
 
 Formula: Breakeven R:R = (1 - Win Rate) / Win Rate
 
+**Quick calculation:**
+```
+execute(command='python3 -c "e=100;sl=95;tp=115;rr=(tp-e)/(e-sl);print(f\"Entry: {e}\\nStop: {sl}\\nTarget: {tp}\\nR:R = 1:{rr:.2f}\")"')
+```
+
+**Breakeven R:R for win rate:**
+```
+execute(command='python3 -c "wr=0.50;be_rr=(1-wr)/wr;print(f\"Win Rate: {wr*100:.0f}%\\nBreakeven R:R: 1:{be_rr:.2f}\")"')
+```
+
 ## R:R Targets by Style
 
 | Trading Style    | Target R:R   |

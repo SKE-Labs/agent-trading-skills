@@ -17,6 +17,11 @@ Ichimoku Kinko Hyo ("one glance equilibrium chart") provides comprehensive marke
 | **Senkou B**    | (52-high + 52-low) / 2        | Cloud boundary   |
 | **Chikou Span** | Close plotted 26 periods back | Confirmation     |
 
+**Quick calculation:**
+```
+execute(command='python3 -c "h9=50500;l9=49500;h26=51000;l26=48000;h52=52000;l52=46000;tenkan=(h9+l9)/2;kijun=(h26+l26)/2;senkou_a=(tenkan+kijun)/2;senkou_b=(h52+l52)/2;print(f\"Tenkan: {tenkan:.2f}\\nKijun: {kijun:.2f}\\nSenkou A: {senkou_a:.2f}\\nSenkou B: {senkou_b:.2f}\")"')
+```
+
 ## Cloud (Kumo) Analysis
 
 | Cloud Color   | Meaning                   |

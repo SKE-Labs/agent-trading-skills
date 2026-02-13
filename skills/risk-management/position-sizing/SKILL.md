@@ -80,12 +80,23 @@ The tool automatically calculates:
 - Capital allocation
 - Recommended leverage
 
-### Script
+### Quick Calculations
 
-Alternatively, run the bundled script:
+Use the `execute` tool for instant position size calculations:
 
-```bash
-python scripts/calculate_position.py --balance 10000 --risk 1 --entry 100 --stop 95
+**Fixed % Risk:**
+```
+execute(command='python3 -c "bal=10000;risk_pct=1;e=100;sl=95;risk_amt=bal*risk_pct/100;risk_per_unit=abs(e-sl);size=risk_amt/risk_per_unit;print(f\"Position: {size:.2f} units ({size*e:.2f} value)\")"')
+```
+
+**Kelly Criterion:**
+```
+execute(command='python3 -c "win_rate=0.55;rr=1.5;kelly=(win_rate-(1-win_rate)/rr);half_kelly=kelly/2;print(f\"Full Kelly: {kelly*100:.2f}%\\nHalf Kelly: {half_kelly*100:.2f}% (recommended)\")"')
+```
+
+**Volatility-Based (ATR):**
+```
+execute(command='python3 -c "bal=10000;risk_pct=1;atr=3.5;mult=2.0;risk_amt=bal*risk_pct/100;size=risk_amt/(atr*mult);print(f\"Position: {size:.2f} units (ATR stop: {atr*mult:.2f})\")"')
 ```
 
 ## Risk Rules

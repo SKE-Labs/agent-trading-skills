@@ -43,6 +43,12 @@ Resets daily at market open.
 
 ### 4. VWAP Bands
 
+Calculate VWAP deviation:
+
+```
+execute(command='python3 -c "price=50200;vwap=50000;dev_pct=(price-vwap)/vwap*100;print(f\"Price: {price}\\nVWAP: {vwap}\\nDeviation: {dev_pct:+.2f}%\")"')
+```
+
 Standard deviation bands around VWAP:
 
 - +1/-1 StdDev: Minor targets

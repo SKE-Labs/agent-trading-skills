@@ -55,6 +55,12 @@ Triangles form during consolidation and typically break out in the direction of 
 
 ## Target Calculation
 
+Calculate measured move target:
+
+```
+execute(command='python3 -c "base_high=52000;base_low=48000;breakout=53000;height=base_high-base_low;target=breakout+height;print(f\"Triangle Height: {height}\\nBreakout: {breakout}\\nTarget: {target}\")"')
+```
+
 **Measured Move**:
 
 ```

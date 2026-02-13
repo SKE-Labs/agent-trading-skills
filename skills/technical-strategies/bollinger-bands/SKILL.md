@@ -53,17 +53,23 @@ Double patterns at bands:
 
 1. **Get Bollinger Bands** using `get_indicator(indicator="bbands")`
 
-2. **Assess band width**:
+2. **Calculate band width** (volatility indicator):
 
-   - Narrow = Low volatility, expect breakout
-   - Wide = High volatility, expect mean reversion
+```
+execute(command='python3 -c "upper=105;lower=95;sma=100;width=(upper-lower)/sma*100;print(f\"Upper: {upper}\\nLower: {lower}\\nBand Width: {width:.2f}%\")"')
+```
 
-3. **Identify setup**:
+3. **Assess volatility**:
+
+   - Narrow (<2%) = Low volatility, expect breakout
+   - Wide (>4%) = High volatility, expect mean reversion
+
+4. **Identify setup**:
 
    - At band edge with reversal candle → Mean reversion
    - Squeeze with volume → Breakout
 
-4. **Execute with confirmation**:
+5. **Execute with confirmation**:
    - Candle close outside band isn't enough
    - Wait for follow-through or reversal signal
 

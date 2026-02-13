@@ -36,8 +36,16 @@ Leverage amplifies both gains and losses—use it responsibly.
 
 ## Effective Leverage Calculation
 
+Use the `execute` tool to calculate effective leverage and liquidation price:
+
+**Effective Leverage:**
 ```
-Effective Leverage = Position Size / Account Equity
+execute(command='python3 -c "pos_size=50000;equity=10000;eff_lev=pos_size/equity;print(f\"Position: \${pos_size:,}\\nEquity: \${equity:,}\\nEffective Leverage: {eff_lev:.1f}x\")"')
+```
+
+**Liquidation Distance:**
+```
+execute(command='python3 -c "leverage=10;liq_dist=100/leverage;print(f\"Leverage: {leverage}x\\nLiquidation at: {liq_dist:.1f}% against position\")"')
 ```
 
 Even without explicit leverage, position sizing creates effective leverage.

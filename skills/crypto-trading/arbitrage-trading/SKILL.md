@@ -63,10 +63,16 @@ Profit = $200 - (Fees + Transfer costs)
 
 ## Profitability Check
 
-Before executing:
+Use the `execute` tool to calculate net profit:
 
+**Cross-Exchange Arbitrage:**
 ```
-Net Profit = Spread - (Buy Fee + Sell Fee + Transfer Fee + Slippage)
+execute(command='python3 -c "buy=50000;sell=50200;buy_fee=0.001;sell_fee=0.001;transfer=5;amount=1;gross=sell-buy;fees=(buy*buy_fee)+(sell*sell_fee)+transfer;net=gross-fees;print(f\"Spread: \${gross:.2f}\\nFees: \${fees:.2f}\\nNet Profit: \${net:.2f} ({net/buy*100:.3f}%)\")"')
+```
+
+**Triangular Arbitrage:**
+```
+execute(command='python3 -c "btc_usdt=50000;eth_usdt=2000;eth_btc=0.041;expected=eth_usdt/btc_usdt;actual=eth_btc;spread=(actual-expected)/expected*100;print(f\"Expected ETH/BTC: {expected:.4f}\\nActual: {actual:.4f}\\nSpread: {spread:.2f}%\")"')
 ```
 
 Only trade if Net Profit > 0

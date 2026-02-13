@@ -55,6 +55,12 @@ Wedges are converging trendlines that typically signal reversals (most common) o
 
 ## Target Calculation
 
+Calculate measured move target:
+
+```
+execute(command='python3 -c "widest_high=52000;widest_low=48000;breakout=47000;height=widest_high-widest_low;target=breakout-height;print(f\"Wedge Height: {height}\\nBreakout: {breakout}\\nTarget: {target}\")"')
+```
+
 **Measured Move**:
 
 - Measure height at widest part of wedge

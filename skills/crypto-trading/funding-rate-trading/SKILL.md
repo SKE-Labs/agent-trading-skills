@@ -48,6 +48,13 @@ Perpetual futures use funding rates to keep price aligned with spot—creating t
 
 ## Funding Arbitrage Setup
 
+Use the `execute` tool to calculate APR from funding rate:
+
+```
+execute(command='python3 -c "rate=0.05;apr=rate*3*365;daily=rate*3;print(f\"Funding Rate: {rate}%\\nAPR: {apr:.2f}%\\nDaily: {daily:.2f}%\")"')
+```
+
+**Setup Steps:**
 1. **Calculate APR** = Funding rate × 3 × 365
 2. **If APR > 20%**, consider arb trade
 3. **Long spot** (or low-leverage long)
