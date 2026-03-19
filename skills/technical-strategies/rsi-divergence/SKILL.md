@@ -31,7 +31,7 @@ Divergence occurs when price and RSI move in opposite directions, signaling pote
 
 ## Identification Workflow
 
-1. **Get RSI indicator** using `get_indicator(indicator="rsi", period=14)`
+1. **Get RSI indicator** using `get_indicator(indicator_code="rsi")`
 2. **Identify swing points** on price chart
 3. **Compare to RSI swings**:
    - Connect price swing lows/highs

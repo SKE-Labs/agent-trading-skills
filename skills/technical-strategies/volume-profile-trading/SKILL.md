@@ -140,7 +140,7 @@ get_candles_around_date(symbol="BTCUSD", interval="4h", date="2026-03-15")
 ### 2. Check Volume Indicator
 
 ```
-get_indicator(indicator="volume")
+get_indicator(indicator_code="mfi")
 ```
 
 Compare current volume to average — is volume confirming the move?
@@ -160,8 +160,8 @@ Use `draw_chart_analysis` to mark POC, VAH, VAL, HVNs, and LVNs (see examples ab
 ### 5. Confirm with Indicators
 
 ```
-get_indicator(indicator="rsi")
-get_indicator(indicator="ema", options={"period": 20})
+get_indicator(indicator_code="rsi")
+get_indicator(indicator_code="ema")
 ```
 
 Check if indicators align with volume profile signal.

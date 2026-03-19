@@ -128,8 +128,8 @@ draw_chart_analysis(action="create", drawing={
 
 Use `get_indicator` to check for confluence:
 
-- `get_indicator(indicator="rsi")` — Look for oversold at fib support
-- `get_indicator(indicator="macd")` — Check for momentum shift
+- `get_indicator(indicator_code="rsi")` — Look for oversold at fib support
+- `get_indicator(indicator_code="macd")` — Check for momentum shift
 
 ### 6. Report to Orchestrator
 

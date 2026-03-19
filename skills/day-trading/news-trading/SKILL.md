@@ -146,7 +146,7 @@ Use the fundamental analyst tools to build a complete news trading plan:
 ### Step 1: Check Economic Calendar
 
 ```
-get_economics_calendar(from="2026-03-19", to="2026-03-26", impact="high")
+get_economics_calendar(from_date="2026-03-19", to_date="2026-03-26", impact="high")
 ```
 
 Identify all upcoming high-impact events for the week. Note dates, times, and which markets are affected.
@@ -154,7 +154,7 @@ Identify all upcoming high-impact events for the week. Note dates, times, and wh
 ### Step 2: Research Consensus for Each Event
 
 ```
-get_financial_news(query="NFP jobs forecast consensus March 2026", limit=15)
+get_financial_news(topic="NFP jobs forecast consensus March 2026", max_results=15)
 ```
 
 For each high-impact event, search for the current consensus forecast. Note the range of analyst estimates, not just the median.

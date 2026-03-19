@@ -78,7 +78,7 @@ Stochastic measures momentum by comparing closing price to price range over a pe
 
 ## Workflow
 
-1. **Get Stochastic** using `get_indicator(indicator="stoch")`
+1. **Get Stochastic** using `get_indicator(indicator_code="stoch")`
 2. **Identify market** type (trending vs ranging)
 3. **Apply appropriate strategy**
 4. **Wait for confirmation** (%K/%D cross)

@@ -87,9 +87,9 @@ generate_chart(symbol="BTCUSD", interval="1D")
 Then check trend indicators:
 
 ```
-get_indicator(indicator="ema", options={"period": 50})
-get_indicator(indicator="ema", options={"period": 200})
-get_indicator(indicator="adx")
+get_indicator(indicator_code="ema")
+get_indicator(indicator_code="ema")
+get_indicator(indicator_code="dmi")
 ```
 
 Determine:
@@ -119,9 +119,9 @@ generate_chart(symbol="BTCUSD", interval="4h")
 Check indicators for setup confirmation:
 
 ```
-get_indicator(indicator="rsi")
-get_indicator(indicator="macd")
-get_indicator(indicator="bbands")
+get_indicator(indicator_code="rsi")
+get_indicator(indicator_code="macd")
+get_indicator(indicator_code="bbands")
 ```
 
 Find setups that align with HTF:
@@ -151,8 +151,8 @@ generate_chart(symbol="BTCUSD", interval="1h")
 Look for confirmation:
 
 ```
-get_indicator(indicator="rsi")
-get_indicator(indicator="ema", options={"period": 21})
+get_indicator(indicator_code="rsi")
+get_indicator(indicator_code="ema")
 ```
 
 Entry triggers:

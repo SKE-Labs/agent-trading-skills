@@ -112,9 +112,9 @@ Extreme sentiment often marks reversal points:
 Use `get_financial_news` to retrieve recent articles. Search multiple angles:
 
 ```
-get_financial_news(query="AAPL earnings revenue guidance", limit=20)
-get_financial_news(query="AAPL analyst upgrade downgrade price target", limit=10)
-get_financial_news(query="technology sector outlook", limit=10)
+get_financial_news(topic="AAPL earnings revenue guidance", max_results=20)
+get_financial_news(topic="AAPL analyst upgrade downgrade price target", max_results=10)
+get_financial_news(topic="technology sector outlook", max_results=10)
 ```
 
 ### 2. Score Each Article

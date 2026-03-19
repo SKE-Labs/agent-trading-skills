@@ -112,7 +112,7 @@ When analyzing FOMC statements and press conferences via `get_financial_news`:
 ### 1. Check Calendar
 
 ```
-get_economics_calendar(from="2026-03-19", to="2026-03-26", impact="high")
+get_economics_calendar(from_date="2026-03-19", to_date="2026-03-26", impact="high")
 ```
 
 Identify all events in the coming week. Flag any with Impact Score ≥7.
@@ -120,8 +120,8 @@ Identify all events in the coming week. Flag any with Impact Score ≥7.
 ### 2. Research Context and Consensus
 
 ```
-get_financial_news(query="FOMC rate decision March 2026 expectations", limit=15)
-get_financial_news(query="CPI inflation forecast consensus", limit=10)
+get_financial_news(topic="FOMC rate decision March 2026 expectations", max_results=15)
+get_financial_news(topic="CPI inflation forecast consensus", max_results=10)
 ```
 
 Extract:

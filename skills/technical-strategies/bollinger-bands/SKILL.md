@@ -57,7 +57,7 @@ Double patterns at bands:
 
 ## Workflow
 
-1. **Get Bollinger Bands** using `get_indicator(indicator="bbands")`
+1. **Get Bollinger Bands** using `get_indicator(indicator_code="bbands")`
 
 2. **Calculate band width** (volatility indicator):
 

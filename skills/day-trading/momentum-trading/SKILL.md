@@ -18,7 +18,7 @@ Momentum trading capitalizes on strong directional price moves, entering when mo
 Momentum strategies only work in trending markets. Always check regime first:
 
 ```
-get_indicator(indicator="adx")
+get_indicator(indicator_code="dmi")
 ```
 
 | ADX Value | Momentum Trading? |
@@ -35,10 +35,10 @@ If ADX <20, do NOT take momentum trades. Use range-trading or mean-reversion ins
 ### Indicators
 
 ```
-get_indicator(indicator="rsi")
-get_indicator(indicator="macd")
-get_indicator(indicator="volume")
-get_indicator(indicator="adx")
+get_indicator(indicator_code="rsi")
+get_indicator(indicator_code="macd")
+get_indicator(indicator_code="mfi")
+get_indicator(indicator_code="dmi")
 ```
 
 - RSI breaking above 50 (bullish) or below 50 (bearish)
@@ -139,7 +139,7 @@ When 2+ exhaustion signals appear, tighten stops or take partial profits.
 ### 1. Check Regime
 
 ```
-get_indicator(indicator="adx")
+get_indicator(indicator_code="dmi")
 ```
 
 ADX must be >25. If <20, report to orchestrator that momentum conditions don't exist.
@@ -147,9 +147,9 @@ ADX must be >25. If <20, report to orchestrator that momentum conditions don't e
 ### 2. Confirm Momentum
 
 ```
-get_indicator(indicator="rsi")
-get_indicator(indicator="macd")
-get_indicator(indicator="volume")
+get_indicator(indicator_code="rsi")
+get_indicator(indicator_code="macd")
+get_indicator(indicator_code="mfi")
 ```
 
 All three should confirm: RSI trending from 50 toward extreme, MACD expanding, volume above average.

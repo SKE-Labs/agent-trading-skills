@@ -36,7 +36,7 @@ Divergence occurs when price and an indicator move in opposite directions — a 
 Best for identifying overbought/oversold exhaustion:
 
 ```
-get_indicator(indicator="rsi")
+get_indicator(indicator_code="rsi")
 ```
 
 | Setup | RSI Zone | Reliability |
@@ -51,7 +51,7 @@ get_indicator(indicator="rsi")
 Best for identifying momentum shifts:
 
 ```
-get_indicator(indicator="macd")
+get_indicator(indicator_code="macd")
 ```
 
 Compare MACD histogram peaks/troughs with price peaks/troughs:
@@ -63,7 +63,7 @@ Compare MACD histogram peaks/troughs with price peaks/troughs:
 Best for ranging markets and extreme zones:
 
 ```
-get_indicator(indicator="stoch")
+get_indicator(indicator_code="stoch")
 ```
 
 | Setup | Stochastic Zone | Reliability |
@@ -77,7 +77,7 @@ get_indicator(indicator="stoch")
 Confirms whether volume supports the price move:
 
 ```
-get_indicator(indicator="obv")
+get_indicator(indicator_code="mfi")
 ```
 
 - Price making new highs but OBV declining → Distribution (smart money selling)
@@ -138,9 +138,9 @@ Avoid false signals by checking:
 ### 1. Get Indicator Data
 
 ```
-get_indicator(indicator="rsi")
-get_indicator(indicator="macd")
-get_indicator(indicator="stoch")
+get_indicator(indicator_code="rsi")
+get_indicator(indicator_code="macd")
+get_indicator(indicator_code="stoch")
 ```
 
 ### 2. Compare Price and Indicator Swings

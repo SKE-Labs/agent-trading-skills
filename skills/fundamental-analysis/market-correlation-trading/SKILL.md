@@ -102,8 +102,8 @@ Compare recent performance (1W, 1M, 3M) across correlated pairs.
 ### 2. Research Macro Context
 
 ```
-get_financial_news(query="correlation stocks bonds 2026 regime", limit=10)
-get_financial_news(query="dollar emerging markets impact", limit=10)
+get_financial_news(topic="correlation stocks bonds 2026 regime", max_results=10)
+get_financial_news(topic="dollar emerging markets impact", max_results=10)
 ```
 
 Understand what's driving current correlations — is it macro (Fed policy, inflation), sector-specific, or event-driven?
@@ -111,7 +111,7 @@ Understand what's driving current correlations — is it macro (Fed policy, infl
 ### 3. Check Economic Calendar
 
 ```
-get_economics_calendar(from="2026-03-19", to="2026-03-26", impact="high")
+get_economics_calendar(from_date="2026-03-19", to_date="2026-03-26", impact="high")
 ```
 
 High-impact events can trigger regime shifts that break correlations.

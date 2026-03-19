@@ -40,7 +40,7 @@ Z-Score = (Price - SMA) / Standard Deviation
 Bollinger Bands (20 SMA ± 2 StdDev) provide visual mean reversion levels:
 
 ```
-get_indicator(indicator="bbands")
+get_indicator(indicator_code="bbands")
 ```
 
 | Price Position | Signal |
@@ -54,7 +54,7 @@ get_indicator(indicator="bbands")
 ### 3. RSI Extreme Method
 
 ```
-get_indicator(indicator="rsi")
+get_indicator(indicator_code="rsi")
 ```
 
 | RSI Level | Signal |
@@ -71,7 +71,7 @@ get_indicator(indicator="rsi")
 **Before any mean reversion trade**, verify the market is ranging:
 
 ```
-get_indicator(indicator="adx")
+get_indicator(indicator_code="dmi")
 ```
 
 | ADX Value | Mean Reversion? |
@@ -114,7 +114,7 @@ If ADX > 25, do NOT take mean reversion trades. Use trending strategies instead 
 ### 1. Check Regime
 
 ```
-get_indicator(indicator="adx")
+get_indicator(indicator_code="dmi")
 ```
 
 If ADX > 25 → **Stop**. This is a trending market. Report to orchestrator that mean reversion is not applicable.
@@ -122,7 +122,7 @@ If ADX > 25 → **Stop**. This is a trending market. Report to orchestrator that
 ### 2. Assess Bollinger Bands
 
 ```
-get_indicator(indicator="bbands")
+get_indicator(indicator_code="bbands")
 ```
 
 Check if price is at or beyond bands. Calculate Band Width for squeeze detection.
@@ -130,7 +130,7 @@ Check if price is at or beyond bands. Calculate Band Width for squeeze detection
 ### 3. Check RSI
 
 ```
-get_indicator(indicator="rsi")
+get_indicator(indicator_code="rsi")
 ```
 
 Is RSI at extreme (<25 or >75)? Align with BB reading.
@@ -138,7 +138,7 @@ Is RSI at extreme (<25 or >75)? Align with BB reading.
 ### 4. Check EMA for Mean Level
 
 ```
-get_indicator(indicator="ema", options={"period": 20})
+get_indicator(indicator_code="ema")
 ```
 
 This is the target — the mean price is reverting toward.

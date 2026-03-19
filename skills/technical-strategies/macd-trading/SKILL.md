@@ -48,7 +48,7 @@ MACD (Moving Average Convergence Divergence) combines trend-following and moment
 
 ## Strategy Workflow
 
-1. **Get MACD** using `get_indicator(indicator="macd")`
+1. **Get MACD** using `get_indicator(indicator_code="macd")`
 
 2. **Determine trend** from zero line:
 

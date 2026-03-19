@@ -96,7 +96,7 @@ Use `get_financial_news` to find earnings call transcripts and summaries, then a
 ### Searching for Transcripts
 
 ```
-get_financial_news(query="AAPL earnings call transcript summary management", limit=10)
+get_financial_news(topic="AAPL earnings call transcript summary management", max_results=10)
 ```
 
 Focus on post-call summaries, analyst recaps, and direct transcript excerpts.
@@ -155,7 +155,7 @@ The published consensus estimate is the "official" market expectation, but the *
 Use price action leading into earnings combined with sentiment analysis:
 
 ```
-get_financial_news(query="AAPL earnings expectations whisper sentiment analyst", limit=15)
+get_financial_news(topic="AAPL earnings expectations whisper sentiment analyst", max_results=15)
 ```
 
 - Strong pre-earnings rally = whisper number is well above consensus
@@ -177,7 +177,7 @@ Pull EPS estimates, revenue estimates, earnings calendar date, and historical be
 ### Step 2: Research Analyst Expectations and Sentiment
 
 ```
-get_financial_news(query="AAPL earnings Q1 2026 expectations analyst", limit=20)
+get_financial_news(topic="AAPL earnings Q1 2026 expectations analyst", max_results=20)
 ```
 
 Look for recent analyst notes, price target changes, and pre-earnings sentiment shifts.
@@ -185,7 +185,7 @@ Look for recent analyst notes, price target changes, and pre-earnings sentiment 
 ### Step 3: Assess Management Tone from Call Summaries
 
 ```
-get_financial_news(query="AAPL earnings call transcript summary management", limit=10)
+get_financial_news(topic="AAPL earnings call transcript summary management", max_results=10)
 ```
 
 After the call, analyze management tone using the LLM Transcript Analysis framework above. Score as Confident, Cautious, or Evasive.

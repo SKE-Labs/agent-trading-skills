@@ -144,12 +144,12 @@ get_fundamentals(ticker="XLB")
 
 3. **Research macro context** for sector rotation catalysts:
 ```
-get_financial_news(query="sector rotation economic cycle 2026", limit=15)
+get_financial_news(topic="sector rotation economic cycle 2026", max_results=15)
 ```
 
 4. **Check economic calendar** for upcoming Fed, inflation, and employment events:
 ```
-get_economics_calendar(from="2026-03-19", to="2026-04-19", impact="high")
+get_economics_calendar(from_date="2026-03-19", to_date="2026-04-19", impact="high")
 ```
 
 5. **Identify rotation signals** by combining:

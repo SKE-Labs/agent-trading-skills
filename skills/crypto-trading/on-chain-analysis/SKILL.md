@@ -165,7 +165,7 @@ Since the technical analyst does not have direct access to on-chain data APIs, c
 
 1. **Check current BTC price** to establish baseline:
 ```
-get_latest_candle(symbol="BTCUSDT", interval="1d")
+get_latest_candle(symbol="BTCUSDT")
 ```
 
 2. **Assess momentum and trend** with technical indicators for confirmation:
@@ -187,7 +187,7 @@ generate_chart(symbol="BTCUSDT", interval="1d")
 
 5. **Mark key on-chain derived levels** on the chart:
 ```
-draw_chart_analysis(symbol="BTCUSDT", analysis={...})
+draw_chart_analysis(action="create", drawing={...})
 ```
    - Mark estimated realized price as macro support
    - Mark MVRV overvaluation zones as resistance

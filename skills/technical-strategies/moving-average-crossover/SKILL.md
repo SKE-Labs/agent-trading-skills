@@ -67,7 +67,7 @@ Popular Investopedia strategy:
 
 ## Workflow
 
-1. **Get MAs** using `get_indicator(indicator="ema", period=X)`
+1. **Get MAs** using `get_indicator(indicator_code="ema")`
 2. **Identify cross** direction
 3. **Confirm with price** position relative to MAs
 4. **Enter on pullback** to MA or aggressive on cross

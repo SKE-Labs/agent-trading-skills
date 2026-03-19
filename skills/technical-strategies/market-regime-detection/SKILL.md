@@ -35,7 +35,7 @@ Primary regime classifier:
 | 20-25 | Weak/transitioning | Low — wait for clarity |
 | <20 | Ranging | High |
 
-Use `get_indicator(indicator="adx")` to retrieve current ADX value.
+Use `get_indicator(indicator_code="dmi")` to retrieve current DMI/ADX values.
 
 ### 2. Bollinger Band Width
 
@@ -47,7 +47,7 @@ Measures volatility expansion/contraction:
 | 40th-80th percentile | Normal conditions |
 | <20th percentile | Squeeze — breakout imminent |
 
-Use `get_indicator(indicator="bbands")` to get upper, middle, lower bands. Calculate width:
+Use `get_indicator(indicator_code="bbands")` to get upper, middle, lower bands. Calculate width:
 
 ```
 BB Width = (Upper - Lower) / Middle × 100
@@ -63,7 +63,7 @@ Confirms volatility level:
 | ATR 0.8-1.2× avg | Normal |
 | ATR < 0.8× avg | Low volatility (squeeze) |
 
-Use `get_indicator(indicator="atr")` for current ATR.
+Use `get_indicator(indicator_code="tr")` for current True Range.
 
 ### 4. EMA Slope
 
@@ -73,7 +73,7 @@ Trend direction and strength:
 - **50 EMA falling + price below** → Bearish trend
 - **50 EMA flat + price crossing repeatedly** → Range
 
-Use `get_indicator(indicator="ema", options={"period": 50})` and compare recent values.
+Use `get_indicator(indicator_code="ema")` and compare recent values.
 
 ## Composite Regime Classification
 
@@ -118,7 +118,7 @@ Watch for transitions:
 ### 1. Get ADX Reading
 
 ```
-get_indicator(indicator="adx")
+get_indicator(indicator_code="dmi")
 ```
 
 Check the ADX value. If >25 → trending. If <20 → ranging.
@@ -126,7 +126,7 @@ Check the ADX value. If >25 → trending. If <20 → ranging.
 ### 2. Get Bollinger Bands
 
 ```
-get_indicator(indicator="bbands")
+get_indicator(indicator_code="bbands")
 ```
 
 Calculate BB Width = (upper - lower) / middle × 100. Compare to recent readings to determine percentile.
@@ -134,7 +134,7 @@ Calculate BB Width = (upper - lower) / middle × 100. Compare to recent readings
 ### 3. Get ATR
 
 ```
-get_indicator(indicator="atr")
+get_indicator(indicator_code="tr")
 ```
 
 Compare current ATR to the average of recent ATR values.
@@ -142,7 +142,7 @@ Compare current ATR to the average of recent ATR values.
 ### 4. Get EMA for Slope
 
 ```
-get_indicator(indicator="ema", options={"period": 50})
+get_indicator(indicator_code="ema")
 ```
 
 Compare the last 5-10 EMA values. Rising = bullish trend, falling = bearish trend, flat = range.

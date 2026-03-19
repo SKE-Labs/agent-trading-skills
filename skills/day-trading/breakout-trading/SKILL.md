@@ -74,7 +74,7 @@ Volume is the #1 validator of breakouts:
 | 1.0-1.5× average | Weak — wait for more confirmation |
 | <1.0× average | Likely false breakout — skip or fade |
 
-Use `get_indicator(indicator="volume")` and compare to recent average.
+Use `get_indicator(indicator_code="mfi")` and compare to recent average.
 
 ### False Breakout Statistics
 
@@ -159,7 +159,7 @@ draw_chart_analysis(action="create", drawing={
 ### 3. Check Volume for Confirmation
 
 ```
-get_indicator(indicator="volume")
+get_indicator(indicator_code="mfi")
 ```
 
 Compare breakout candle volume to 20-period average. Must be >1.5×.
@@ -167,8 +167,8 @@ Compare breakout candle volume to 20-period average. Must be >1.5×.
 ### 4. Confirm with Momentum
 
 ```
-get_indicator(indicator="rsi")
-get_indicator(indicator="macd")
+get_indicator(indicator_code="rsi")
+get_indicator(indicator_code="macd")
 ```
 
 RSI should be trending in breakout direction. MACD histogram should be expanding.

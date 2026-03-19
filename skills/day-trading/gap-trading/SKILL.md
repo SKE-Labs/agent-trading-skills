@@ -56,7 +56,7 @@ A gap exists when:
 Check volume for classification:
 
 ```
-get_indicator(indicator="volume")
+get_indicator(indicator_code="mfi")
 ```
 
 ## Trading Strategies
@@ -101,7 +101,7 @@ Compare current open to previous close/high/low. Calculate gap size %.
 ### 2. Check Volume
 
 ```
-get_indicator(indicator="volume")
+get_indicator(indicator_code="mfi")
 ```
 
 Compare gap session volume to 20-period average. >2× = significant.
@@ -113,8 +113,8 @@ Using the classification criteria above, determine if Common, Breakaway, Runaway
 ### 4. Check Trend Context
 
 ```
-get_indicator(indicator="adx")
-get_indicator(indicator="ema", options={"period": 50})
+get_indicator(indicator_code="dmi")
+get_indicator(indicator_code="ema")
 ```
 
 Is this gap in a trending or ranging market? How extended is the current trend?
