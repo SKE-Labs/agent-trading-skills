@@ -1,6 +1,12 @@
 ---
 name: triangle-patterns
 description: Trade ascending, descending, and symmetrical triangle patterns. Use when anticipating breakouts from consolidation, measuring potential move targets, or timing entries on compression breakouts.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # Triangle Pattern Trading
@@ -55,12 +61,6 @@ Triangles form during consolidation and typically break out in the direction of 
 
 ## Target Calculation
 
-Calculate measured move target:
-
-```
-execute(command='python3 -c "base_high=52000;base_low=48000;breakout=53000;height=base_high-base_low;target=breakout+height;print(f\"Triangle Height: {height}\\nBreakout: {breakout}\\nTarget: {target}\")"')
-```
-
 **Measured Move**:
 
 ```
@@ -92,3 +92,9 @@ Use `draw_chart_analysis` with `trend` type:
 - False breakouts are common—use retest entry
 - Wider triangles = Stronger moves
 - Tighter apex = More explosive breakout
+
+## Related Skills
+
+- **multi-timeframe-analysis** — Triangles on primary TF within an HTF trend break in the trend direction most often
+- **breakout-trading** — Triangle breakouts follow the same volume confirmation and entry principles
+- **wedge-patterns** — Wedges are similar converging patterns but with both lines sloping in the same direction

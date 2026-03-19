@@ -1,6 +1,12 @@
 ---
 name: double-top-bottom
 description: Trade double and triple top/bottom reversal patterns. Use when identifying trend exhaustion, finding reversal entries at key resistance/support, or confirming failed breakouts.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # Double Top & Bottom Patterns
@@ -86,3 +92,9 @@ Use `draw_chart_analysis`:
 - Wait for confirmation (neckline break)
 - Volume should confirm the reversal
 - Failed double tops/bottoms can lead to strong continuation
+
+## Related Skills
+
+- **multi-timeframe-analysis** — Double tops/bottoms on HTF are major reversal signals; use LTF for precise neckline break entries
+- **head-and-shoulders** — Similar reversal pattern; triple tops share characteristics with H&S formations
+- **position-sizing** — Measured move targets help define R:R for position sizing decisions

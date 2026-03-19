@@ -1,6 +1,12 @@
 ---
 name: correlation-risk
 description: Manage correlated positions to prevent concentrated exposure. Use when holding multiple positions, diversifying portfolio, or assessing total account risk.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Correlation Risk Management
@@ -100,3 +106,9 @@ If BTC and ETH correlate +0.85:
 ## Key Insight
 
 Diversification only works with uncorrelated assets. Multiple positions in correlated assets = One big position.
+
+## Related Skills
+
+- **position-sizing** — Correlated positions require adjusted sizing; this skill identifies correlation, position-sizing applies the reduction
+- **market-correlation-trading** — Provides the macro correlation analysis that feeds into portfolio-level risk assessment
+- **drawdown-management** — Correlated positions amplify drawdowns; managing correlation is a key drawdown prevention tool

@@ -1,6 +1,12 @@
 ---
 name: risk-reward-ratio
 description: Calculate and optimize risk-reward ratios for trade setups. Use when evaluating trade quality, setting targets, or filtering low-quality setups.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Risk-Reward Ratio (R:R)
@@ -93,3 +99,9 @@ Use R:R as quality filter:
 - Don't sacrifice R:R for win rate
 - Better entries = Better R:R
 - Realistic targets based on structure
+
+## Related Skills
+
+- **position-sizing** — R:R determines trade quality; position sizing determines trade quantity
+- **stop-loss-strategies** — Stop placement defines the risk side of the R:R equation
+- **partial-profit-taking** — Scale out at R:R milestones (1R, 2R, 3R) for optimal profit management

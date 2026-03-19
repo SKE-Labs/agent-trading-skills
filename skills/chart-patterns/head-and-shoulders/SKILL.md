@@ -1,6 +1,12 @@
 ---
 name: head-and-shoulders
 description: Identify and trade head and shoulders reversal patterns. Use when spotting major trend reversals, validating bearish/bullish structure changes, or finding high R:R reversal setups.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Head and Shoulders Pattern
@@ -69,3 +75,9 @@ Use `draw_chart_analysis`:
 - Ignoring volume profile
 - Pattern too small (noise, not structure)
 - Missing the prior trend requirement
+
+## Related Skills
+
+- **multi-timeframe-analysis** — H&S on HTF signals major trend reversals; confirm with LTF structure shifts
+- **double-top-bottom** — Similar reversal pattern family; right shoulder failure resembles a double top
+- **position-sizing** — Measured move from head to neckline provides clear target for position sizing

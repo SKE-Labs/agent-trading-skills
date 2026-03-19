@@ -5,6 +5,8 @@ license: Apache-2.0
 metadata:
   author: ske-labs
   version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Candlestick Pattern Trading
@@ -92,3 +94,9 @@ Candlestick patterns provide visual entry/exit signals based on price action psy
 ## Reference
 
 See [references/PATTERNS.md](references/PATTERNS.md) for visual pattern diagrams.
+
+## Related Skills
+
+- **multi-timeframe-analysis** — HTF candlestick patterns are far more reliable; always confirm with higher timeframe context
+- **supply-demand-zones** — Candlestick reversal patterns at supply/demand zones create the highest-probability entries
+- **position-sizing** — Use risk management to size trades based on the pattern's stop distance

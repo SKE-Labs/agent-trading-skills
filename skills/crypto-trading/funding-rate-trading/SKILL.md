@@ -1,6 +1,12 @@
 ---
 name: funding-rate-trading
 description: Trade based on perpetual futures funding rate signals. Use when funding is extreme, finding market sentiment, or earning funding payments.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Funding Rate Trading
@@ -48,11 +54,12 @@ Perpetual futures use funding rates to keep price aligned with spot—creating t
 
 ## Funding Arbitrage Setup
 
-Use the `execute` tool to calculate APR from funding rate:
+Calculate APR from funding rate:
 
-```
-execute(command='python3 -c "rate=0.05;apr=rate*3*365;daily=rate*3;print(f\"Funding Rate: {rate}%\\nAPR: {apr:.2f}%\\nDaily: {daily:.2f}%\")"')
-```
+- APR = Funding Rate (%) x 3 x 365
+- Daily = Funding Rate (%) x 3
+
+Example: 0.05% funding rate = 54.75% APR, 0.15% daily
 
 **Setup Steps:**
 1. **Calculate APR** = Funding rate × 3 × 365
@@ -82,3 +89,9 @@ Track funding across exchanges:
 ## Key Insight
 
 Extreme funding often precedes reversals. When "everyone is long" (high positive funding), the market often corrects to liquidate overleveraged positions.
+
+## Related Skills
+
+- **arbitrage-trading** — Funding rate arbitrage (long spot + short perp) is a delta-neutral arbitrage strategy
+- **mean-reversion** — Extreme funding rates signal overextension; combine with mean reversion techniques for reversal entries
+- **leverage-management** — Funding rate strategies require careful leverage management to avoid liquidation

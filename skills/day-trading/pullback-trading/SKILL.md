@@ -1,6 +1,12 @@
 ---
 name: pullback-trading
 description: Enter trends on price retracements to key levels. Use when trading with the trend, finding high R:R entries, or timing entries in established trends.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Pullback Trading
@@ -78,3 +84,9 @@ Wait for these before entering:
 - Deeper pullbacks need more confirmation
 - First pullback in new trend is best
 - Don't catch falling knives (wait for confirmation)
+
+## Related Skills
+
+- **fibonacci-trading** — Fibonacci retracement levels (38.2%, 50%, 61.8%) define the pullback entry zones
+- **momentum-trading** — Pullbacks occur within momentum moves; enter pullbacks to ride the next impulse leg
+- **multi-timeframe-analysis** — Confirm the trend on HTF before entering pullbacks on LTF

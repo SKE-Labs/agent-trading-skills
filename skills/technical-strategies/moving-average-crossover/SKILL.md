@@ -1,6 +1,12 @@
 ---
 name: moving-average-crossover
 description: Trade EMA/SMA crossover systems for trend following. Use when identifying trend changes, timing entries with momentum, or building systematic trading rules.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Moving Average Crossover Trading
@@ -81,3 +87,9 @@ Popular Investopedia strategy:
 - Combine with other confluence
 - Faster MAs = more signals, more false signals
 - Slower MAs = fewer signals, more reliable
+
+## Related Skills
+
+- **multi-timeframe-analysis** — Use HTF MA alignment to confirm LTF crossover signals
+- **market-regime-detection** — MA crossovers only work in trending regimes; check ADX before trading
+- **macd-trading** — MACD is derived from EMAs and provides complementary momentum confirmation

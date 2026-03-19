@@ -1,6 +1,12 @@
 ---
 name: macd-trading
 description: Trade using MACD crossovers, histogram, and divergence signals. Use when confirming trend direction, timing entries with momentum, or identifying trend strength changes.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # MACD Trading Strategy
@@ -76,3 +82,9 @@ MACD (Moving Average Convergence Divergence) combines trend-following and moment
 - Trading every crossover (many are false)
 - Ignoring the zero line context
 - Trading against HTF trend
+
+## Related Skills
+
+- **rsi-divergence** — RSI divergence combined with MACD divergence creates high-confidence reversal signals
+- **divergence-trading** — Comprehensive multi-indicator divergence framework that includes MACD
+- **momentum-trading** — MACD histogram expansion confirms momentum; use together for trend entries

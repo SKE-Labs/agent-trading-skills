@@ -1,6 +1,12 @@
 ---
 name: arbitrage-trading
 description: Exploit price differences across exchanges or trading pairs. Use when spotting price discrepancies, trading cross-exchange spreads, or finding risk-free opportunities.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Arbitrage Trading
@@ -63,17 +69,19 @@ Profit = $200 - (Fees + Transfer costs)
 
 ## Profitability Check
 
-Use the `execute` tool to calculate net profit:
+Use `get_latest_candle` to fetch current prices across pairs, then calculate net profit manually.
 
 **Cross-Exchange Arbitrage:**
-```
-execute(command='python3 -c "buy=50000;sell=50200;buy_fee=0.001;sell_fee=0.001;transfer=5;amount=1;gross=sell-buy;fees=(buy*buy_fee)+(sell*sell_fee)+transfer;net=gross-fees;print(f\"Spread: \${gross:.2f}\\nFees: \${fees:.2f}\\nNet Profit: \${net:.2f} ({net/buy*100:.3f}%)\")"')
-```
+
+- Gross Spread = Sell Price - Buy Price
+- Total Fees = (Buy Price x Buy Fee Rate) + (Sell Price x Sell Fee Rate) + Transfer Cost
+- Net Profit = Gross Spread - Total Fees
 
 **Triangular Arbitrage:**
-```
-execute(command='python3 -c "btc_usdt=50000;eth_usdt=2000;eth_btc=0.041;expected=eth_usdt/btc_usdt;actual=eth_btc;spread=(actual-expected)/expected*100;print(f\"Expected ETH/BTC: {expected:.4f}\\nActual: {actual:.4f}\\nSpread: {spread:.2f}%\")"')
-```
+
+- Expected cross rate = Price A / Price B
+- Actual cross rate = observed market rate
+- Spread % = (Actual - Expected) / Expected x 100
 
 Only trade if Net Profit > 0
 
@@ -100,3 +108,9 @@ Profit: ~2.5% (before fees)
 ## Key Insight
 
 Pure arbitrage is "risk-free" profit in theory. In practice, execution risk, fees, and timing make it challenging. Most profitable for those with speed and capital advantages.
+
+## Related Skills
+
+- **funding-rate-trading** — Funding rate arbitrage (spot + perp) is a specific crypto arbitrage strategy
+- **correlation-risk** — Arbitrage positions must account for correlation risk when legs are in different but related assets
+- **leverage-management** — Leveraged arbitrage amplifies both the small spreads and the execution risk

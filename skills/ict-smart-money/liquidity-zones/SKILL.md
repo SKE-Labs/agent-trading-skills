@@ -1,6 +1,12 @@
 ---
 name: liquidity-zones
 description: Identify liquidity pools and stop-hunt levels where retail stops cluster. Use when predicting price manipulation, understanding smart money targets, or timing entries after liquidity sweeps.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # Liquidity Zones Trading
@@ -67,3 +73,9 @@ Use `draw_chart_analysis` to mark:
 - Stop loss: Beyond the sweep wick
 - Target: Opposite liquidity or order block
 - Accept that not all sweeps reverse immediately
+
+## Related Skills
+
+- **order-blocks** — After a liquidity sweep, look for order blocks as entry zones for the reversal
+- **kill-zones** — Liquidity sweeps most commonly occur during kill zone sessions (London, NY AM)
+- **market-structure-shift** — A CHoCH after a liquidity sweep confirms the reversal direction

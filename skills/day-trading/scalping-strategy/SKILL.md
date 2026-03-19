@@ -1,6 +1,12 @@
 ---
 name: scalping-strategy
 description: Execute high-frequency small profit trades for quick gains. Use when trading highly liquid markets, taking advantage of short-term volatility, or building consistent small wins.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Scalping Strategy
@@ -74,3 +80,9 @@ Scalping targets small, frequent profits from minimal price movements within sec
 - Avoid news events (unpredictable)
 - Take breaks regularly
 - Stop after 3 consecutive losses
+
+## Related Skills
+
+- **range-trading** — Range scalping buys support and sells resistance within defined ranges
+- **bollinger-bands** — BB band touches on 1m/5m charts provide scalping reversal signals
+- **stochastic-trading** — Stochastic overbought/oversold on fast timeframes times scalp entries

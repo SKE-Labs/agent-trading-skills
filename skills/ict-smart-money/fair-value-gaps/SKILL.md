@@ -1,6 +1,12 @@
 ---
 name: fair-value-gaps
 description: Trade fair value gaps (FVG) and imbalances where price moved too fast, leaving unfilled zones. Use when identifying retracement targets, finding high-probability entry points, or analyzing institutional order flow imbalances.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Fair Value Gaps (FVG) Trading
@@ -63,3 +69,9 @@ FVGs are 3-candle patterns where price moved so fast it left a "gap" between wic
 - FVGs act as magnets—price tends to return
 - Unfilled FVGs on HTF are powerful future targets
 - Multiple FVGs stacked = strong directional bias
+
+## Related Skills
+
+- **order-blocks** — FVG + order block confluence creates the highest-probability trade zones
+- **premium-discount** — Enter FVGs in discount zones for longs and premium zones for shorts
+- **liquidity-zones** — FVGs often form after liquidity sweeps, confirming the reversal direction

@@ -1,6 +1,12 @@
 ---
 name: stochastic-trading
 description: Trade using Stochastic oscillator for overbought/oversold and momentum. Use when finding reversal points in ranges, confirming trend entries, or timing exits.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # Stochastic Oscillator Trading
@@ -83,3 +89,9 @@ Stochastic measures momentum by comparing closing price to price range over a pe
 - Selling just because stochastic is overbought (can stay OB)
 - Trading against strong trends
 - Ignoring divergences
+
+## Related Skills
+
+- **rsi-divergence** — Stochastic divergence combined with RSI divergence strengthens reversal signals
+- **bollinger-bands** — Stochastic overbought/oversold at BB extremes provides high-probability mean reversion entries
+- **range-trading** — Stochastic is most reliable in ranging markets for timing boundary entries

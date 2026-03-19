@@ -1,6 +1,12 @@
 ---
 name: cup-and-handle
 description: Trade cup and handle breakout patterns for bullish continuation. Use when identifying accumulation patterns, finding breakout setups, or timing entries on established stocks/crypto.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Cup and Handle Pattern
@@ -83,3 +89,9 @@ Use `draw_chart_analysis`:
 - Volume pattern is crucial (high at breakout)
 - Handle should not drop below 50% of cup
 - Failure at lip = Potential double top instead
+
+## Related Skills
+
+- **multi-timeframe-analysis** — Cup and handle patterns on HTF carry more significance; confirm with LTF entry timing
+- **breakout-trading** — The cup lip breakout follows breakout trading principles for volume confirmation and entry
+- **position-sizing** — Size the trade based on stop distance below the handle low

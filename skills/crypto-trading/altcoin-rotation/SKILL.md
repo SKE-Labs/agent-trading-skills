@@ -1,6 +1,12 @@
 ---
 name: altcoin-rotation
 description: Rotate between BTC, ETH, and altcoins based on market cycles. Use when optimizing portfolio allocation, riding altcoin seasons, or managing crypto exposure.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Altcoin Rotation Strategy
@@ -91,3 +97,9 @@ Watch for rotation triggers:
 - Chasing pumped altcoins
 - Over-allocating to micro-caps
 - Not taking profits during alt season
+
+## Related Skills
+
+- **on-chain-analysis** — On-chain metrics (exchange flows, whale behavior) confirm accumulation/distribution phases in the rotation cycle
+- **sector-rotation** — Similar rotation concept applied to crypto market cycles instead of economic sectors
+- **dca-strategy** — DCA into BTC/ETH during accumulation phases provides disciplined entry during bear markets

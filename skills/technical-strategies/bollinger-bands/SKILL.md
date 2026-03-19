@@ -1,6 +1,12 @@
 ---
 name: bollinger-bands
 description: Trade Bollinger Band squeezes, breakouts, and mean reversion. Use when measuring volatility, finding overbought/oversold conditions, or anticipating breakout moves.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["ranging", "volatile"]
 ---
 
 # Bollinger Bands Trading
@@ -87,3 +93,9 @@ execute(command='python3 -c "upper=105;lower=95;sma=100;width=(upper-lower)/sma*
 - Default: 20 SMA, 2 standard deviations
 - More signals: 10 period, 1.5 StdDev
 - Fewer signals: 50 period, 2.5 StdDev
+
+## Related Skills
+
+- **mean-reversion** — Bollinger Band touches are a primary mean reversion entry signal; combine with z-score and RSI
+- **market-regime-detection** — BB Width is a key volatility input for regime classification
+- **stochastic-trading** — Stochastic overbought/oversold at BB extremes provides strong confluence

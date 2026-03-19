@@ -1,6 +1,12 @@
 ---
 name: supply-demand-zones
 description: Identify institutional supply and demand zones for reversal entries. Use when finding high-probability bounce areas, understanding institutional order flow, or planning entries at key zones.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # Supply & Demand Zone Trading
@@ -74,3 +80,9 @@ Supply/demand differs from S/R:
 - S/R = single price level
 - S/D = zone (range of prices)
 - S/D represents unfilled institutional orders
+
+## Related Skills
+
+- **order-blocks** — Order blocks are ICT-specific supply/demand zones; similar concept with different identification criteria
+- **volume-profile-trading** — Volume profile HVNs and VAH/VAL confirm supply/demand zone strength
+- **fibonacci-trading** — Fibonacci levels overlapping with supply/demand zones create high-confluence entries

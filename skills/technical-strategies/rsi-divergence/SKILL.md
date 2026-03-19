@@ -1,6 +1,12 @@
 ---
 name: rsi-divergence
 description: Identify bullish and bearish RSI divergence for reversal signals. Use when spotting weakening momentum, finding potential reversal points, or confirming trend exhaustion.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # RSI Divergence Trading
@@ -70,3 +76,9 @@ Divergence occurs when price and RSI move in opposite directions, signaling pote
 ## Key Insight
 
 Divergence shows **momentum** weakening before price reverses. It's a leading indicator but requires confirmation.
+
+## Related Skills
+
+- **divergence-trading** — Extends RSI divergence with multi-indicator scoring across MACD, Stochastic, and OBV
+- **macd-trading** — MACD divergence combined with RSI divergence strengthens reversal signals
+- **mean-reversion** — RSI divergence at Bollinger Band extremes confirms mean reversion entries

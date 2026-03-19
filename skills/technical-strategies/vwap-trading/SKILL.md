@@ -1,6 +1,12 @@
 ---
 name: vwap-trading
 description: Trade using Volume Weighted Average Price for intraday fair value. Use when determining institutional price levels, finding intraday support/resistance, or identifying mean reversion opportunities.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # VWAP Trading Strategy
@@ -84,3 +90,9 @@ Standard deviation bands around VWAP:
 - Large orders often try to execute at VWAP
 - Daily VWAP matters most; weekly/monthly for swing
 - VWAP works best on liquid instruments
+
+## Related Skills
+
+- **volume-profile-trading** — VWAP and volume profile POC together define the strongest intraday fair value levels
+- **mean-reversion** — VWAP mean reversion setups complement Bollinger Band and RSI mean reversion entries
+- **range-trading** — In ranging markets, VWAP acts as a magnet and provides the mean for range-based strategies

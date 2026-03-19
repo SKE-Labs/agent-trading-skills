@@ -1,6 +1,12 @@
 ---
 name: flag-pennant
 description: Trade bull and bear flags and pennants for trend continuation. Use when riding strong trends, entering on pullbacks, or trading momentum breakouts.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Flag & Pennant Patterns
@@ -80,3 +86,9 @@ Use `draw_chart_analysis`:
 - Volume should decline during flag formation
 - Breakout should have increased volume
 - Quick formations are more reliable
+
+## Related Skills
+
+- **multi-timeframe-analysis** — Flags/pennants on primary TF within an HTF trend are the highest-probability continuation setups
+- **momentum-trading** — Flags form during momentum pauses; the breakout resumes the momentum move
+- **position-sizing** — Flagpole projection provides clear targets for R:R-based position sizing

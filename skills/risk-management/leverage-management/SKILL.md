@@ -1,6 +1,12 @@
 ---
 name: leverage-management
 description: Use leverage safely based on volatility and account size. Use when trading derivatives, managing margin, or sizing leveraged positions.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Leverage Management
@@ -93,3 +99,9 @@ Always set stops BEFORE liquidation level.
 - Never max out available leverage
 - Reduce leverage after losses
 - Journal leverage impact on results
+
+## Related Skills
+
+- **position-sizing** — Leverage changes capital allocation but not risk amount; position sizing controls actual risk
+- **stop-loss-strategies** — Stops must be set before liquidation price; leverage determines how close liquidation is
+- **drawdown-management** — Excessive leverage accelerates drawdowns; reduce leverage during losing periods

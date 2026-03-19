@@ -1,6 +1,12 @@
 ---
 name: ichimoku-cloud
 description: Trade using Ichimoku Cloud for trend, momentum, and support/resistance. Use when identifying trend direction at a glance, finding support/resistance zones, or timing entries with multiple confirmations.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Ichimoku Cloud Trading
@@ -81,3 +87,8 @@ All 4 = Strong signal. 3/4 = Moderate. <3 = Weak.
 - Default settings (9, 26, 52) designed for daily charts
 - For lower TFs, some traders adjust settings
 - Cloud works best on 4H and above
+
+## Related Skills
+
+- **multi-timeframe-analysis** — Ichimoku provides trend, momentum, and S/R in one view; use across timeframes for alignment
+- **moving-average-crossover** — TK cross is analogous to MA crossovers; combine for confirmation

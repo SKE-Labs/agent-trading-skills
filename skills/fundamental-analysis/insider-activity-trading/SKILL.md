@@ -1,6 +1,12 @@
 ---
 name: insider-activity-trading
 description: Track insider buying and selling for trading signals. Use when assessing management confidence, finding accumulation signals, or confirming fundamental views.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Insider Activity Trading
@@ -97,3 +103,8 @@ Use insider activity as:
 - Warning sign (unusual selling)
 - One input among many
 - Not as sole trading signal
+
+## Related Skills
+
+- **earnings-trading** — Insider buying/selling around earnings provides additional signal on management confidence
+- **sentiment-analysis** — Insider activity is a high-credibility sentiment signal that feeds into composite scoring

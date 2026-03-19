@@ -1,6 +1,12 @@
 ---
 name: range-trading
 description: Buy support and sell resistance within ranging markets. Use when markets lack trend direction, trading consolidation, or identifying accumulation/distribution.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["ranging"]
 ---
 
 # Range Trading
@@ -77,3 +83,9 @@ Ranges eventually break. Watch for:
 - HTF trend resuming
 
 When breakout occurs, stop trading range, consider breakout trade.
+
+## Related Skills
+
+- **mean-reversion** — Mean reversion strategies work within ranges; buy oversold at support, sell overbought at resistance
+- **bollinger-bands** — BB mean reversion at range boundaries provides confirmation for range entries
+- **supply-demand-zones** — Supply/demand zones define range boundaries with institutional context

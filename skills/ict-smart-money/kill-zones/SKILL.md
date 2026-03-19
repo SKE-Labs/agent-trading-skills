@@ -1,6 +1,12 @@
 ---
 name: kill-zones
 description: Trade during high-volume institutional sessions (London, New York, Asian). Use when timing entries for maximum volatility, avoiding low-volume chop, or aligning trades with session opens.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Kill Zones Trading
@@ -77,3 +83,9 @@ Kill zones are specific times when institutional activity peaks, creating the be
 - Avoid trading outside these windows
 - London is the most profitable session for most pairs
 - NY can confirm or invalidate London's direction
+
+## Related Skills
+
+- **liquidity-zones** — Kill zone opens frequently sweep Asian session liquidity before reversing
+- **market-structure-shift** — Use LTF structure shifts during kill zones to time entries after manipulation
+- **momentum-trading** — Kill zones provide the volume and volatility needed for momentum setups

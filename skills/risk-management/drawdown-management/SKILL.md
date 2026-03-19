@@ -1,6 +1,12 @@
 ---
 name: drawdown-management
 description: Manage account drawdowns with limits and recovery protocols. Use when protecting capital during losing streaks, implementing loss limits, or developing recovery plans.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Drawdown Management
@@ -91,3 +97,9 @@ Track these metrics:
 - Number of consecutive losing days
 - Deviation from expected win rate
 - Equity curve slope
+
+## Related Skills
+
+- **position-sizing** — Proper position sizing is the primary drawdown prevention tool; reduce size during losing streaks
+- **correlation-risk** — Correlated positions amplify drawdowns; managing correlation prevents concentrated losses
+- **market-regime-detection** — Drawdowns often occur when trading strategies mismatched to the current regime

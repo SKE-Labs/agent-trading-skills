@@ -1,6 +1,12 @@
 ---
 name: optimal-trade-entry
 description: Execute Optimal Trade Entry (OTE) using Fibonacci retracement between 62-79%. Use when entering after structure breaks, timing entries on pullbacks, or finding high-probability retracement levels.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Optimal Trade Entry (OTE)
@@ -42,17 +48,17 @@ Use `get_candles_around_date` to get exact swing points, then use `draw_chart_an
 
 ### Step 3: Calculate OTE Zone
 
-Use the `execute` tool to calculate exact OTE levels:
+Calculate the OTE levels from the swing range:
 
-```
-execute(command='python3 -c "h=52000;l=45000;r=h-l;ote_start=h-r*0.618;ote_mid=h-r*0.705;ote_end=h-r*0.79;print(f\"OTE Start (61.8%): {ote_start:.2f}\\nOTE Mid (70.5%): {ote_mid:.2f}\\nOTE End (79%): {ote_end:.2f}\")"')
-```
+- **OTE Start (61.8%)**: Swing High - Range * 0.618
+- **OTE Mid (70.5%)**: Swing High - Range * 0.705
+- **OTE End (79%)**: Swing High - Range * 0.79
 
-Calculate R:R for entry at 70.5%:
+Example (High=52000, Low=45000, Range=7000):
 
-```
-execute(command='python3 -c "h=52000;l=45000;r=h-l;e=h-r*0.705;risk=e-l;t1=h;t2=h+r*0.272;t3=h+r*0.618;print(f\"Entry: {e:.2f}\\nRisk: {risk:.2f}\\nR:R to {t1:.2f}: {(t1-e)/risk:.2f}:1\\nR:R to {t2:.2f}: {(t2-e)/risk:.2f}:1\\nR:R to {t3:.2f}: {(t3-e)/risk:.2f}:1\")"')
-```
+- OTE Start: 47,674
+- OTE Mid: 47,065
+- OTE End: 46,470
 
 ### Step 4: Mark OTE Zone
 
@@ -89,3 +95,9 @@ Targeting extensions:
 
 - -27% extension = 97% profit = **3.23 R:R**
 - -62% extension = 132% profit = **4.4 R:R**
+
+## Related Skills
+
+- **fibonacci-trading** — OTE is built on Fibonacci levels; use fibonacci-trading for extension targets and confluence
+- **order-blocks** — The best OTE entries have an order block within the 62-79% zone
+- **premium-discount** — OTE in the discount zone for longs and premium zone for shorts maximizes probability

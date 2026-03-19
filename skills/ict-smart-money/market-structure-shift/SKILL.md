@@ -1,6 +1,12 @@
 ---
 name: market-structure-shift
 description: Detect Break of Structure (BOS) and Change of Character (CHoCH) for trend analysis. Use when identifying trend reversals, confirming entry signals, or determining market bias direction.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Market Structure Shift
@@ -75,3 +81,9 @@ Use `draw_chart_analysis` with `highlight` type:
 
 - Mark HH, HL, LH, LL labels at swing points
 - This visualizes the market structure clearly
+
+## Related Skills
+
+- **multi-timeframe-analysis** — Structure on HTF defines bias; LTF structure shifts provide entry timing
+- **order-blocks** — After a BOS/CHoCH, order blocks at the break point become high-probability entry zones
+- **liquidity-zones** — Structure breaks often occur after liquidity sweeps of swing points

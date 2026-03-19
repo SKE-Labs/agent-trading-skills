@@ -1,6 +1,12 @@
 ---
 name: stop-loss-strategies
 description: Place strategic stop losses using structure, ATR, or volatility methods. Use when protecting capital, defining trade invalidation, or managing downside risk.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Stop Loss Strategies
@@ -95,3 +101,9 @@ Add buffer to avoid stop hunts:
 - Set actual stop order
 - Define before entering
 - Accept the loss level
+
+## Related Skills
+
+- **trailing-stop** — After initial stop is set, trailing stop strategies lock in profits as the trade progresses
+- **position-sizing** — Stop distance is a direct input to position size; tighter stops allow larger positions
+- **risk-reward-ratio** — Stop placement determines the risk side of the R:R equation

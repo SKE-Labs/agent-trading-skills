@@ -1,6 +1,12 @@
 ---
 name: order-blocks
 description: Identify bullish and bearish order blocks where institutional orders were executed. Use when analyzing price action for high-probability entry zones, detecting smart money accumulation/distribution, or finding areas where price may react on retest.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # Order Blocks Trading
@@ -52,3 +58,10 @@ Order blocks are price zones where significant institutional buy/sell orders exe
 - Trading mitigated (already tested) order blocks
 - Ignoring higher timeframe context
 - No confirmation before entry
+
+## Related Skills
+
+- **fair-value-gaps** — FVGs often form alongside order blocks; confluence of both creates the highest-probability zones
+- **fibonacci-trading** — Fibonacci retracement levels overlapping with order blocks provide strong confluence entries
+- **multi-timeframe-analysis** — HTF order blocks define bias while LTF order blocks refine entries
+- **market-structure-shift** — BOS/CHoCH confirms the displacement that validates an order block

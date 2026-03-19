@@ -1,6 +1,12 @@
 ---
 name: dca-strategy
 description: Implement Dollar Cost Averaging for systematic long-term accumulation. Use when building positions over time, reducing timing risk, or accumulating during uncertainty.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Dollar Cost Averaging (DCA)
@@ -21,9 +27,12 @@ Example ($100/week):
 - Total: 6.17 units for $300 (avg: $48.62)
 
 **Calculate DCA average:**
-```
-execute(command='python3 -c "buys=[(100,50),(100,40),(100,60)];total_cost=sum(c for c,p in buys);total_units=sum(c/p for c,p in buys);avg=total_cost/total_units;print(f\"Total Spent: \${total_cost:.2f}\\nTotal Units: {total_units:.2f}\\nAvg Cost: \${avg:.2f}\")"')
-```
+
+- Total Spent = sum of all purchase amounts
+- Total Units = sum of (amount / price) for each purchase
+- Average Cost = Total Spent / Total Units
+
+Use `get_latest_candle` to check current price against your DCA average.
 
 ## DCA Benefits
 
@@ -96,3 +105,9 @@ execute(command='python3 -c "buys=[(100,50),(100,40),(100,60)];total_cost=sum(c 
 ## Key Insight
 
 DCA optimizes for psychology and consistency, not maximum returns. Lump sum beats DCA ~67% of the time in rising markets, but DCA reduces regret and improves follow-through.
+
+## Related Skills
+
+- **altcoin-rotation** — DCA into BTC/ETH during accumulation, then rotate to alts when cycle shifts
+- **on-chain-analysis** — On-chain metrics help identify macro accumulation zones for enhanced DCA timing
+- **position-sizing** — DCA is a position-building approach; combine with position sizing for individual entries

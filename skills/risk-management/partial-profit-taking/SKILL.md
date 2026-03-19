@@ -1,6 +1,12 @@
 ---
 name: partial-profit-taking
 description: Scale out of positions at multiple targets to lock in gains. Use when managing winning trades, reducing risk, or optimizing exit strategy.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["all"]
 ---
 
 # Partial Profit Taking
@@ -85,3 +91,9 @@ After each partial:
 - Use limit orders at targets
 - Adjust remaining stop after each partial
 - Let runner ride with wide trail
+
+## Related Skills
+
+- **trailing-stop** — After partial profits are taken, trailing stops manage the remaining runner position
+- **risk-reward-ratio** — Partial profit targets are typically set at R:R milestones (1R, 2R, 3R)
+- **stop-loss-strategies** — Stop management must be updated after each partial exit to protect remaining position

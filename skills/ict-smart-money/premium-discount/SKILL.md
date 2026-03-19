@@ -1,6 +1,12 @@
 ---
 name: premium-discount
 description: Enter positions in discount zones (below equilibrium) and exit in premium zones (above). Use when determining optimal entry areas, understanding value-based trading, or timing buy/sell decisions.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # Premium & Discount Trading
@@ -92,3 +98,9 @@ Use `draw_chart_analysis`:
 - Mark equilibrium with `support`/`resistance`
 - Mark OTE zone with `demand`/`supply`
 - Visualize the range boundaries
+
+## Related Skills
+
+- **optimal-trade-entry** — OTE provides the precise entry zone within premium/discount areas
+- **fibonacci-trading** — Fibonacci levels define the premium/discount boundaries and extension targets
+- **market-structure-shift** — Structure determines whether to look for entries in premium (shorts) or discount (longs)

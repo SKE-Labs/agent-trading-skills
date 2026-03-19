@@ -1,6 +1,12 @@
 ---
 name: channel-trading
 description: Trade within ascending, descending, and horizontal channels. Use when range trading, riding trends with defined boundaries, or finding breakout setups.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # Channel Trading
@@ -89,3 +95,9 @@ Signs of **weakening** channel:
 - Decreasing momentum
 
 Watch for potential breakout when channel weakens.
+
+## Related Skills
+
+- **multi-timeframe-analysis** — Channels on HTF define the trend; LTF channels refine entry zones
+- **breakout-trading** — When channels weaken and break, switch to breakout trading for the continuation move
+- **range-trading** — Horizontal channels are ranges; apply range-trading strategies within them

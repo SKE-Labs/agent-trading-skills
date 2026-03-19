@@ -1,6 +1,12 @@
 ---
 name: breaker-blocks
 description: Trade failed order blocks that flip into breaker patterns. Use when a previous support becomes resistance (or vice versa), identifying high-probability reversal zones after structure breaks.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Breaker Blocks Trading
@@ -65,3 +71,9 @@ Breaker blocks work because:
 - Traders who bought/sold at the OB are now trapped
 - Their stop losses provide fuel for the new direction
 - Smart money flips the level, using trapped traders
+
+## Related Skills
+
+- **order-blocks** — Breaker blocks are failed order blocks; understanding OBs is prerequisite to identifying breakers
+- **fair-value-gaps** — FVGs created during the break through the original OB add confluence to breaker zones
+- **market-structure-shift** — CHoCH/BOS confirms the break that creates the breaker block

@@ -1,6 +1,12 @@
 ---
 name: trailing-stop
 description: Lock in profits with dynamic trailing stop strategies. Use when riding winner trends, protecting open profits, or managing exits systematically.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Trailing Stop Strategies
@@ -94,3 +100,9 @@ Combine methods:
 2. Price hits $115 (3R) → Trail to $110 (below last swing)
 3. Price hits $120 → Trail to $115
 4. Price pulls back → Stop hit at $115 (3R locked)
+
+## Related Skills
+
+- **stop-loss-strategies** — Initial stop placement determines when trailing begins; this skill manages exits after entry
+- **partial-profit-taking** — Combine trailing stops with partial exits for optimal profit capture
+- **momentum-trading** — Trailing stops are essential for riding momentum moves without giving back profits

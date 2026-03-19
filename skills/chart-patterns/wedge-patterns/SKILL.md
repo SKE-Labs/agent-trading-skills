@@ -1,6 +1,12 @@
 ---
 name: wedge-patterns
 description: Trade rising and falling wedge patterns for reversals and continuations. Use when spotting weakening trends, anticipating reversal moves, or identifying continuation patterns.
+license: Apache-2.0
+metadata:
+  author: ske-labs
+  version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending", "ranging"]
 ---
 
 # Wedge Pattern Trading
@@ -55,12 +61,6 @@ Wedges are converging trendlines that typically signal reversals (most common) o
 
 ## Target Calculation
 
-Calculate measured move target:
-
-```
-execute(command='python3 -c "widest_high=52000;widest_low=48000;breakout=47000;height=widest_high-widest_low;target=breakout-height;print(f\"Wedge Height: {height}\\nBreakout: {breakout}\\nTarget: {target}\")"')
-```
-
 **Measured Move**:
 
 - Measure height at widest part of wedge
@@ -80,3 +80,9 @@ Use `draw_chart_analysis` with `trend` type:
 - Falling wedges break up ~68% of the time
 - Wedges near end of trend = Higher probability reversal
 - Failed wedges lead to strong continuation in original direction
+
+## Related Skills
+
+- **multi-timeframe-analysis** — Wedges on HTF signal major reversals; LTF wedges are less reliable
+- **triangle-patterns** — Similar converging pattern family; differentiate by whether both lines slope the same direction
+- **position-sizing** — Wedge height projection provides clear measured move targets for position sizing

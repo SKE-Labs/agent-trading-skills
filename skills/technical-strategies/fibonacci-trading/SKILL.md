@@ -5,6 +5,8 @@ license: Apache-2.0
 metadata:
   author: ske-labs
   version: "1.0"
+  target_agents: ["*"]
+  market_conditions: ["trending"]
 ---
 
 # Fibonacci Trading
@@ -129,12 +131,9 @@ Use `get_indicator` to check for confluence:
 - `get_indicator(indicator="rsi")` — Look for oversold at fib support
 - `get_indicator(indicator="macd")` — Check for momentum shift
 
-### 6. Position Entry
+### 6. Report to Orchestrator
 
-After confirmation, the orchestrator handles:
-
-- `calculate_position_size` for risk-based sizing
-- `draw_position` with type `long_position` or `short_position`
+After confirmation, provide the orchestrator with entry zone, stop loss, and target levels. The orchestrator handles position sizing and signal creation.
 
 ## Best Practices
 
@@ -144,3 +143,9 @@ After confirmation, the orchestrator handles:
 | Wait for confluence    | Trade Fib alone         |
 | Use 61.8% as primary   | Ignore the golden ratio |
 | Combine time frames    | Only use one TF         |
+
+## Related Skills
+
+- **optimal-trade-entry** — OTE uses the 62-79% Fibonacci zone for precise smart money entries
+- **order-blocks** — Fibonacci levels overlapping with order blocks create the strongest confluence zones
+- **supply-demand-zones** — Fibonacci retracements into supply/demand zones provide high-probability entries
