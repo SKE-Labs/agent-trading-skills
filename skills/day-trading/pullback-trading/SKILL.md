@@ -4,89 +4,85 @@ description: Enter trends on price retracements to key levels. Use when trading 
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending"]
+  version: "1.1"
 ---
 
 # Pullback Trading
 
-Pullback trading enters established trends during temporary retracements for optimal risk/reward.
+Enter established trends during temporary retracements for optimal risk/reward.
 
-## Pullback Concept
+## Identification
 
-In an uptrend:
+### Pullback Levels
 
-- Price makes higher highs, higher lows
-- Pullbacks retrace to support before continuing
-- Enter the pullback, ride the next impulse
+| Level | Depth | Trend Strength |
+| --- | --- | --- |
+| 20/50 EMA | Dynamic | Strong (shallow) |
+| Fibonacci 38.2% | Shallow | Strong trend |
+| Fibonacci 50% | Moderate | Normal trend |
+| Fibonacci 61.8% | Deep | Weak but valid |
+| Previous S/R flip | Variable | Structure-based |
 
-In a downtrend:
+### Entry Confirmation (require before entering)
 
-- Price makes lower lows, lower highs
-- Pullbacks retrace to resistance before continuing
-- Enter the pullback, ride the next impulse
-
-## Pullback Levels
-
-| Level              | Depth    | Strength         |
-| ------------------ | -------- | ---------------- |
-| Moving Average     | Dynamic  | 20/50 EMA common |
-| Fibonacci 38.2%    | Shallow  | Strong trend     |
-| Fibonacci 50%      | Moderate | Normal pullback  |
-| Fibonacci 61.8%    | Deep     | Weak but valid   |
-| Previous structure | Variable | S/R flip         |
-
-## Entry Strategies
-
-### 1. MA Pullback
-
-1. Confirm trend direction
-2. Wait for price to pull back to MA (20/50 EMA)
-3. Enter on rejection candle
-4. Stop below MA
-
-### 2. Fibonacci Pullback
-
-1. Draw Fib from swing low to high (uptrend)
-2. Wait for pullback to 38-62% zone
-3. Enter on confirmation
-4. Stop below 78.6%
-
-### 3. Structure Pullback
-
-1. Identify previous resistance now support
-2. Wait for pullback to flip level
-3. Enter on bounce
-4. Stop below structure
-
-## Entry Confirmation
-
-Wait for these before entering:
-
-- Reversal candlestick pattern
-- Lower TF structure shift
-- Momentum indicator turning
-- Volume decrease then increase
+- Reversal candlestick pattern (hammer, engulfing)
+- Momentum indicator turning in trend direction
+- Volume decrease during pullback, increase on resumption
 
 ## Workflow
 
-1. **Confirm trend** on HTF
-2. **Wait for pullback** to key level
-3. **Mark entry zone** using `draw_chart_analysis`
-4. **Enter with confirmation**
-5. **Stop** below pullback low
-6. **Target** previous high/low or extension
+### 1. Confirm Trend on Higher Timeframe
 
-## Best Practices
+```
+get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
+get_indicator(indicator_code="ema", symbol=<symbol>, interval=<interval>)
+```
 
-- Only trade pullbacks in clear trends
-- Deeper pullbacks need more confirmation
-- First pullback in new trend is best
-- Don't catch falling knives (wait for confirmation)
+ADX >25 and price above/below EMA confirms active trend. First pullback in a new trend is the highest-probability entry.
+
+### 2. Get Price Data and Identify Pullback
+
+```
+get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+```
+
+Uptrend: HH/HL structure, price pulling back toward support. Downtrend: LH/LL structure, price pulling back toward resistance.
+
+### 3. Check Momentum at Pullback Level
+
+```
+get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
+get_indicator(indicator_code="macd", symbol=<symbol>, interval=<interval>)
+```
+
+RSI should be pulling back from extreme toward 50 (not crossing it). MACD histogram shrinking but not flipping sign.
+
+### 4. Mark Entry Zone
+
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "demand",
+    "points": [
+        {"time": <pullback_start>, "price": <fib_38>},
+        {"time": <pullback_end>, "price": <fib_62>}
+    ],
+    "options": {"text": "Pullback Entry Zone (38-62%)"}
+})
+```
+
+### 5. Report to Orchestrator
+
+Trend direction and strength, pullback depth (which Fib level), confirmation signals, entry level, stop below pullback low, target at previous swing high/low.
+
+## Key Rules
+
+- NEVER trade pullbacks without confirmed trend direction (ADX >25)
+- NEVER enter without a reversal confirmation candle -- do not catch falling knives
+- Deeper pullbacks (>61.8%) need stronger confirmation -- the trend may be reversing
+- Stop goes below pullback low (uptrend) or above pullback high (downtrend)
+- First pullback in a new trend has the highest probability of success
 
 ## Related Skills
 
-- **fibonacci-trading** — Fibonacci retracement levels (38.2%, 50%, 61.8%) define the pullback entry zones
-- **momentum-trading** — Pullbacks occur within momentum moves; enter pullbacks to ride the next impulse leg
-- **multi-timeframe-analysis** — Confirm the trend on HTF before entering pullbacks on LTF
+- **momentum-trading** -- pullbacks occur within momentum moves
+- **breakout-trading** -- first pullback often retests the breakout level

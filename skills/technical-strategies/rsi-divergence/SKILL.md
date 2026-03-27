@@ -4,81 +4,81 @@ description: Identify bullish and bearish RSI divergence for reversal signals. U
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending", "ranging"]
+  version: "1.1"
 ---
 
 # RSI Divergence Trading
 
-Divergence occurs when price and RSI move in opposite directions, signaling potential reversals.
+Divergence between price and RSI signals weakening momentum before price reverses.
 
 ## Divergence Types
 
-### Regular (Reversal) Divergence
+### Regular (Reversal)
 
 | Type        | Price Action | RSI Action | Signal      |
 | ----------- | ------------ | ---------- | ----------- |
 | **Bullish** | Lower Low    | Higher Low | Buy signal  |
 | **Bearish** | Higher High  | Lower High | Sell signal |
 
-### Hidden (Continuation) Divergence
+### Hidden (Continuation)
 
 | Type        | Price Action | RSI Action  | Signal               |
 | ----------- | ------------ | ----------- | -------------------- |
 | **Bullish** | Higher Low   | Lower Low   | Trend continues up   |
 | **Bearish** | Lower High   | Higher High | Trend continues down |
 
-## Identification Workflow
+## RSI Zones
 
-1. **Get RSI indicator** using `get_indicator(indicator_code="rsi")`
-2. **Identify swing points** on price chart
-3. **Compare to RSI swings**:
-   - Connect price swing lows/highs
-   - Connect corresponding RSI swing lows/highs
-4. **Confirm divergence** if slopes differ
+| Level | Interpretation |
+| ----- | -------------- |
+| >70   | Overbought — bearish regular divergence strongest here |
+| <30   | Oversold — bullish regular divergence strongest here |
+| 50    | Equilibrium — divergence here is unreliable |
 
-## Entry Strategy
+## Workflow
 
-### Bullish Divergence Entry
+1. **Get RSI**:
+   ```
+   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
+   ```
 
-1. Identify bullish divergence at support
-2. Wait for bullish candle confirmation
-3. Enter above confirmation candle
-4. Stop below the swing low
-5. Target previous resistance
+2. **Identify swing points** on price chart and corresponding RSI swings
 
-### Bearish Divergence Entry
+3. **Compare slopes**: if price makes LL but RSI makes HL → bullish divergence. If price makes HH but RSI makes LH → bearish divergence.
 
-1. Identify bearish divergence at resistance
-2. Wait for bearish candle confirmation
-3. Enter below confirmation candle
-4. Stop above the swing high
-5. Target previous support
+4. **Get candles** for chart marking:
+   ```
+   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   ```
 
-## Best Practices
+5. **Mark divergence**:
+   ```
+   draw_chart_analysis(action="create", drawing={
+       "type": "trend",
+       "points": [
+           {"time": <first_swing_time>, "price": <first_swing_price>},
+           {"time": <second_swing_time>, "price": <second_swing_price>}
+       ],
+       "options": {"text": "Bullish RSI Divergence"}
+   })
+   ```
 
-| Do                      | Don't                    |
-| ----------------------- | ------------------------ |
-| Trade at key S/R levels | Trade random divergences |
-| Wait for confirmation   | Enter immediately        |
-| Use HTF divergence      | Rely on 5m divergence    |
-| Combine with structure  | Trade in isolation       |
+6. **Wait for confirmation candle** (engulfing, hammer, pin bar) at divergence zone before entry
 
-## RSI Levels Reference
+### Entry
 
-| Level | Interpretation                  |
-| ----- | ------------------------------- |
-| >70   | Overbought (potential reversal) |
-| <30   | Oversold (potential reversal)   |
-| 50    | Equilibrium                     |
+- **Bullish**: enter above confirmation candle at support; stop below swing low; target previous resistance
+- **Bearish**: enter below confirmation candle at resistance; stop above swing high; target previous support
 
-## Key Insight
+## Key Rules
 
-Divergence shows **momentum** weakening before price reverses. It's a leading indicator but requires confirmation.
+- NEVER trade divergence at random price levels; require key S/R confluence
+- NEVER enter without confirmation candle; divergence is an early warning, not an entry
+- NEVER rely on 5m divergence; use 1H+ for reliable signals
+- RSI must be in extreme zone (<30 or >70) for regular divergence to be valid
+- Combine with structure analysis; divergence + S/R = high probability
 
 ## Related Skills
 
-- **divergence-trading** — Extends RSI divergence with multi-indicator scoring across MACD, Stochastic, and OBV
+- **divergence-trading** — extends RSI divergence with multi-indicator scoring (MACD, Stochastic, OBV)
 - **macd-trading** — MACD divergence combined with RSI divergence strengthens reversal signals
-- **mean-reversion** — RSI divergence at Bollinger Band extremes confirms mean reversion entries

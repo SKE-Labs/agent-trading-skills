@@ -4,29 +4,22 @@ description: Trade using Ichimoku Cloud for trend, momentum, and support/resista
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending"]
+  version: "1.1"
 ---
 
 # Ichimoku Cloud Trading
 
-Ichimoku Kinko Hyo ("one glance equilibrium chart") provides comprehensive market analysis in one indicator.
+Ichimoku Kinko Hyo provides trend, momentum, and S/R in one indicator system.
 
 ## Components
 
-| Component       | Calculation                   | Use              |
-| --------------- | ----------------------------- | ---------------- |
-| **Tenkan-sen**  | (9-high + 9-low) / 2          | Fast signal line |
-| **Kijun-sen**   | (26-high + 26-low) / 2        | Slow signal line |
+| Component       | Formula                        | Use              |
+| --------------- | ------------------------------ | ---------------- |
+| **Tenkan-sen**  | (9H + 9L) / 2                 | Fast signal line |
+| **Kijun-sen**   | (26H + 26L) / 2               | Slow signal line |
 | **Senkou A**    | (Tenkan + Kijun) / 2          | Cloud boundary   |
-| **Senkou B**    | (52-high + 52-low) / 2        | Cloud boundary   |
-| **Chikou Span** | Close plotted 26 periods back | Confirmation     |
-
-**Quick calculation:**
-```
-execute(command='python3 -c "h9=50500;l9=49500;h26=51000;l26=48000;h52=52000;l52=46000;tenkan=(h9+l9)/2;kijun=(h26+l26)/2;senkou_a=(tenkan+kijun)/2;senkou_b=(h52+l52)/2;print(f\"Tenkan: {tenkan:.2f}\\nKijun: {kijun:.2f}\\nSenkou A: {senkou_a:.2f}\\nSenkou B: {senkou_b:.2f}\")"')
-```
+| **Senkou B**    | (52H + 52L) / 2               | Cloud boundary   |
+| **Chikou Span** | Close plotted 26 periods back  | Confirmation     |
 
 ## Cloud (Kumo) Analysis
 
@@ -37,32 +30,25 @@ execute(command='python3 -c "h9=50500;l9=49500;h26=51000;l26=48000;h52=52000;l52
 | Thin cloud    | Weak support/resistance   |
 | Thick cloud   | Strong support/resistance |
 
-## Trading Signals
+## Signals
 
-### 1. TK Cross (Tenkan/Kijun)
+### TK Cross (Tenkan/Kijun)
 
-- **Bullish**: Tenkan crosses above Kijun
-- **Bearish**: Tenkan crosses below Kijun
-- Strongest when above/below cloud
+- **Bullish**: Tenkan crosses above Kijun (strongest when above cloud)
+- **Bearish**: Tenkan crosses below Kijun (strongest when below cloud)
 
-### 2. Price vs Cloud
+### Price vs Cloud
 
-- Price above cloud = Bullish
-- Price below cloud = Bearish
-- Price inside cloud = Consolidation/indecision
+- Above cloud = bullish bias
+- Below cloud = bearish bias
+- Inside cloud = consolidation, no trade
 
-### 3. Chikou Span Confirmation
+### Chikou Span Confirmation
 
-- Chikou above price (26 bars ago) = Bullish
-- Chikou below price (26 bars ago) = Bearish
+- Chikou above price (26 bars ago) = bullish
+- Chikou below price (26 bars ago) = bearish
 
-### 4. Cloud Breakout
-
-- Price breaks above cloud = Strong buy
-- Price breaks below cloud = Strong sell
-- Use cloud as stop loss zone
-
-## Strong Signal Checklist
+### Strong Signal Checklist
 
 | Condition      | Bullish     | Bearish     |
 | -------------- | ----------- | ----------- |
@@ -71,24 +57,48 @@ execute(command='python3 -c "h9=50500;l9=49500;h26=51000;l26=48000;h52=52000;l52
 | Chikou span    | Above price | Below price |
 | Cloud ahead    | Green       | Red         |
 
-All 4 = Strong signal. 3/4 = Moderate. <3 = Weak.
+All 4 = strong signal. 3/4 = moderate. <3 = weak/skip.
 
-## Entry Workflow
+## Workflow
 
-1. **Identify cloud color** for trend direction
-2. **Wait for price position** relative to cloud
-3. **Confirm with TK cross** in trend direction
-4. **Check Chikou span** for final confirmation
-5. **Enter on pullback** to Tenkan or Kijun
-6. **Stop loss** below/above cloud or Kijun
+1. **Get Ichimoku components**:
+   ```
+   get_indicator(indicator_code="ema", symbol=<symbol>, interval=<interval>)
+   get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
+   ```
 
-## Time Frame Consideration
+2. **Get candle data** to calculate Ichimoku manually:
+   ```
+   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   ```
+   Compute: `Tenkan = (9H + 9L) / 2`, `Kijun = (26H + 26L) / 2`, `Senkou A = (Tenkan + Kijun) / 2`, `Senkou B = (52H + 52L) / 2`
 
-- Default settings (9, 26, 52) designed for daily charts
-- For lower TFs, some traders adjust settings
-- Cloud works best on 4H and above
+3. **Assess cloud color** for trend direction, price position relative to cloud
+
+4. **Check TK cross** and Chikou span for confirmation
+
+5. **Enter on pullback** to Tenkan or Kijun in trend direction. Stop below/above cloud or Kijun.
+
+6. **Mark on chart**:
+   ```
+   draw_chart_analysis(action="create", drawing={
+       "type": "support",
+       "points": [
+           {"time": <start_time>, "price": <kijun_price>},
+           {"time": <end_time>, "price": <kijun_price>}
+       ],
+       "options": {"text": "Kijun Support"}
+   })
+   ```
+
+## Key Rules
+
+- NEVER trade when price is inside the cloud (indecision zone)
+- NEVER use Ichimoku on timeframes below 4H; default settings (9, 26, 52) are designed for daily charts
+- Cloud acts as dynamic S/R; use cloud edge as stop loss zone
+- All 4 conditions aligned = high confidence; fewer than 3 = skip
 
 ## Related Skills
 
-- **multi-timeframe-analysis** — Ichimoku provides trend, momentum, and S/R in one view; use across timeframes for alignment
+- **multi-timeframe-analysis** — Ichimoku across timeframes for alignment
 - **moving-average-crossover** — TK cross is analogous to MA crossovers; combine for confirmation

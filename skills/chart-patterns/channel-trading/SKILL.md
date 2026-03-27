@@ -4,100 +4,87 @@ description: Trade within ascending, descending, and horizontal channels. Use wh
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending", "ranging"]
+  version: "1.1"
 ---
 
 # Channel Trading
 
-Channels define price boundaries for trading bounces or anticipating breakouts.
+Channels define parallel price boundaries for trading bounces or anticipating breakouts.
 
-## Channel Types
+## Pattern Structure
 
 ### Ascending Channel (Bullish)
-
-- Both lines slope upward
-- Buy at lower line, sell at upper line
-- Break below = Reversal
+- Both lines slope upward — buy at lower line, sell at upper
+- Break below = reversal signal
 
 ### Descending Channel (Bearish)
-
-- Both lines slope downward
-- Sell at upper line, cover at lower line
-- Break above = Reversal
+- Both lines slope downward — sell at upper line, cover at lower
+- Break above = reversal signal
 
 ### Horizontal Channel (Range)
+- Parallel horizontal lines — classic range trading
+- Break either direction = new trend
 
-- Parallel horizontal lines
-- Classic range trading
-- Break either direction = New trend
+## Workflow
 
-## Channel Drawing
+### 1. Get Swing Point Data
 
-1. **Identify 2+ swing lows** → Draw support line
-2. **Identify 2+ swing highs** → Draw resistance line
-3. Lines should be **parallel** (or near parallel)
-4. Minimum **4 total touch points**
+Fetch exact timestamps and prices for swing highs/lows (need 2+ per line):
 
-Use `draw_chart_analysis` with `trend` type for both lines.
+```
+get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<swing_date>)
+```
 
-## Trading Strategies
+### 2. Draw the Channel (2 parallel trend lines)
 
-### 1. Channel Bounce (Range Trading)
+Draw both channel boundaries as separate `trend` lines in parallel calls:
 
-- Buy at channel support (lower line)
-- Sell at channel resistance (upper line)
-- Stop: Beyond the channel boundary
-- Works best in horizontal channels
+```
+# Upper channel boundary (connecting swing highs)
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <high1_time>, "price": <high1_price>},
+        {"time": <high2_time>, "price": <high2_price>}
+    ],
+    "options": {"text": "Channel R"}
+})
 
-### 2. Trend Channel Trading
+# Lower channel boundary (connecting swing lows)
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <low1_time>, "price": <low1_price>},
+        {"time": <low2_time>, "price": <low2_price>}
+    ],
+    "options": {"text": "Channel S"}
+})
+```
 
-- In ascending channel: Focus on buying support
-- In descending channel: Focus on selling resistance
-- Trade WITH the channel direction
+### 3. Confirm and Enter
 
-### 3. Channel Breakout
+**Channel Bounce:** Wait for price at boundary + reversal candle + RSI divergence via `get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)`. Stop beyond boundary.
 
-- Wait for break and close outside channel
-- Volume spike confirms
-- Target: Measured move (channel width)
+**Channel Breakout:** Wait for candle close outside channel. Confirm with `get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)` for volume. Target = channel width projected from breakout. Mark breakout level:
 
-## Entry Refinement
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "breakout",
+    "points": [
+        {"time": <break_time>, "price": <break_price>},
+        {"time": <target_time>, "price": <break_price>}
+    ],
+    "options": {"text": "Breakout"}
+})
+```
 
-When price reaches channel boundary:
-
-1. Look for reversal candlestick
-2. Check RSI divergence
-3. Confirm LTF structure shift
-4. Enter with confirmation
-
-## Risk Management
-
-| Entry Point        | Stop Loss                 |
-| ------------------ | ------------------------- |
-| Channel support    | Below support + buffer    |
-| Channel resistance | Above resistance + buffer |
-| Breakout           | Inside channel            |
-
-## Channel Health
-
-Signs of **strong** channel:
-
-- Clean, respected boundaries
-- Multiple touches each side
-- Consistent bounces
-
-Signs of **weakening** channel:
-
-- Failing to reach boundary
-- Deeper pullbacks
-- Decreasing momentum
-
-Watch for potential breakout when channel weakens.
+## Key Rules
+- Minimum 4 total touch points (2 per line) to validate a channel
+- Trade WITH channel direction: buy support in ascending, sell resistance in descending
+- Channel midline acts as interim S/R — price rejecting at midline signals weakening momentum
+- NEVER fade a breakout that closes outside the channel with volume
+- NEVER trade a channel where price fails to reach boundaries on consecutive touches — this signals weakening
 
 ## Related Skills
-
-- **multi-timeframe-analysis** — Channels on HTF define the trend; LTF channels refine entry zones
-- **breakout-trading** — When channels weaken and break, switch to breakout trading for the continuation move
-- **range-trading** — Horizontal channels are ranges; apply range-trading strategies within them
+- **multi-timeframe-analysis** — HTF channels define trend; LTF channels refine entries
+- **triangle-patterns** — Converging channels become triangles

@@ -5,15 +5,13 @@ license: Apache-2.0
 metadata:
   author: ske-labs
   version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending"]
 ---
 
 # Optimal Trade Entry (OTE)
 
-OTE is the sweet spot retracement zone (62%-79% Fib) where smart money typically enters positions.
+The sweet spot retracement zone (62%-79% Fib) where smart money typically enters positions.
 
-## The OTE Zone
+## OTE Zone Levels
 
 | Fib Level | Significance             |
 | --------- | ------------------------ |
@@ -21,83 +19,41 @@ OTE is the sweet spot retracement zone (62%-79% Fib) where smart money typically
 | 70.5%     | Midpoint (CE equivalent) |
 | 79%       | End of OTE zone          |
 
-The 62-79% zone balances:
+Use after: BOS/CHoCH pullbacks, liquidity sweeps, trending move continuations.
 
-- Deep enough for good R:R
-- Not so deep that you're caught in reversal
+## Workflow
 
-## When to Use OTE
+1. **Identify the impulse** -- a strong displacement move with clear swing low to swing high (or vice versa):
+   ```
+   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   ```
+2. **Draw Fibonacci** using `draw_chart_analysis` with `fib_retracement`:
+   - Bullish: Point 1 = swing low, Point 2 = swing high
+   - Bearish: Point 1 = swing high, Point 2 = swing low
+3. **Calculate OTE zone** from the swing range:
+   - OTE Start: Swing High - Range * 0.618
+   - OTE Mid: Swing High - Range * 0.705
+   - OTE End: Swing High - Range * 0.79
+4. **Mark OTE zone** using `draw_chart_analysis` with `demand` (bullish) or `supply` (bearish)
+5. **Enter** at 70.5% midpoint (limit order) or wait for price action confirmation in zone
+6. **Stop loss** beyond the 100% level (swing point)
+7. **Target** extension levels: -27% (1.27x), -62% (1.62x), or the impulse origin (0%)
 
-1. **After BOS/CHoCH** - Pullback entry in new direction
-2. **After liquidity sweep** - Retracement entry
-3. **During trending moves** - Continuation entries
+### Example Calculation
 
-## Entry Workflow
+High=52000, Low=45000, Range=7000:
+- OTE Start (61.8%): 47,674
+- OTE Mid (70.5%): 47,065
+- OTE End (79%): 46,470
 
-### Step 1: Identify the Impulse
+## Key Rules
 
-- Find a strong impulsive move (displacement)
-- Must have clear swing low to swing high (or vice versa)
-
-### Step 2: Draw Fibonacci
-
-Use `get_candles_around_date` to get exact swing points, then use `draw_chart_analysis` with `fib_retracement`:
-
-- **Bullish**: Point 1 = swing low, Point 2 = swing high
-- **Bearish**: Point 1 = swing high, Point 2 = swing low
-
-### Step 3: Calculate OTE Zone
-
-Calculate the OTE levels from the swing range:
-
-- **OTE Start (61.8%)**: Swing High - Range * 0.618
-- **OTE Mid (70.5%)**: Swing High - Range * 0.705
-- **OTE End (79%)**: Swing High - Range * 0.79
-
-Example (High=52000, Low=45000, Range=7000):
-
-- OTE Start: 47,674
-- OTE Mid: 47,065
-- OTE End: 46,470
-
-### Step 4: Mark OTE Zone
-
-- Zone between 61.8% and 79%
-- Use `draw_chart_analysis` with `demand`/`supply` type
-
-### Step 5: Enter at OTE
-
-- Set limit order at 70.5% (midpoint) OR
-- Wait for price action confirmation in zone
-
-### Step 6: Stop & Target
-
-- **Stop loss**: Beyond the 100% (swing point)
-- **Target**: Extension levels (1.27, 1.618, 2.0)
-
-## OTE + Confluence
-
-Best entries combine OTE with:
-
-- Order block in the zone
-- Fair value gap in the zone
-- Previous structure level
-
-## Example R:R Calculation
-
-Entry at 70% retracement:
-
-- Stop at 100% = 30% of move risked
-- Target at 0% = 70% profit
-- **R:R = 2.33:1** minimum
-
-Targeting extensions:
-
-- -27% extension = 97% profit = **3.23 R:R**
-- -62% extension = 132% profit = **4.4 R:R**
+- Best OTE entries have an order block or FVG within the 62-79% zone (confluence)
+- NEVER enter an OTE against HTF bias
+- NEVER use OTE without a preceding impulsive displacement move
+- Entry at 70.5% yields minimum ~2.3 R:R to the impulse origin; extension targets improve this significantly
 
 ## Related Skills
 
-- **fibonacci-trading** — OTE is built on Fibonacci levels; use fibonacci-trading for extension targets and confluence
-- **order-blocks** — The best OTE entries have an order block within the 62-79% zone
-- **premium-discount** — OTE in the discount zone for longs and premium zone for shorts maximizes probability
+- **order-blocks** — Best OTE entries have an OB within the 62-79% zone
+- **premium-discount** — OTE in discount for longs, premium for shorts maximizes probability

@@ -4,91 +4,80 @@ description: Trade bull and bear flags and pennants for trend continuation. Use 
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending"]
+  version: "1.1"
 ---
 
 # Flag & Pennant Patterns
 
-Flags and pennants are continuation patterns that form during pauses in strong trends.
+Continuation patterns that form during pauses in strong trends.
 
-## Pattern Components
+## Pattern Structure
 
-1. **Flagpole**: The strong impulsive move before the pattern
-2. **Flag/Pennant**: The consolidation (the pattern itself)
-3. **Breakout**: Continuation in direction of flagpole
+**Components:** Flagpole (strong impulsive move) → Flag/Pennant (consolidation) → Breakout (continuation).
 
-## Pattern Types
+- **Bull Flag** — Strong upward pole, downward-sloping rectangular channel, breaks upward
+- **Bear Flag** — Strong downward pole, upward-sloping rectangular channel, breaks downward
+- **Pennant** — Strong move (pole), symmetrical triangle consolidation, breaks in pole direction
 
-### Bull Flag
+| Criteria | Flag | Pennant |
+|----------|------|---------|
+| Shape | Rectangular channel (2 parallel lines) | Symmetrical triangle (2 converging lines) |
+| Slope | Against trend | Neutral |
+| Volume | Decreasing | Decreasing |
 
-- Strong upward move (pole)
-- Downward sloping channel (flag)
-- Breaks upward to continue
+## Workflow
 
-### Bear Flag
+### 1. Get Swing Point Data
 
-- Strong downward move (pole)
-- Upward sloping channel (flag)
-- Breaks downward to continue
-
-### Pennant (Bull or Bear)
-
-- Strong move (pole)
-- Symmetrical triangle consolidation
-- Breaks in direction of pole
-
-## Identification Criteria
-
-| Criteria | Flag                | Pennant           |
-| -------- | ------------------- | ----------------- |
-| Shape    | Rectangular channel | Triangle          |
-| Duration | Short (1-3 weeks)   | Short (1-3 weeks) |
-| Volume   | Decreasing          | Decreasing        |
-| Slope    | Against trend       | Neutral           |
-
-## Entry Strategies
-
-### 1. Breakout Entry
-
-- Enter on break of flag/pennant boundary
-- Confirm with volume increase
-- Stop: Below/above flag structure
-
-### 2. Conservative Entry
-
-- Wait for breakout
-- Wait for brief retest
-- Enter on bounce from pattern boundary
-
-## Target Calculation
-
-**Flagpole Projection**:
+Identify the flagpole and consolidation boundaries:
 
 ```
-Target = Breakout point + Flagpole length
+get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<flag_date>)
 ```
 
-Measure the pole, add to breakout level.
+### 2. Draw Flag/Pennant Boundaries (2 parallel calls)
 
-## Chart Drawing
+**For flags** (2 parallel trend lines sloping against the pole):
 
-Use `draw_chart_analysis`:
+```
+# Upper flag boundary
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <flag_high1_time>, "price": <flag_high1_price>},
+        {"time": <flag_high2_time>, "price": <flag_high2_price>}
+    ],
+    "options": {"text": "Flag R"}
+})
 
-- For flags: Draw 2 parallel `trend` lines (channel)
-- For pennants: Draw 2 converging `trend` lines
+# Lower flag boundary (parallel to upper)
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <flag_low1_time>, "price": <flag_low1_price>},
+        {"time": <flag_low2_time>, "price": <flag_low2_price>}
+    ],
+    "options": {"text": "Flag S"}
+})
+```
 
-## Best Practices
+**For pennants:** same approach but lines converge (like a small symmetrical triangle).
 
-- Pole should be strong and impulsive (3+ candles)
-- Flag should retrace 38-50% of pole max
-- Volume should decline during flag formation
-- Breakout should have increased volume
-- Quick formations are more reliable
+### 3. Confirm and Enter
+
+Confirm declining volume during consolidation via `get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)`.
+
+**Standard:** Enter on break of flag/pennant boundary with volume spike. Stop beyond opposite side.
+**Conservative:** Wait for breakout + retest of boundary. Enter on bounce.
+**Target:** Flagpole length projected from breakout point.
+
+## Key Rules
+- Pole must be strong and impulsive (3+ candles of directional momentum)
+- NEVER trade a flag that retraces more than 50% of the pole — this invalidates the pattern
+- NEVER enter without volume decline during formation + spike on breakout
+- Quick formations are more reliable than extended consolidations
+- Flag duration should be short relative to the pole
 
 ## Related Skills
-
-- **multi-timeframe-analysis** — Flags/pennants on primary TF within an HTF trend are the highest-probability continuation setups
-- **momentum-trading** — Flags form during momentum pauses; the breakout resumes the momentum move
-- **position-sizing** — Flagpole projection provides clear targets for R:R-based position sizing
+- **triangle-patterns** — Pennants are small symmetrical triangles
+- **channel-trading** — Flags are short-duration trending channels

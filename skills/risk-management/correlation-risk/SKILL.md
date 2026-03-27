@@ -4,9 +4,7 @@ description: Manage correlated positions to prevent concentrated exposure. Use w
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["all"]
+  version: "2.0"
 ---
 
 # Correlation Risk Management
@@ -15,100 +13,70 @@ Managing correlated positions prevents oversized exposure to single market moves
 
 ## Correlation Basics
 
-**Correlation coefficient** ranges from -1 to +1:
-| Correlation | Meaning |
-|-------------|---------|
-| +1.0 | Perfect positive (move together) |
-| +0.5 | Moderate positive |
-| 0 | No correlation |
-| -0.5 | Moderate negative |
-| -1.0 | Perfect negative (move opposite) |
+Correlation coefficient ranges from -1 to +1:
+
+| Correlation | Meaning                           |
+| ----------- | --------------------------------- |
+| +1.0        | Perfect positive (move together)  |
+| +0.5        | Moderate positive                 |
+| 0           | No correlation                    |
+| -0.5        | Moderate negative                 |
+| -1.0        | Perfect negative (move opposite)  |
 
 ## Common Correlations
 
-### Crypto
+| Asset Pair                | Correlation   |
+| ------------------------- | ------------- |
+| BTC / ETH                 | +0.85         |
+| BTC / Altcoins            | +0.7 to +0.9  |
+| EUR/USD vs GBP/USD        | +0.8          |
+| USD/JPY vs USD/CHF        | +0.7          |
+| Tech stocks (same sector) | +0.7          |
+| AUD/USD vs Gold           | +0.6          |
+| S&P vs individual stocks  | +0.5          |
 
-| Pair         | Correlation  |
-| ------------ | ------------ |
-| BTC/Altcoins | +0.7 to +0.9 |
-| BTC/ETH      | +0.85        |
-| ETH/Altcoins | +0.8         |
+## Combined Risk
 
-### Forex
+For two positions with known correlation, combined risk is:
 
-| Pair               | Correlation |
-| ------------------ | ----------- |
-| EUR/USD vs GBP/USD | +0.8        |
-| USD/JPY vs USD/CHF | +0.7        |
-| AUD/USD vs Gold    | +0.6        |
+`Combined Risk = sqrt(R1^2 + R2^2 + 2 * R1 * R2 * Correlation)`
 
-### Stocks
+Example: BTC 1% risk + ETH 1% risk at 0.85 correlation => sqrt(1 + 1 + 1.7) = ~1.92%. For drawdown purposes, treat as 2%.
 
-| Pair                     | Correlation |
-| ------------------------ | ----------- |
-| Tech stocks              | +0.7        |
-| Same sector              | +0.6        |
-| S&P vs individual stocks | +0.5        |
+## Maximum Exposure Rules
 
-## Risk Rules
-
-### Treat Correlated Trades as One Position
-
-Calculate combined risk for correlated positions:
-
-```
-execute(command='python3 -c "r1=1;r2=1;corr=0.85;combined_risk=(r1**2+r2**2+2*r1*r2*corr)**0.5;print(f\"Position 1: {r1}%\\nPosition 2: {r2}%\\nCorrelation: {corr}\\nCombined Risk: {combined_risk:.2f}%\")"')
-```
-
-If BTC and ETH correlate +0.85:
-
-- Long BTC 1% risk + Long ETH 1% risk
-- Effective risk ≈ 1.85% (not 2%)
-- But for drawdown: treat as 2%
-
-### Maximum Exposure Rules
-
-| Correlation | Max Position             |
+| Correlation | Max Combined Risk        |
 | ----------- | ------------------------ |
-| >0.7        | Treat as single position |
+| >0.7        | Treat as single position -- max 2% total |
 | 0.4-0.7     | 1.5x normal combined     |
 | <0.4        | Full individual sizing   |
 
-## Managing Correlation Risk
-
-### 1. Limit Correlated Exposure
-
-- Max 3% total in highly correlated assets
-- Spread across uncorrelated markets
-- Mix long and short when possible
-
-### 2. Diversify Effectively
-
-- Different asset classes
-- Different sectors
-- Different timeframes
-- Long and short positions
-
-### 3. Hedge When Needed
-
-- Use inversely correlated positions
-- Reduce directional exposure
-- Accept reduced profit for protection
+**Practical rule**: 3 positions in BTC-correlated assets => each gets 0.67% risk (2% / 3) instead of 1% each.
 
 ## Workflow
 
 1. **List all open positions**
-2. **Assess correlations** between them
-3. **Sum correlated risk** as single exposure
-4. **Reduce** if exceeds limits
-5. **Monitor** correlations (they change)
+2. **Assess correlations** between them (use common correlations table or recent data)
+3. **Sum correlated risk** as single exposure using combined risk formula
+4. **Reduce sizing** if combined risk exceeds limits
+5. **Monitor** -- correlations shift over time, especially in stress events
 
-## Key Insight
+## Diversification Strategies
 
-Diversification only works with uncorrelated assets. Multiple positions in correlated assets = One big position.
+- Spread across uncorrelated asset classes (crypto, forex, equities, commodities)
+- Mix long and short when possible to reduce directional exposure
+- Use inversely correlated positions as hedges when appropriate
+- Different timeframes add some diversification benefit
+
+## Key Rules
+
+- NEVER treat correlated positions as independent -- 5 long tech positions at 1% each is a single 5% sector bet
+- NEVER assume correlations are static -- they spike toward +1 during market stress
+- NEVER rely on diversification alone -- even "uncorrelated" assets can correlate in a crash
+- Max 3% total risk in highly correlated assets (>0.7)
+- Multiple positions in correlated assets = one big position, size accordingly
 
 ## Related Skills
 
-- **position-sizing** — Correlated positions require adjusted sizing; this skill identifies correlation, position-sizing applies the reduction
-- **market-correlation-trading** — Provides the macro correlation analysis that feeds into portfolio-level risk assessment
-- **drawdown-management** — Correlated positions amplify drawdowns; managing correlation is a key drawdown prevention tool
+- **position-sizing** -- correlated positions require reduced per-position sizing
+- **drawdown-management** -- correlated positions amplify drawdowns

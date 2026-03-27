@@ -4,97 +4,79 @@ description: Trade double and triple top/bottom reversal patterns. Use when iden
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending", "ranging"]
+  version: "1.1"
 ---
 
 # Double Top & Bottom Patterns
 
-Double tops/bottoms signal reversal when price fails to break a level twice.
+Reversal patterns that form when price fails to break a level twice.
 
 ## Pattern Structure
 
 ### Double Top (Bearish)
-
-1. Price rallies to resistance (Peak 1)
-2. Pullback to support (Neckline)
-3. Rally back to same resistance (Peak 2)
-4. Failure to break → Reversal
+1. Rally to resistance (Peak 1) → pullback to neckline → rally back to same resistance (Peak 2, within 3%) → failure → reversal
 
 ### Double Bottom (Bullish)
+1. Drop to support (Trough 1) → bounce to neckline → drop back to same support (Trough 2, within 3%) → failure → reversal
 
-1. Price drops to support (Trough 1)
-2. Bounce to resistance (Neckline)
-3. Drop back to same support (Trough 2)
-4. Failure to break → Reversal
+| Factor | Strong | Weak |
+|--------|--------|------|
+| Time between tests | 2-4 weeks | Very close or far apart |
+| Volume | Declining on 2nd test | Higher on 2nd test |
+| Peak/trough alignment | Within 3% | Widely different |
 
-### Triple Top/Bottom
+## Workflow
 
-Same concept with 3 tests of the level.
-
-- More confirmations = Stronger pattern
-- But also means level may finally break
-
-## Validation Criteria
-
-| Factor                     | Strong Pattern        | Weak Pattern            |
-| -------------------------- | --------------------- | ----------------------- |
-| Time between peaks/troughs | 2-4 weeks             | Very close or far apart |
-| Volume                     | Declining on 2nd test | Higher on 2nd test      |
-| Peak/trough alignment      | Within 3%             | Widely different        |
-| Neckline break             | With volume           | Weak close              |
-
-## Entry Strategies
-
-### 1. Neckline Break
-
-- Enter when price breaks neckline
-- Confirmation: Candle close beyond neckline
-- Stop: Beyond the peaks/troughs
-
-### 2. Neckline Retest
-
-- Wait for break and then retest of neckline
-- Enter on rejection (former support = resistance)
-- Better R:R, may miss some moves
-
-### 3. Early Entry (Aggressive)
-
-- Enter at second peak/trough
-- Requires additional confirmation (LTF reversal)
-- Tightest stop, highest risk
-
-## Target Calculation
-
-**Measured Move**:
+### 1. Get Exact Data
 
 ```
-Target = Neckline ± (Peak/Trough - Neckline)
+get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<peak_date>)
 ```
 
-Example (Double Top):
+### 2. Mark Peaks/Troughs (2 parallel highlight calls)
 
-- Peak at $100, Neckline at $90
-- Target = $90 - ($100 - $90) = $80
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "highlight",
+    "points": [{"time": <peak1_time>, "price": <peak1_price>}],
+    "options": {"text": "Peak 1"}
+})
 
-## Chart Marking
+draw_chart_analysis(action="create", drawing={
+    "type": "highlight",
+    "points": [{"time": <peak2_time>, "price": <peak2_price>}],
+    "options": {"text": "Peak 2"}
+})
+```
 
-Use `draw_chart_analysis`:
+### 3. Draw Neckline
 
-1. Mark the two peaks/troughs with `highlight`
-2. Draw neckline with `support` or `resistance`
-3. Pattern becomes clear visually
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "support",
+    "points": [
+        {"time": <neckline_start>, "price": <neckline_price>},
+        {"time": <neckline_end>, "price": <neckline_price>}
+    ],
+    "options": {"text": "Neckline"}
+})
+```
 
-## Trading Tips
+For double top use `"support"` (neckline is below). For double bottom use `"resistance"` (neckline is above).
 
-- The more obvious the pattern, the more it gets front-run
-- Wait for confirmation (neckline break)
-- Volume should confirm the reversal
-- Failed double tops/bottoms can lead to strong continuation
+### 4. Enter
+
+**Standard:** Enter on neckline break + close with volume. Stop beyond peaks/troughs.
+**Preferred:** Wait for break + neckline retest. Enter on rejection.
+**Aggressive:** Enter at second peak/trough with LTF reversal confirmation.
+**Target:** Neckline ± (Peak - Neckline). Example: Peak $100, Neckline $90 → Target $80.
+
+## Key Rules
+- NEVER trade before neckline confirmation — pattern incomplete until it breaks
+- NEVER ignore volume: declining volume on 2nd test validates the pattern
+- Peaks/troughs must be within 3% to qualify
+- Failed double tops/bottoms lead to strong continuation moves
 
 ## Related Skills
-
-- **multi-timeframe-analysis** — Double tops/bottoms on HTF are major reversal signals; use LTF for precise neckline break entries
-- **head-and-shoulders** — Similar reversal pattern; triple tops share characteristics with H&S formations
-- **position-sizing** — Measured move targets help define R:R for position sizing decisions
+- **head-and-shoulders** — Similar reversal family
+- **cup-and-handle** — Failed double bottoms can morph into cup patterns

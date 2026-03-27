@@ -5,13 +5,11 @@ license: Apache-2.0
 metadata:
   author: ske-labs
   version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending", "ranging"]
 ---
 
 # Order Blocks Trading
 
-Order blocks are price zones where significant institutional buy/sell orders executed, leaving "footprints" for future price reactions.
+Institutional buy/sell zones that leave footprints for future price reactions.
 
 ## Identification
 
@@ -27,41 +25,34 @@ Order blocks are price zones where significant institutional buy/sell orders exe
 2. The move must break previous structure (lower low)
 3. Zone = open to high of that bullish candle
 
-## Validation Criteria
+### Validation
 
-| Criteria           | Requirement                                     |
-| ------------------ | ----------------------------------------------- |
-| Displacement       | Strong impulsive move away (3+ candles)         |
-| Break of Structure | Must break previous swing high/low              |
-| Freshness          | Untested (first return has highest probability) |
-| HTF Alignment      | Should align with higher timeframe bias         |
+- **Displacement**: Strong impulsive move away (3+ candles)
+- **Break of Structure**: Must break previous swing high/low
+- **Freshness**: Untested (first return has highest probability)
+- **HTF Alignment**: Should align with higher timeframe bias
 
-## Entry Workflow
+## Workflow
 
-1. **Mark the zone** on chart using `draw_chart_analysis` with type `demand` (bullish) or `supply` (bearish)
-2. **Wait for price to return** to the order block zone
-3. **Confirm entry** with:
-   - Lower timeframe structure shift
-   - Rejection wicks
-   - Volume increase
-4. **Set stop loss** below/above the order block
-5. **Target** next opposing order block or liquidity level
+1. **Identify** the order block on HTF (4H/Daily) for bias, LTF (15m/5m) for entry
+2. **Get candle data** around the zone:
+   ```
+   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   ```
+3. **Mark the zone** using `draw_chart_analysis` with type `demand` (bullish) or `supply` (bearish)
+4. **Wait for price to return** to the order block zone
+5. **Confirm entry** with LTF structure shift, rejection wicks, or volume increase
+6. **Stop loss** below/above the order block
+7. **Target** next opposing order block or liquidity level
 
-## Risk Management
+## Key Rules
 
-- Stop loss: 5-10 pips beyond the order block
-- Risk per trade: 1-2% max
-- Target: Minimum 1:2 R:R
-
-## Common Mistakes
-
-- Trading mitigated (already tested) order blocks
-- Ignoring higher timeframe context
-- No confirmation before entry
+- Only trade the **first retest** of an order block; mitigated OBs lose their edge
+- NEVER enter without HTF alignment confirming direction
+- NEVER enter without LTF confirmation (structure shift or rejection)
+- Displacement must be impulsive (3+ candles); slow grinds are not valid OBs
 
 ## Related Skills
 
-- **fair-value-gaps** — FVGs often form alongside order blocks; confluence of both creates the highest-probability zones
-- **fibonacci-trading** — Fibonacci retracement levels overlapping with order blocks provide strong confluence entries
-- **multi-timeframe-analysis** — HTF order blocks define bias while LTF order blocks refine entries
-- **market-structure-shift** — BOS/CHoCH confirms the displacement that validates an order block
+- **fair-value-gaps** — FVG + OB confluence creates highest-probability zones
+- **market-structure-shift** — BOS/CHoCH confirms the displacement that validates an OB

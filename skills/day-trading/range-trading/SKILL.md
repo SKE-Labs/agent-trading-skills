@@ -4,88 +4,90 @@ description: Buy support and sell resistance within ranging markets. Use when ma
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["ranging"]
+  version: "1.1"
 ---
 
 # Range Trading
 
-Range trading profits from price oscillating between clear support and resistance levels.
+Profit from price oscillating between clear support and resistance in non-trending markets.
 
-## Range Identification
+## Identification
 
-### Characteristics
+### Range Characteristics
 
-- Price bouncing between two levels
-- Lack of clear higher highs/lower lows
+- Price bouncing between two levels with 2+ touches each side
+- No clear HH/HL or LH/LL structure
 - Volume decreasing during range
-- Multiple tests of both boundaries
+- Width at least 3% (narrower ranges are not worth trading)
 
-### Range Types
+### Range Quality
 
-- **Horizontal range**: Clear flat S/R
-- **Ascending range**: Higher highs and higher lows within channel
-- **Descending range**: Lower highs and lower lows within channel
-
-## Entry Strategy
-
-### Buy at Support
-
-1. Price reaches range support
-2. Wait for rejection candle (hammer, engulfing)
-3. Enter on confirmation
-4. Stop below support
-5. Target range resistance
-
-### Sell at Resistance
-
-1. Price reaches range resistance
-2. Wait for rejection candle (shooting star, engulfing)
-3. Enter on confirmation
-4. Stop above resistance
-5. Target range support
+| Factor | Strong | Weak |
+| --- | --- | --- |
+| Bounces | Clean, multiple (3+) | Sloppy, few |
+| Width | >3% | <3% |
+| Duration | Multi-day/week | Few hours |
+| Volume | Low, stable | Erratic |
 
 ## Workflow
 
-1. **Identify range** (minimum 2 touches each side)
-2. **Mark levels** using `draw_chart_analysis` with `support`/`resistance`
-3. **Wait at boundaries** (don't trade middle of range)
-4. **Enter with confirmation** (reversal candle)
-5. **Target opposite boundary**
-6. **Watch for breakout** (end of range)
+### 1. Confirm Ranging Regime
 
-## Risk Management
+```
+get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
+```
 
-| Rule               | Guideline                  |
-| ------------------ | -------------------------- |
-| Stop placement     | Just beyond range boundary |
-| Target             | 70-80% of range width      |
-| Entry zone         | Outer 20% of range         |
-| Break invalidation | Close beyond range         |
+ADX <20 confirms ranging market. If ADX >25, this is a trend -- use momentum-trading or pullback-trading instead.
 
-## Range Quality
+### 2. Identify Range Boundaries
 
-| Factor   | Strong Range      | Weak Range |
-| -------- | ----------------- | ---------- |
-| Bounces  | Clean, multiple   | Weak, few  |
-| Width    | Wide enough (3%+) | Too narrow |
-| Duration | Multi-day/week    | Few hours  |
-| Volume   | Low during range  | Erratic    |
+```
+get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+```
 
-## Breakout Watch
+Find flat support/resistance with 2+ touches each side.
 
-Ranges eventually break. Watch for:
+### 3. Mark Range Levels
 
-- Volume surge at boundary
-- Failed bounce (weak rejection)
-- Multiple tests of same level
-- HTF trend resuming
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "support",
+    "points": [
+        {"time": <first_touch>, "price": <support_level>},
+        {"time": <current>, "price": <support_level>}
+    ],
+    "options": {"text": "Range Support"}
+})
+draw_chart_analysis(action="create", drawing={
+    "type": "resistance",
+    "points": [
+        {"time": <first_touch>, "price": <resistance_level>},
+        {"time": <current>, "price": <resistance_level>}
+    ],
+    "options": {"text": "Range Resistance"}
+})
+```
 
-When breakout occurs, stop trading range, consider breakout trade.
+### 4. Trade at Boundaries
+
+- **Buy at support**: Wait for rejection candle (hammer, engulfing), stop below support, target resistance
+- **Sell at resistance**: Wait for rejection candle (shooting star, engulfing), stop above resistance, target support
+- Only enter in the outer 20% of range -- never trade the middle
+- Target 70-80% of range width (not the full range)
+
+### 5. Report to Orchestrator
+
+Range boundaries, width, number of touches, entry recommendation, stop level, target level. Flag if breakout appears imminent.
+
+## Key Rules
+
+- NEVER trade the middle of a range -- only enter at support/resistance boundaries
+- NEVER enter without a rejection candle confirmation
+- If price closes beyond the range boundary, stop trading the range -- a breakout is underway
+- Volume surge at a boundary signals potential breakout, not a range trade
+- Watch for failed bounces (weak rejection) as a sign the range is ending
 
 ## Related Skills
 
-- **mean-reversion** — Mean reversion strategies work within ranges; buy oversold at support, sell overbought at resistance
-- **bollinger-bands** — BB mean reversion at range boundaries provides confirmation for range entries
-- **supply-demand-zones** — Supply/demand zones define range boundaries with institutional context
+- **breakout-trading** -- when the range breaks, switch to breakout strategy
+- **momentum-trading** -- ADX rising above 25 signals transition from range to trend

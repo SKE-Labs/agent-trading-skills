@@ -4,16 +4,14 @@ description: Trade using MACD crossovers, histogram, and divergence signals. Use
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending"]
+  version: "1.1"
 ---
 
 # MACD Trading Strategy
 
 MACD (Moving Average Convergence Divergence) combines trend-following and momentum analysis.
 
-## MACD Components
+## Components
 
 | Component       | Calculation     | Use                |
 | --------------- | --------------- | ------------------ |
@@ -22,69 +20,59 @@ MACD (Moving Average Convergence Divergence) combines trend-following and moment
 | **Histogram**   | MACD - Signal   | Momentum strength  |
 | **Zero Line**   | Centerline      | Bull/bear boundary |
 
-## Trading Signals
+## Signals
 
-### 1. Crossover Signals
+### Crossover
 
-- **Bullish**: MACD crosses above Signal line → Buy
-- **Bearish**: MACD crosses below Signal line → Sell
+- **Bullish**: MACD crosses above Signal line → buy
+- **Bearish**: MACD crosses below Signal line → sell
+- Bullish cross above zero = strongest buy; bearish cross below zero = strongest sell
 
-### 2. Zero Line Cross
+### Zero Line Cross
 
-- **MACD above zero**: Bullish trend
-- **MACD below zero**: Bearish trend
-- Cross of zero = trend change
+- MACD above zero = bullish trend
+- MACD below zero = bearish trend
+- Cross of zero = trend change confirmation
 
-### 3. Histogram Analysis
+### Histogram
 
-- **Growing histogram**: Increasing momentum
-- **Shrinking histogram**: Weakening momentum
-- Histogram reversal often precedes crossover
+- Growing histogram = increasing momentum
+- Shrinking histogram = weakening momentum (often precedes crossover)
 
-### 4. Divergence
+### Divergence
 
-- Price makes new high, MACD makes lower high → Bearish
-- Price makes new low, MACD makes higher low → Bullish
+- Price new high + MACD lower high → bearish divergence
+- Price new low + MACD higher low → bullish divergence
 
-## Strategy Workflow
+## Workflow
 
-1. **Get MACD** using `get_indicator(indicator_code="macd")`
+1. **Get MACD**:
+   ```
+   get_indicator(indicator_code="macd", symbol=<symbol>, interval=<interval>)
+   ```
 
-2. **Determine trend** from zero line:
+2. **Determine trend** from zero line: MACD > 0 → look for longs; MACD < 0 → look for shorts
 
-   - MACD > 0 = Look for longs
-   - MACD < 0 = Look for shorts
+3. **Wait for crossover** in trend direction. Confirm with histogram growing in direction.
 
-3. **Wait for crossover** in trend direction:
+4. **Check for divergence** between price and MACD line/histogram
 
-   - Bullish cross above zero = Strong buy
-   - Bearish cross below zero = Strong sell
+5. **Get candles for context**:
+   ```
+   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   ```
 
-4. **Confirm with histogram**:
+6. **Exit signals**: opposite crossover, divergence forming, or histogram shrinking significantly
 
-   - Entry confirmed when histogram grows in direction
+## Key Rules
 
-5. **Exit signals**:
-   - Opposite crossover
-   - Divergence forming
-   - Histogram shrinking significantly
-
-## Best Settings
-
-| Timeframe | Settings  | Use Case      |
-| --------- | --------- | ------------- |
-| Default   | 12, 26, 9 | All-purpose   |
-| Fast      | 8, 17, 9  | Day trading   |
-| Slow      | 19, 39, 9 | Swing trading |
-
-## Avoid These Mistakes
-
-- Trading every crossover (many are false)
-- Ignoring the zero line context
-- Trading against HTF trend
+- NEVER trade every crossover; most are false signals in ranging markets
+- NEVER ignore zero line context; a bullish cross below zero is weaker than one above zero
+- NEVER trade MACD against HTF trend direction
+- Default settings: 12, 26, 9. Use 8, 17, 9 for day trading; 19, 39, 9 for swing trading.
+- Histogram reversal is an early warning; crossover is the confirmation
 
 ## Related Skills
 
-- **rsi-divergence** — RSI divergence combined with MACD divergence creates high-confidence reversal signals
-- **divergence-trading** — Comprehensive multi-indicator divergence framework that includes MACD
-- **momentum-trading** — MACD histogram expansion confirms momentum; use together for trend entries
+- **divergence-trading** — multi-indicator divergence framework that includes MACD
+- **moving-average-crossover** — MACD is derived from EMAs; combine for confirmation

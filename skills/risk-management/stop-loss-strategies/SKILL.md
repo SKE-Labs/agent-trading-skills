@@ -4,9 +4,7 @@ description: Place strategic stop losses using structure, ATR, or volatility met
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["all"]
+  version: "2.0"
 ---
 
 # Stop Loss Strategies
@@ -17,93 +15,67 @@ Proper stop placement protects capital while giving trades room to work.
 
 ### 1. Structure-Based (Recommended)
 
-- Place below swing low (long) or above swing high (short)
-- Respects market structure
-- Invalidation point is clear
+Place below swing low (long) or above swing high (short). Respects market structure with a clear invalidation point.
 
 ### 2. ATR-Based
 
-```
-Stop = Entry - (ATR × Multiplier)
-```
+`Stop = Entry - (ATR x Multiplier)` (typical multiplier: 1.5-2x). Adjusts to volatility automatically.
 
-- Typical multiplier: 1.5-2x
-- Adjusts to volatility
-- More mechanical
+### 3. Support/Resistance Based
 
-### 3. Percentage-Based
+Place beyond (not at) key S/R zones. Below support for longs, above resistance for shorts.
 
-- Fixed % below entry
-- Simple but ignores structure
-- Use only for position sizing limits
+### 4. Moving Average Based
 
-### 4. Support/Resistance Based
+Place below key MA (20, 50, or 200). Dynamic stop level, good for trend following.
 
-- Below support zone (long)
-- Above resistance zone (short)
-- Beyond the level, not at it
+### 5. Percentage-Based
 
-### 5. Moving Average Based
+Fixed % below entry. Simple but ignores structure -- use only as a position sizing limit.
 
-- Below key MA (20, 50, or 200)
-- Dynamic stop level
-- Good for trend following
+## Stop Placement by Trade Type
 
-## Stop Placement Guidelines
-
-| Do                          | Don't                            |
-| --------------------------- | -------------------------------- |
-| Place beyond structure      | Place at obvious levels          |
-| Account for volatility      | Use too tight stops              |
-| Give "wiggle room"          | Stop hunt yourself               |
-| Pre-calculate position size | Move stop to breakeven too early |
+| Trade Type | Stop Placement        |
+| ---------- | --------------------- |
+| Scalp      | Very tight (0.3-0.5%) |
+| Day trade  | Below minor structure  |
+| Swing      | Below major structure  |
+| Position   | Below trend structure  |
 
 ## Buffer Rules
 
 Add buffer to avoid stop hunts:
 
 - Below support: 0.5-1% buffer
-- Based on ATR: Add 0.3x ATR
-- Round numbers: Avoid exact round #
-
-## Stop Loss by Trade Type
-
-| Trade Type | Stop Placement        |
-| ---------- | --------------------- |
-| Scalp      | Very tight (0.3-0.5%) |
-| Day trade  | Below minor structure |
-| Swing      | Below major structure |
-| Position   | Below trend structure |
+- Based on ATR: add 0.3x ATR
+- Round numbers: avoid exact round levels
 
 ## Stop Management
 
-### Initial Stop
+**Initial Stop**: Set at entry based on analysis. Based on the invalidation point for the trade thesis.
 
-- Set at entry based on analysis
-- Never move to widen loss
-- Based on invalidation point
+**Breakeven Stop**: Move to breakeven after 1R profit. Locks in a risk-free trade. Not too early -- avoid getting stopped by noise.
 
-### Breakeven Stop
+**Trailing Stop**: Locks in profits as the trade progresses (see trailing-stop skill).
 
-- Move to breakeven after 1R profit
-- Locks in risk-free trade
-- Not too early (avoid noise)
+## Workflow
 
-### Trailing Stop (see trailing-stop skill)
+1. **Identify invalidation** -- the price level where the trade thesis is wrong
+2. **Choose method** -- structure-based for most setups, ATR-based for volatile assets
+3. **Add buffer** -- 0.5-1% or 0.3x ATR beyond the level
+4. **Set the order** -- always place an actual stop order, never a mental stop
+5. **Manage** -- move to breakeven at 1R, then trail (see trailing-stop)
 
-- Locks in profits as trade progresses
-- Multiple methods available
+## Key Rules
 
-## Mental Stops
-
-**Never use mental stops.** Always:
-
-- Set actual stop order
-- Define before entering
-- Accept the loss level
+- NEVER use mental stops -- always set an actual stop order before entering
+- NEVER move a stop to widen a loss -- only move stops in the profit direction
+- NEVER place stops at obvious round numbers or exact S/R levels -- add a buffer
+- NEVER move to breakeven too early -- give the trade room to work past noise
+- Define stop before entry and accept the loss level
+- Tighter stops allow larger positions; wider stops require smaller positions
 
 ## Related Skills
 
-- **trailing-stop** — After initial stop is set, trailing stop strategies lock in profits as the trade progresses
-- **position-sizing** — Stop distance is a direct input to position size; tighter stops allow larger positions
-- **risk-reward-ratio** — Stop placement determines the risk side of the R:R equation
+- **trailing-stop** -- manages exits after initial stop is set
+- **position-sizing** -- stop distance is a direct input to position size calculation

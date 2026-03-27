@@ -4,94 +4,98 @@ description: Trade cup and handle breakout patterns for bullish continuation. Us
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending"]
+  version: "1.1"
 ---
 
 # Cup and Handle Pattern
 
-Cup and handle is a bullish continuation pattern indicating accumulation before a breakout.
+Bullish continuation pattern indicating accumulation before a breakout.
 
 ## Pattern Structure
 
 ### The Cup
-
-1. Price rounds down from resistance
-2. Forms a "U" shaped bottom (not "V")
-3. Rises back to the resistance level
-4. Duration: 7-65 weeks (classic) or scaled for crypto
+- Price rounds down from resistance, forms a "U" shaped bottom (not "V"), rises back to resistance
+- Duration: 7-65 weeks (classic), or scaled for crypto/lower timeframes
 
 ### The Handle
+- Small pullback from resistance into a declining flag/pennant
+- Should retrace 10-15% of cup depth (up to 33% acceptable)
+- Must stay in upper half of cup
 
-1. Price pulls back from resistance
-2. Forms small flag or pennant (declining)
-3. Should retrace 10-15% of cup depth
-4. Duration: 1-4 weeks
+| Factor | Ideal | Acceptable |
+|--------|-------|------------|
+| Cup shape | Rounded "U" | Slightly V-shaped |
+| Handle depth | 10-15% of cup | Up to 33% |
+| Volume | Decreasing in handle | Stable |
 
-### The Breakout
+## Workflow
 
-1. Price breaks above resistance (cup lip)
-2. Confirmation with volume
-3. Target based on cup depth
-
-## Validation Criteria
-
-| Factor          | Ideal                | Acceptable        |
-| --------------- | -------------------- | ----------------- |
-| Cup shape       | Rounded "U"          | Slightly V-shaped |
-| Handle depth    | 10-15% of cup        | Up to 33% of cup  |
-| Volume          | Decreasing in handle | Stable            |
-| Handle position | Upper half of cup    | Not below 50%     |
-| Prior uptrend   | Yes                  | At least flat     |
-
-## Entry Strategies
-
-### 1. Breakout Entry
-
-- Enter on break above cup resistance (lip)
-- Volume should spike
-- Stop: Below handle low
-
-### 2. Handle Entry (Aggressive)
-
-- Enter as handle forms support
-- Tighter stop, better R:R
-- Risk: May break down
-
-### 3. Confirmation Entry
-
-- Wait for breakout
-- Wait for retest of resistance (now support)
-- Enter on bounce
-
-## Target Calculation
-
-**Measured Move**:
+### 1. Get Exact Data
 
 ```
-Target = Breakout level + Cup depth
+get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<cup_bottom_date>)
 ```
 
-Measure from cup lip to cup bottom, add to breakout.
+### 2. Mark Key Structure
 
-## Chart Marking
+**Cup lip** (resistance level where both sides of the cup meet):
 
-Use `draw_chart_analysis`:
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "resistance",
+    "points": [
+        {"time": <left_lip_time>, "price": <lip_price>},
+        {"time": <right_lip_time>, "price": <lip_price>}
+    ],
+    "options": {"text": "Lip"}
+})
+```
 
-- Mark cup lip with `resistance`
-- Mark cup bottom with `support`
-- Mark handle with `trend` lines
+**Cup bottom:**
 
-## Key Points
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "highlight",
+    "points": [{"time": <bottom_time>, "price": <bottom_price>}],
+    "options": {"text": "Cup Low"}
+})
+```
 
-- Pattern works on all timeframes
-- Volume pattern is crucial (high at breakout)
-- Handle should not drop below 50% of cup
-- Failure at lip = Potential double top instead
+**Handle boundaries** (2 converging or parallel trend lines):
+
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <handle_high1_time>, "price": <handle_high1>},
+        {"time": <handle_high2_time>, "price": <handle_high2>}
+    ],
+    "options": {"text": "Handle R"}
+})
+
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <handle_low1_time>, "price": <handle_low1>},
+        {"time": <handle_low2_time>, "price": <handle_low2>}
+    ],
+    "options": {"text": "Handle S"}
+})
+```
+
+### 3. Enter
+
+**Standard:** Enter on break above cup lip with volume spike. Stop below handle low.
+**Aggressive:** Enter as handle finds support. Tighter stop, higher risk.
+**Conservative:** Wait for breakout + retest of lip (now support).
+**Target:** Breakout level + cup depth (lip to bottom distance).
+
+## Key Rules
+- NEVER enter before the handle forms — cup alone is incomplete
+- NEVER trust a handle that drops below 50% of cup depth — invalidates pattern
+- Volume must decline in handle and spike on breakout
+- Failure at lip on second attempt = potential double top, not cup and handle
 
 ## Related Skills
-
-- **multi-timeframe-analysis** — Cup and handle patterns on HTF carry more significance; confirm with LTF entry timing
-- **breakout-trading** — The cup lip breakout follows breakout trading principles for volume confirmation and entry
-- **position-sizing** — Size the trade based on stop distance below the handle low
+- **flag-pennant** — The handle is essentially a small flag
+- **double-top-bottom** — Failed cup breakouts can become double tops

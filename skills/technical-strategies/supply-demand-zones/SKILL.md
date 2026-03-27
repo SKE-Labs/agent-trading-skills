@@ -4,9 +4,7 @@ description: Identify institutional supply and demand zones for reversal entries
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending", "ranging"]
+  version: "1.1"
 ---
 
 # Supply & Demand Zone Trading
@@ -16,18 +14,14 @@ Supply and demand zones mark areas of institutional accumulation (demand) and di
 ## Zone Identification
 
 ### Demand Zone (Buy Area)
-
-1. Find area where price dropped, consolidated, then shot up
-2. Zone = the consolidation (base) before the rally
-3. Draw from base low to base high
+- Price dropped, consolidated briefly (1-5 candles), then rallied explosively
+- Zone = the consolidation base before the rally (draw from base low to base high)
 
 ### Supply Zone (Sell Area)
+- Price rallied, consolidated briefly (1-5 candles), then dropped explosively
+- Zone = the consolidation base before the drop (draw from base high to base low)
 
-1. Find area where price rallied, consolidated, then dropped
-2. Zone = the consolidation (base) before the drop
-3. Draw from base high to base low
-
-## Zone Quality Factors
+## Zone Quality
 
 | Factor           | Strong Zone         | Weak Zone          |
 | ---------------- | ------------------- | ------------------ |
@@ -36,53 +30,55 @@ Supply and demand zones mark areas of institutional accumulation (demand) and di
 | **Freshness**    | Untested            | Multiple tests     |
 | **HTF context**  | Aligned with trend  | Counter-trend      |
 
+**Zone weakening**: 1st test = strongest reaction. 2nd test = moderate. 3rd+ = zone likely breaks.
+
 ## Entry Strategies
 
-### 1. Set & Forget
+### Set & Forget
+- Limit order at zone edge, stop beyond opposite edge
 
-- Place limit order at zone edge
-- Stop beyond opposite edge
-- Fire and forget
+### Confirmation Entry
+- Wait for price to enter zone, look for rejection candle (pin bar, engulfing), enter on confirmation
 
-### 2. Confirmation Entry
-
-- Wait for price to enter zone
-- Look for rejection candle (pin bar, engulfing)
-- Enter on confirmation
-
-### 3. Refined Zone Entry
-
-- Use LTF to find OB or FVG within zone
-- More precise entry, tighter stop
+### Refined Zone Entry
+- Use LTF to find order block or FVG within the zone for tighter stop
 
 ## Workflow
 
-1. **Identify zones** on HTF (4H/Daily) using `get_candles_around_date`
-2. **Mark zones** using `draw_chart_analysis` with `demand` or `supply` type
-3. **Confirm with indicators**: `get_indicator(indicator_code="rsi")` for oversold/overbought at zone
-4. **Wait for price** to return to zone
-5. **Enter with confirmation** or limit order
-6. **Stop loss** beyond the zone
-7. **Target** next opposing zone
+1. **Get candle data** on HTF (4H/Daily) to identify zones:
+   ```
+   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   ```
 
-## Zone Weakening
+2. **Mark zones** on chart:
+   ```
+   draw_chart_analysis(action="create", drawing={
+       "type": "demand",
+       "points": [
+           {"time": <zone_start_time>, "price": <zone_top>},
+           {"time": <zone_end_time>, "price": <zone_bottom>}
+       ],
+       "options": {"text": "Fresh Demand Zone"}
+   })
+   ```
 
-Zones weaken with each test:
+3. **Confirm with indicators**:
+   ```
+   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
+   ```
+   Check for oversold/overbought at zone.
 
-- 1st test: Strongest reaction expected
-- 2nd test: Moderate reaction
-- 3rd+ test: Zone likely to break
+4. **Wait for price** to return to zone. Enter with confirmation or limit order. Stop beyond zone. Target: next opposing zone.
 
-## Key Insight
+## Key Rules
 
-Supply/demand differs from S/R:
-
-- S/R = single price level
-- S/D = zone (range of prices)
-- S/D represents unfilled institutional orders
+- NEVER trade zones that have been tested 3+ times; they are likely to break
+- NEVER draw zones from slow grinds; only from explosive departures (strong imbalance)
+- S/D zones differ from S/R: S/R is a single level, S/D is a price range representing unfilled institutional orders
+- Freshness matters most; an untested zone is far higher probability than a retested one
+- Use LTF for refined entries within HTF zones for better risk/reward
 
 ## Related Skills
 
-- **order-blocks** — Order blocks are ICT-specific supply/demand zones; similar concept with different identification criteria
-- **volume-profile-trading** — Volume profile HVNs and VAH/VAL confirm supply/demand zone strength
-- **fibonacci-trading** — Fibonacci levels overlapping with supply/demand zones create high-confluence entries
+- **volume-profile-trading** — volume profile HVNs confirm S/D zone strength
+- **fibonacci-trading** — Fib retracements into S/D zones provide high-confluence entries

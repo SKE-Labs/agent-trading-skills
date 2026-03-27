@@ -4,97 +4,81 @@ description: Trade ascending, descending, and symmetrical triangle patterns. Use
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending", "ranging"]
+  version: "1.1"
 ---
 
 # Triangle Pattern Trading
 
-Triangles form during consolidation and typically break out in the direction of the prevailing trend.
+Triangles form during consolidation and typically break in the direction of the prevailing trend.
 
-## Triangle Types
+## Pattern Structure
 
 ### Ascending Triangle (Bullish Bias)
-
-- **Flat top** (horizontal resistance)
-- **Rising lows** (ascending support)
-- Usually breaks upward
-- Buyers gaining strength
+- Flat horizontal resistance + rising lows — usually breaks upward
 
 ### Descending Triangle (Bearish Bias)
-
-- **Flat bottom** (horizontal support)
-- **Lower highs** (descending resistance)
-- Usually breaks downward
-- Sellers gaining strength
+- Flat horizontal support + lower highs — usually breaks downward
 
 ### Symmetrical Triangle (Neutral)
+- Lower highs + higher lows, converging — breaks with prevailing trend
 
-- **Lower highs** + **higher lows**
-- Converging trendlines
-- Breaks either direction (usually with trend)
-- Coiling for explosive move
+## Workflow
 
-## Identification
+### 1. Get Swing Point Data
 
-1. Draw trendlines connecting:
-   - At least 2 swing highs (upper line)
-   - At least 2 swing lows (lower line)
-2. Lines should converge
-3. Volume typically decreases during formation
-
-## Entry Strategies
-
-### 1. Breakout Entry
-
-- Enter when price breaks and closes outside triangle
-- Volume spike confirms breakout
-- Stop: Inside triangle (opposite side)
-
-### 2. Retest Entry
-
-- Wait for breakout
-- Wait for price to retest broken trendline
-- Enter on bounce/rejection
-- Better R:R
-
-## Target Calculation
-
-**Measured Move**:
+Identify at least 2 swing highs and 2 swing lows (4+ total touch points):
 
 ```
-Target = Breakout point ± Height of triangle base
+get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<swing_date>)
 ```
 
-Measure the widest part of the triangle, project from breakout.
+### 2. Draw Converging Trendlines (2 parallel calls)
 
-## Chart Drawing
+```
+# Upper trendline (connecting swing highs)
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <high1_time>, "price": <high1_price>},
+        {"time": <high2_time>, "price": <high2_price>}
+    ],
+    "options": {"text": "Triangle R"}
+})
 
-Use `draw_chart_analysis` with `trend` type:
+# Lower trendline (connecting swing lows)
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <low1_time>, "price": <low1_price>},
+        {"time": <low2_time>, "price": <low2_price>}
+    ],
+    "options": {"text": "Triangle S"}
+})
+```
 
-- Draw both trendlines (upper and lower)
-- Requires minimum 4 touch points total (2 each)
-- Visualize the compression
+For ascending: upper line is flat (`resistance` type instead of `trend`). For descending: lower line is flat (`support` type).
 
-## Volume Analysis
+### 3. Confirm and Enter
 
-| Phase        | Volume    |
-| ------------ | --------- |
-| Formation    | Declining |
-| Breakout     | Spike     |
+Check volume declining during formation via `get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)`.
+
+**Standard:** Enter on break + candle close outside triangle with volume spike. Stop inside triangle on opposite side.
+**Preferred:** Wait for breakout, then retest of broken trendline. Enter on rejection.
+**Target:** Triangle height at widest point, projected from breakout.
+
+| Phase | Expected Volume |
+|-------|----------------|
+| Formation | Declining |
+| Breakout | Spike |
 | Continuation | Sustained |
 
-## Best Practices
-
-- Trade in direction of prior trend
-- Wait for close outside triangle (not just wick)
-- False breakouts are common—use retest entry
-- Wider triangles = Stronger moves
-- Tighter apex = More explosive breakout
+## Key Rules
+- Minimum 4 touch points (2 per trendline) to validate
+- NEVER enter on a wick breakout alone — wait for candle close outside
+- NEVER trade symmetrical triangles against the prevailing trend
+- Breakouts in the final third (near apex) are more likely false
+- Wider triangles produce stronger moves
 
 ## Related Skills
-
-- **multi-timeframe-analysis** — Triangles on primary TF within an HTF trend break in the trend direction most often
-- **breakout-trading** — Triangle breakouts follow the same volume confirmation and entry principles
-- **wedge-patterns** — Wedges are similar converging patterns but with both lines sloping in the same direction
+- **wedge-patterns** — Similar converging lines, both slope same direction
+- **flag-pennant** — Pennants are small symmetrical triangles

@@ -1,9 +1,9 @@
 # 📈 Agent Trading Skills
 
-A curated collection of **50 trading skills** designed for AI agents. Built for [Embient.ai](https://embient.ai), but compatible with any agent that supports skills—including **Claude Code**, **Antigravity**, **Cursor**, and more.
+A curated collection of **56 trading skills** designed for AI agents. Built for [Embient.ai](https://embient.ai), but compatible with any agent that supports skills—including **Claude Code**, **Antigravity**, **Cursor**, and more.
 
 [![Apache 2.0 License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-50-green.svg)](#skill-categories)
+[![Skills](https://img.shields.io/badge/skills-56-green.svg)](#skill-categories)
 [![Embient](https://img.shields.io/badge/platform-Embient.ai-purple.svg)](https://embient.ai)
 
 ---
@@ -25,7 +25,7 @@ Each skill is a standalone markdown file with clear instructions, formulas, and 
 
 | Directory                  | Description                           |
 | -------------------------- | ------------------------------------- |
-| [**./skills**](skills)     | 50 trading skills across 7 categories |
+| [**./skills**](skills)     | 56 trading skills across 7 categories |
 | [**./spec**](spec)         | The Trading Skills specification      |
 | [**./template**](template) | Skill template for contributors       |
 
@@ -34,11 +34,11 @@ Each skill is a standalone markdown file with clear instructions, formulas, and 
 | Category                                                | Skills | Description                                                  |
 | ------------------------------------------------------- | ------ | ------------------------------------------------------------ |
 | [**ICT/Smart Money**](skills/ict-smart-money)           | 8      | Institutional trading concepts—order blocks, FVGs, liquidity |
-| [**Technical Strategies**](skills/technical-strategies) | 10     | Indicator-based strategies—MACD, RSI, Fibonacci, VWAP        |
+| [**Technical Strategies**](skills/technical-strategies) | 14     | Indicator-based strategies—MACD, RSI, Fibonacci, VWAP        |
 | [**Chart Patterns**](skills/chart-patterns)             | 8      | Classical patterns—head & shoulders, triangles, flags        |
 | [**Risk Management**](skills/risk-management)           | 8      | Position sizing, stop losses, drawdown management            |
-| [**Day Trading**](skills/day-trading)                   | 6      | Intraday strategies—scalping, breakouts, momentum            |
-| [**Fundamental Analysis**](skills/fundamental-analysis) | 5      | Earnings, sentiment, economic calendar trading               |
+| [**Day Trading**](skills/day-trading)                   | 7      | Intraday strategies—scalping, breakouts, momentum            |
+| [**Fundamental Analysis**](skills/fundamental-analysis) | 6      | Earnings, sentiment, economic calendar trading               |
 | [**Crypto Trading**](skills/crypto-trading)             | 5      | Crypto-specific—on-chain analysis, funding rates, DCA        |
 
 ---
@@ -75,21 +75,25 @@ Skills are simple to create—just a folder with a `SKILL.md` file:
 ```yaml
 ---
 name: my-skill-name
-description: A clear description of what this skill does and when to use it.
+description: What this skill does. Use when [trigger 1], [trigger 2], or [trigger 3].
+license: Apache-2.0
+metadata:
+  author: your-name
+  version: "1.0"
 ---
 
 # My Skill Name
 
-[Add your instructions here]
+One-line intro.
 
 ## Identification
 How to identify the setup
 
-## Entry Strategy
-Step-by-step workflow
+## Workflow
+Step-by-step with tool calls
 
-## Risk Management
-Stop loss and sizing rules
+## Key Rules
+- Critical rules and NEVER items
 ```
 
 The frontmatter requires only two fields:

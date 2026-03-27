@@ -4,193 +4,98 @@ description: Trade around scheduled economic events using impact ranking, deviat
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "2.0"
-  target_agents: ["*"]
-  market_conditions: ["all"]
+  version: "3.0"
 ---
 
 # Economic Calendar Trading
 
-Trade around scheduled economic releases that move markets. The key insight: it's not the number that matters, but the **deviation from consensus** that drives price.
+Trade scheduled economic releases where the **deviation from consensus**, not the number itself, drives price.
 
 ## Event Impact Ranking
 
-| Event | Impact Score | Frequency | Release Time (ET) | Assets Affected |
+| Event | Impact | Frequency | Release (ET) | Assets Affected |
 | --- | --- | --- | --- | --- |
 | FOMC Rate Decision | 10 | 8x/year | 2:00 PM + presser 2:30 PM | All markets |
-| Non-Farm Payrolls (NFP) | 9 | 1st Friday/month | 8:30 AM | USD, Stocks, Bonds |
+| Non-Farm Payrolls | 9 | 1st Friday/month | 8:30 AM | USD, Stocks, Bonds |
 | CPI (Inflation) | 8.5 | ~10th-15th/month | 8:30 AM | Stocks, Bonds, Crypto |
 | GDP | 7 | Quarterly | 8:30 AM | Broad market |
 | PCE (Fed's inflation) | 7 | Monthly | 8:30 AM | Fed-sensitive assets |
-| PMI (Manufacturing/Services) | 6 | Monthly | 10:00 AM | Sector-specific |
+| PMI (Mfg/Services) | 6 | Monthly | 10:00 AM | Sector-specific |
 | Retail Sales | 5.5 | Monthly | 8:30 AM | Consumer stocks |
 | Jobless Claims | 4 | Weekly | 8:30 AM | USD, short-term |
 
-## Deviation Scoring Framework
-
-The magnitude of surprise vs forecast drives the move:
+## Deviation Thresholds
 
 ```
-Deviation Score = (Actual - Forecast) / Forecast × 100
+Deviation Score = (Actual - Forecast) / Forecast x 100
 ```
 
-### Significant Deviation Thresholds
-
-| Event | Small Deviation | Moderate | Large (market-moving) |
+| Event | Small | Moderate | Large (market-moving) |
 | --- | --- | --- | --- |
-| NFP | ±25K jobs | ±50K jobs | ±100K+ jobs |
-| CPI (YoY) | ±0.1% | ±0.2% | ±0.3%+ |
-| GDP (QoQ) | ±0.2% | ±0.5% | ±1.0%+ |
-| Fed Funds Rate | — | ±25bps surprise | ±50bps surprise |
-| PMI | ±0.5 pts | ±1.0 pts | ±2.0+ pts |
-| Retail Sales | ±0.2% | ±0.5% | ±1.0%+ |
+| NFP | +/-25K jobs | +/-50K jobs | +/-100K+ jobs |
+| CPI (YoY) | +/-0.1% | +/-0.2% | +/-0.3%+ |
+| GDP (QoQ) | +/-0.2% | +/-0.5% | +/-1.0%+ |
+| Fed Funds Rate | -- | +/-25bps surprise | +/-50bps surprise |
+| PMI | +/-0.5 pts | +/-1.0 pts | +/-2.0+ pts |
+| Retail Sales | +/-0.2% | +/-0.5% | +/-1.0%+ |
 
-**Key rule**: A "miss" or "beat" only matters relative to consensus. CPI at 3.2% when consensus is 3.1% is a small miss. CPI at 3.5% when consensus is 3.1% is market-moving.
-
-## Trading Strategies
-
-### 1. Pre-Event Positioning
-
-- Analyze expectations vs likely outcome
-- Position 1-2 days before with reduced size
-- Best for events with clear directional bias based on leading indicators
-
-### 2. Post-Event Continuation (Safest)
-
-- Wait for initial volatility to settle
-- Enter in the direction of the established move
-- Wait time varies by impact:
-
-| Event Impact Score | Wait Time Before Entry | Rationale |
-| --- | --- | --- |
-| 9-10 (FOMC, NFP) | 30-45 min | Maximum volatility, whipsaws common |
-| 7-8.5 (CPI, GDP, PCE) | 15-30 min | High vol but settles faster |
-| 5-6 (PMI, Retail Sales) | 5-15 min | Moderate vol, quicker absorption |
-| <5 (Claims, etc.) | Immediate OK | Low impact, fast pricing |
-
-### 3. Fade Overreaction
-
-- Wait for extreme move (>2 ATR in <30 min)
-- Fade back toward pre-event price or VWAP
-- Only for experienced traders — requires conviction and wider stops
-
-### 4. Event Cluster Awareness
-
-When multiple events hit in the same window (e.g., NFP + unemployment rate + wages):
-- Increase wait time by 50%
-- Reduce position size further (75% reduction vs normal 50%)
-- Watch for conflicting signals across data points
-
-## FOMC Deep Analysis
-
-### Hawk/Dove Language Scoring
-
-When analyzing FOMC statements and press conferences via `get_financial_news`:
-
-**Hawkish keywords** (rate hikes, tightening):
-- "Elevated inflation", "above target", "further tightening may be appropriate"
-- "Strong labor market", "robust demand", "upside risks to inflation"
-- Dot plot median moves higher
-
-**Dovish keywords** (rate cuts, easing):
-- "Progress on inflation", "approaching target", "appropriately calibrated"
-- "Cooling labor market", "moderating demand", "downside risks to employment"
-- Dot plot median moves lower, "cuts" language increases
-
-**Neutral/Balanced**:
-- "Data dependent", "meeting by meeting", "both sides of mandate"
-
-| FOMC Outcome | Market Reaction | Typical Duration |
-| --- | --- | --- |
-| Dovish surprise | Risk-on: stocks up, USD down, bonds up, crypto up | 1-3 days trend |
-| Hawkish surprise | Risk-off: stocks down, USD up, bonds down, crypto down | 1-3 days trend |
-| As expected | Muted initial, then trade the statement/presser nuance | Hours |
-| Dovish hold (no cut when expected) | Sharp risk-off, then assess | 1-2 days |
-
-## Pre-Event Workflow
+## Workflow
 
 ### 1. Check Calendar
 
 ```
-get_economics_calendar(from_date="2026-03-19", to_date="2026-03-26", impact="high")
+get_economics_calendar(from_date="2026-03-20", to_date="2026-03-27", impact="high")
 ```
 
-Identify all events in the coming week. Flag any with Impact Score ≥7.
+Flag events with Impact >= 7. Check every Monday.
 
-### 2. Research Context and Consensus
+### 2. Research Consensus
 
 ```
-get_financial_news(topic="FOMC rate decision March 2026 expectations", max_results=15)
-get_financial_news(topic="CPI inflation forecast consensus", max_results=10)
+get_financial_news(topic="CPI inflation forecast consensus March 2026", max_results=10)
 ```
 
-Extract:
-- **Consensus forecast** (the number the market expects)
-- **Range of estimates** (helps gauge surprise magnitude)
-- **Leading indicators** (what other data suggests about the release)
-- **Market positioning** (are traders already positioned for a specific outcome?)
+Extract: consensus forecast, range of estimates, leading indicators, and current market positioning.
 
 ### 3. Build Scenario Matrix
 
-For each upcoming high-impact event:
+For each high-impact event, map beat/meet/miss scenarios with estimated probability, expected market reaction, and position recommendation.
 
-| Scenario | Probability | Expected Market Reaction | Position Recommendation |
-| --- | --- | --- | --- |
-| Beat consensus (by threshold) | Est % | Direction, magnitude | Long/short, size |
-| Meet consensus | Est % | Muted/continuation | Hold/no action |
-| Miss consensus (by threshold) | Est % | Direction, magnitude | Long/short, size |
+### 4. Post-Release: Wait Before Entry
 
-### 4. Position Size Reduction Rules
-
-| Event Impact Score | Position Reduction | Stop Width |
+| Impact Score | Wait Time | Rationale |
 | --- | --- | --- |
-| 9-10 | Reduce 75% or close | 2× normal |
-| 7-8.5 | Reduce 50% | 1.5× normal |
-| 5-6 | Reduce 25% | 1.25× normal |
-| <5 | Optional reduction | Normal |
+| 9-10 (FOMC, NFP) | 30-45 min | Maximum volatility, whipsaws common |
+| 7-8.5 (CPI, GDP, PCE) | 15-30 min | High vol but settles faster |
+| 5-6 (PMI, Retail) | 5-15 min | Moderate vol, quicker absorption |
+| <5 (Claims, etc.) | Immediate OK | Low impact, fast pricing |
 
-### 5. Report to Orchestrator
+### 5. Trade the Reaction
 
-Provide:
-- **Upcoming events** ranked by impact with dates/times
-- **Consensus expectations** for each event
-- **Scenario matrix** with probability-weighted outcomes
-- **Position recommendations**: Reduce, close, hold, or new entry
-- **FOMC analysis**: Hawk/dove assessment if applicable
-- **Event clustering**: Flag if multiple events coincide
+- **Continuation**: Enter in the direction of the established move after the wait period
+- **Fade overreaction**: Only if move exceeds 2 ATR in <30 min, fade back toward VWAP
 
-## Risk Management
+### 6. FOMC Analysis
 
-| Rule | Guideline |
-| --- | --- |
-| Position size | Reduce by impact score (see table above) |
-| Holding into events | Reduce or close before Score ≥8 events |
-| Stop loss | Wider stops (volatility expansion expected) |
-| Spreads | Account for widening — limit orders only |
-| Correlated positions | Reduce all correlated positions, not just direct exposure |
-| New entries | Avoid opening new positions 2h before Score ≥8 events |
+Use `get_financial_news` to analyze FOMC statements and press conferences for hawk/dove tone shifts.
 
-## Best Practices
+| FOMC Outcome | Market Reaction | Duration |
+| --- | --- | --- |
+| Dovish surprise | Risk-on: stocks up, USD down, bonds/crypto up | 1-3 days |
+| Hawkish surprise | Risk-off: stocks down, USD up, bonds/crypto down | 1-3 days |
+| As expected | Muted initial, trade statement nuance | Hours |
 
-| Do | Don't |
-| --- | --- |
-| Know the calendar — check every Monday | Get surprised by scheduled events |
-| Trade the reaction, not the prediction | Bet on the number before release |
-| Wait the full recommended time per impact | Rush in during initial whipsaw |
-| Use deviation scoring for magnitude | Treat all beats/misses equally |
-| Research consensus thoroughly before event | Trade events without knowing expectations |
-| Reduce correlated exposure across positions | Only reduce the directly affected position |
+## Key Rules
 
-## Common Mistakes
-
-- **Trading the prediction** — Guessing the number is gambling. Trade the reaction after the number drops.
-- **Entering too early after release** — The first 5-15 minutes often reverse. Wait the recommended time.
-- **Ignoring event clusters** — NFP day also has unemployment and wages. One data point can contradict another.
-- **Same position size** — Not reducing size before high-impact events is the most common risk management failure.
-- **Forgetting spread widening** — Market orders around events hit terrible fills. Always use limit orders.
+- NEVER trade the prediction -- trade the reaction after the number drops
+- NEVER enter during the initial 5-15 minute whipsaw; wait the full recommended time per impact score
+- NEVER use market orders around events -- spreads widen, use limit orders only
+- NEVER hold full position size into Impact >= 8 events -- reduce or close beforehand
+- When multiple events cluster (e.g., NFP + unemployment + wages), increase wait time by 50%
+- A "beat" or "miss" only matters relative to consensus -- CPI at 3.2% vs 3.1% consensus is small; 3.5% vs 3.1% is market-moving
+- Reduce all correlated positions before events, not just direct exposure
 
 ## Related Skills
 
-- **news-trading** — News trading covers both scheduled economic events and unscheduled corporate news
-- **sentiment-analysis** — Pre-event sentiment helps gauge market positioning and whisper expectations
-- **sector-rotation** — Economic data releases (Fed, CPI, GDP) are primary catalysts for sector rotation shifts
+- **sentiment-analysis** -- Pre-event sentiment gauges positioning
+- **sector-rotation** -- Macro data drives sector rotation shifts

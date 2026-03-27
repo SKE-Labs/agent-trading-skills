@@ -4,192 +4,93 @@ description: Identify current market regime (trending, ranging, or volatile) to 
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending", "ranging", "volatile"]
+  version: "1.1"
 ---
 
 # Market Regime Detection
 
-Markets cycle between distinct regimes. Strategies that work in trending markets fail in ranges, and vice versa. Detecting the current regime is the first step before applying any other skill.
+Markets cycle between distinct regimes. Detecting the current regime is the first step before applying any other skill.
 
 ## Regime Types
 
-| Regime | Characteristics | ADX | BB Width | Price Action |
-| --- | --- | --- | --- | --- |
-| **Trending Up** | HH + HL, price above MAs | >25 | Expanding | Strong directional candles |
-| **Trending Down** | LH + LL, price below MAs | >25 | Expanding | Strong directional candles |
-| **Ranging** | No clear HH/LL, price oscillates around MAs | <20 | Narrow | Dojis, small bodies, wicks |
-| **Volatile** | Large swings both directions, whipsaws | 20-25 | Very wide | Large candles, frequent reversals |
+| Regime | ADX | BB Width | Price Action |
+| --- | --- | --- | --- |
+| **Trending Up** | >25 | Expanding | HH + HL, strong directional candles |
+| **Trending Down** | >25 | Expanding | LH + LL, strong directional candles |
+| **Ranging** | <20 | Narrow | Oscillates around MAs, dojis, small bodies |
+| **Volatile** | 20-25 | Very wide | Large swings both directions, whipsaws |
 
 ## Detection Methods
 
-### 1. ADX (Average Directional Index)
+**ADX** (primary): >40 strong trend, 25-40 moderate trend, 20-25 transitioning (wait), <20 ranging.
 
-Primary regime classifier:
+**BB Width** = `(Upper - Lower) / Middle * 100`: >80th percentile = high vol, <20th = squeeze imminent.
 
-| ADX Value | Regime | Confidence |
-| --- | --- | --- |
-| >40 | Strong trend | High |
-| 25-40 | Moderate trend | Medium |
-| 20-25 | Weak/transitioning | Low — wait for clarity |
-| <20 | Ranging | High |
+**ATR Ratio**: ATR > 1.5x avg = elevated vol, 0.8-1.2x = normal, <0.8x = squeeze.
 
-Use `get_indicator(indicator_code="dmi")` to retrieve current DMI/ADX values.
+**EMA Slope**: 50 EMA rising + price above = bullish; falling + price below = bearish; flat + crossing = range.
 
-### 2. Bollinger Band Width
+## Composite Classification
 
-Measures volatility expansion/contraction:
-
-| BB Width Percentile (vs 100 periods) | Regime Signal |
-| --- | --- |
-| >80th percentile | High volatility — trending or volatile |
-| 40th-80th percentile | Normal conditions |
-| <20th percentile | Squeeze — breakout imminent |
-
-Use `get_indicator(indicator_code="bbands")` to get upper, middle, lower bands. Calculate width:
-
-```
-BB Width = (Upper - Lower) / Middle × 100
-```
-
-### 3. ATR Percentile
-
-Confirms volatility level:
-
-| ATR vs 20-period SMA of ATR | Signal |
-| --- | --- |
-| ATR > 1.5× avg | Elevated volatility |
-| ATR 0.8-1.2× avg | Normal |
-| ATR < 0.8× avg | Low volatility (squeeze) |
-
-Use `get_indicator(indicator_code="tr")` for current True Range.
-
-### 4. EMA Slope
-
-Trend direction and strength:
-
-- **50 EMA rising + price above** → Bullish trend
-- **50 EMA falling + price below** → Bearish trend
-- **50 EMA flat + price crossing repeatedly** → Range
-
-Use `get_indicator(indicator_code="ema")` and compare recent values.
-
-## Composite Regime Classification
-
-Combine all four methods for highest accuracy:
-
-| ADX | BB Width | ATR | EMA Slope | → Regime |
+| ADX | BB Width | ATR | EMA Slope | Regime |
 | --- | --- | --- | --- | --- |
 | >25 | Expanding | Above avg | Sloping | **Trending** |
 | <20 | Narrow | Below avg | Flat | **Ranging** |
-| 20-25 | Very wide | >1.5× avg | Choppy | **Volatile** |
-| <20 | Very narrow (<20th pctl) | Very low | Flat | **Squeeze** (breakout coming) |
+| 20-25 | Very wide | >1.5x avg | Choppy | **Volatile** |
+| <20 | Very narrow | Very low | Flat | **Squeeze** (breakout coming) |
 
-**Decision rules:**
-- If 3/4 indicators agree → **High confidence** regime classification
-- If 2/4 agree → **Medium confidence** — reduce position size, use conservative entries
-- If split → **No trade** — wait for clarity
+- 3/4 agree → **high confidence**. 2/4 → **medium**, reduce size. Split → **no trade**.
 
-## Regime Change Detection
-
-Watch for transitions:
+## Regime Change Signals
 
 | Signal | Meaning |
 | --- | --- |
-| ADX crosses above 25 from below | Range → Trend beginning |
-| ADX crosses below 20 from above | Trend → Range beginning |
+| ADX crosses above 25 | Range → trend beginning |
+| ADX crosses below 20 | Trend → range beginning |
 | BB Width expands >50% in 5 periods | Breakout/volatility spike |
-| BB Width contracts to <20th percentile | Squeeze forming — breakout imminent |
-| EMA slope reverses direction | Potential trend reversal |
+| BB Width contracts to <20th pctl | Squeeze forming |
 
 ## Strategy Selection Matrix
 
-| Regime | Use These Skills | Avoid These Skills |
+| Regime | Use These Skills | Avoid |
 | --- | --- | --- |
-| **Trending Up** | moving-average-crossover, pullback-trading, momentum-trading, fibonacci-trading, flag-pennant, breakout-trading | mean-reversion, range-trading |
-| **Trending Down** | moving-average-crossover, pullback-trading (short), fibonacci-trading, flag-pennant | range-trading, dca-strategy (wait) |
-| **Ranging** | range-trading, mean-reversion, bollinger-bands, supply-demand-zones, double-top-bottom | momentum-trading, breakout-trading, moving-average-crossover |
-| **Volatile** | scalping-strategy (reduced size), stop-loss-strategies (wider), position-sizing (smaller) | All trend-following, all mean-reversion |
-| **Squeeze** | breakout-trading (prepare), triangle-patterns, wedge-patterns | range-trading (range about to break) |
+| **Trending** | moving-average-crossover, fibonacci-trading | mean-reversion |
+| **Ranging** | mean-reversion, bollinger-bands, supply-demand-zones | momentum-trading, MA crossover |
+| **Volatile** | wider stops, smaller size | all trend-following, all mean-reversion |
+| **Squeeze** | breakout-trading (prepare) | range-trading (about to break) |
 
 ## Workflow
 
-### 1. Get ADX Reading
+1. **Get all four inputs**:
+   ```
+   get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
+   get_indicator(indicator_code="bbands", symbol=<symbol>, interval=<interval>)
+   get_indicator(indicator_code="tr", symbol=<symbol>, interval=<interval>)
+   get_indicator(indicator_code="ema", symbol=<symbol>, interval=<interval>)
+   ```
 
-```
-get_indicator(indicator_code="dmi")
-```
+2. **Classify** using composite table. Visualize:
+   ```
+   draw_chart_analysis(action="create", drawing={
+       "type": "highlight",
+       "points": [
+           {"time": <regime_start>, "price": <candle_high>},
+           {"time": <current_time>, "price": <candle_low>}
+       ],
+       "options": {"text": "TRENDING (ADX: 32)"}
+   })
+   ```
 
-Check the ADX value. If >25 → trending. If <20 → ranging.
+3. **Report**: regime, confidence, key metrics, recommended/avoid skills, transition signals to watch
 
-### 2. Get Bollinger Bands
+## Key Rules
 
-```
-get_indicator(indicator_code="bbands")
-```
-
-Calculate BB Width = (upper - lower) / middle × 100. Compare to recent readings to determine percentile.
-
-### 3. Get ATR
-
-```
-get_indicator(indicator_code="tr")
-```
-
-Compare current ATR to the average of recent ATR values.
-
-### 4. Get EMA for Slope
-
-```
-get_indicator(indicator_code="ema")
-```
-
-Compare the last 5-10 EMA values. Rising = bullish trend, falling = bearish trend, flat = range.
-
-### 5. Classify and Visualize
-
-Use `draw_chart_analysis` to highlight the current regime on chart:
-
-```
-draw_chart_analysis(action="create", drawing={
-    "type": "highlight",
-    "points": [
-        {"time": <regime_start_timestamp>, "price": <candle_high>},
-        {"time": <current_timestamp>, "price": <candle_low>}
-    ],
-    "options": {"text": "TRENDING (ADX: 32)"}
-})
-```
-
-### 6. Report Regime to Orchestrator
-
-Summarize findings:
-- **Current regime** and confidence level
-- **Key metrics**: ADX value, BB width percentile, ATR relative to average
-- **Recommended skills** to apply
-- **Skills to avoid** in current conditions
-- **Transition signals** to watch for
-
-## Best Practices
-
-| Do | Don't |
-| --- | --- |
-| Check regime before every analysis | Assume yesterday's regime holds today |
-| Use multiple indicators for confirmation | Rely on ADX alone |
-| Reduce size during transitions (ADX 20-25) | Force trades in unclear regimes |
-| Re-check regime on higher timeframes | Only check one timeframe |
-| Note regime at start of every analysis | Skip straight to pattern/indicator analysis |
-
-## Common Mistakes
-
-- **Trading trend strategies in a range** — Moving average crossovers generate constant whipsaws in ranging markets. Check ADX first.
-- **Ignoring regime transitions** — The ADX 20-25 zone is a no-man's land. Wait for clarity rather than guessing.
-- **Using single indicator** — ADX can lag. Combine with BB width and ATR for earlier detection.
-- **Not adapting position size** — Even correct regime classification needs smaller size during volatile or transitioning periods.
+- NEVER skip regime detection before applying any other strategy
+- NEVER force trades in the ADX 20-25 transition zone; wait for clarity
+- NEVER rely on ADX alone; combine with BB Width and ATR for earlier detection
+- Re-check regime on higher timeframes; HTF regime overrides LTF
 
 ## Related Skills
 
-- **multi-timeframe-analysis** — Regime detection on HTF sets the context; MTF analysis refines entries within the regime
-- **bollinger-bands** — BB Width is a key regime detection input and Bollinger strategies adapt to the detected regime
-- **momentum-trading** — Only applicable when regime is trending (ADX >25); regime detection gates momentum setups
+- **multi-timeframe-analysis** — regime on HTF sets context; MTF refines entries within the regime
+- **bollinger-bands** — BB Width is a key detection input; BB strategies adapt to detected regime

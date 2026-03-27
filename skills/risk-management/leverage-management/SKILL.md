@@ -4,25 +4,23 @@ description: Use leverage safely based on volatility and account size. Use when 
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["all"]
+  version: "2.0"
 ---
 
 # Leverage Management
 
-Leverage amplifies both gains and losses—use it responsibly.
+Leverage amplifies both gains and losses -- use it responsibly.
 
 ## Leverage Basics
 
-| Leverage | $1,000 Account           | $10,000 Position |
-| -------- | ------------------------ | ---------------- |
-| 1x       | $1,000 controls $1,000   | No leverage      |
-| 5x       | $1,000 controls $5,000   | 5x exposure      |
-| 10x      | $1,000 controls $10,000  | 10x exposure     |
-| 100x     | $1,000 controls $100,000 | 100x exposure    |
+| Leverage | $1,000 Controls | Exposure |
+| -------- | ---------------- | -------- |
+| 1x       | $1,000           | None     |
+| 5x       | $5,000           | 5x       |
+| 10x      | $10,000          | 10x      |
+| 100x     | $100,000         | 100x     |
 
-## Safe Leverage Guidelines
+## Safe Leverage by Volatility
 
 | Volatility Level       | Max Leverage |
 | ---------------------- | ------------ |
@@ -40,23 +38,19 @@ Leverage amplifies both gains and losses—use it responsibly.
 | Swing Trading    | 1-3x (overnight risk)         |
 | Position Trading | 1-2x (long exposure)          |
 
-## Effective Leverage Calculation
+## Key Formulas
 
-Use the `execute` tool to calculate effective leverage and liquidation price:
+**Effective Leverage**: `Position Size / Account Equity`
 
-**Effective Leverage:**
-```
-execute(command='python3 -c "pos_size=50000;equity=10000;eff_lev=pos_size/equity;print(f\"Position: \${pos_size:,}\\nEquity: \${equity:,}\\nEffective Leverage: {eff_lev:.1f}x\")"')
-```
+Example: $50,000 position on $10,000 equity = 5x effective leverage.
 
-**Liquidation Distance:**
-```
-execute(command='python3 -c "leverage=10;liq_dist=100/leverage;print(f\"Leverage: {leverage}x\\nLiquidation at: {liq_dist:.1f}% against position\")"')
-```
+**Liquidation Distance**: `100% / Leverage`
 
-Even without explicit leverage, position sizing creates effective leverage.
+Example: 10x leverage = liquidated at 10% move against position.
 
-## Risk with Leverage
+**Position sizing with leverage**: `Position Size = (Account x Risk%) / Stop Distance%`. Leverage does not change how much you risk -- it changes how much capital you tie up.
+
+## Impact of Leverage on Losses
 
 | Leverage | 1% Move Against | Account Impact      |
 | -------- | --------------- | ------------------- |
@@ -64,22 +58,6 @@ Even without explicit leverage, position sizing creates effective leverage.
 | 5x       | -1%             | -5%                 |
 | 10x      | -1%             | -10%                |
 | 100x     | -1%             | -100% (liquidation) |
-
-## Leverage Risk Rules
-
-1. **Calculate liquidation price** before entering
-2. **Never risk more than 2%** even with leverage
-3. **Reduce leverage** in volatile conditions
-4. **Maintain margin buffer** (50%+ margin ratio)
-5. **Avoid max leverage** (use 50% or less of available)
-
-## Position Sizing with Leverage
-
-```
-Position Size = (Account × Risk %) / (Stop Distance %)
-```
-
-Leverage doesn't change how much you risk—it changes how much capital you tie up.
 
 ## Liquidation Awareness
 
@@ -90,18 +68,27 @@ Leverage doesn't change how much you risk—it changes how much capital you tie 
 | 20x      | 5% against                   |
 | 100x     | 1% against                   |
 
-Always set stops BEFORE liquidation level.
+Always set stops BEFORE the liquidation level.
 
-## Best Practices
+## Workflow
 
-- Start with low leverage (2-3x max)
-- Increase only with proven edge
-- Never max out available leverage
-- Reduce leverage after losses
-- Journal leverage impact on results
+1. **Assess volatility** of the asset being traded
+2. **Select max leverage** based on volatility table above
+3. **Calculate effective leverage** -- position size / equity
+4. **Verify liquidation distance** -- must be well beyond your stop loss
+5. **Maintain margin buffer** -- keep 50%+ margin ratio at all times
+6. **Reduce** leverage in volatile conditions or after losses
+
+## Key Rules
+
+- NEVER risk more than 2% of account even with leverage
+- NEVER use max available leverage -- use 50% or less of what the platform offers
+- NEVER hold high leverage into major news events or overnight (for day trades)
+- Calculate liquidation price before every leveraged entry
+- Start with low leverage (2-3x max) and increase only with proven edge
+- Reduce leverage after losses -- do not increase it to recover
 
 ## Related Skills
 
-- **position-sizing** — Leverage changes capital allocation but not risk amount; position sizing controls actual risk
-- **stop-loss-strategies** — Stops must be set before liquidation price; leverage determines how close liquidation is
-- **drawdown-management** — Excessive leverage accelerates drawdowns; reduce leverage during losing periods
+- **position-sizing** -- leverage changes capital allocation but not risk amount
+- **stop-loss-strategies** -- stops must be set before liquidation price

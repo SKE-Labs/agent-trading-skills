@@ -4,14 +4,12 @@ description: Trade using Stochastic oscillator for overbought/oversold and momen
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending", "ranging"]
+  version: "1.1"
 ---
 
 # Stochastic Oscillator Trading
 
-Stochastic measures momentum by comparing closing price to price range over a period.
+Stochastic measures momentum by comparing closing price to the price range over a period.
 
 ## Components
 
@@ -20,78 +18,65 @@ Stochastic measures momentum by comparing closing price to price range over a pe
 | %K   | Main line (fast)          | Primary signal |
 | %D   | Signal line (3-SMA of %K) | Confirmation   |
 
-## Key Levels
+## Signals
 
-| Level | Meaning                     |
-| ----- | --------------------------- |
-| 80+   | Overbought (potential sell) |
-| 20-   | Oversold (potential buy)    |
-| 50    | Equilibrium                 |
+### Overbought/Oversold Reversals
 
-## Trading Signals
+- %K enters oversold (<20) then crosses above → buy
+- %K enters overbought (>80) then crosses below → sell
 
-### 1. Overbought/Oversold Reversals
+### %K/%D Crossover
 
-- %K enters oversold (<20) then crosses above → Buy
-- %K enters overbought (>80) then crosses below → Sell
+- %K crosses above %D → bullish (most reliable in OB/OS zones)
+- %K crosses below %D → bearish
 
-### 2. %K/%D Crossover
+### Divergence
 
-- %K crosses above %D → Bullish
-- %K crosses below %D → Bearish
-- Most reliable in OB/OS zones
+- Price new high + Stochastic lower high → bearish
+- Price new low + Stochastic higher low → bullish
 
-### 3. Divergence
+### Momentum
 
-- Price makes new high, stochastic makes lower high → Bearish
-- Price makes new low, stochastic makes higher low → Bullish
+- %K above 50 and rising → bullish momentum
+- %K below 50 and falling → bearish momentum
 
-### 4. Bull/Bear Setup
-
-- **Bull**: %K above 50, rising → Bullish momentum
-- **Bear**: %K below 50, falling → Bearish momentum
-
-## Strategies by Market Type
+## Market-Specific Strategies
 
 ### Ranging Markets
-
-- Buy when stochastic exits oversold (<20 to >20)
-- Sell when stochastic exits overbought (>80 to <80)
-- Target opposite zone
+- Buy when Stochastic exits oversold (<20 → >20)
+- Sell when Stochastic exits overbought (>80 → <80)
+- Target: opposite zone
 
 ### Trending Markets
-
-- In uptrend: Buy on oversold (ignore overbought)
-- In downtrend: Sell on overbought (ignore oversold)
-- Stochastic can stay OB/OS in strong trends
-
-## Settings
-
-| Setting   | Fast | Slow |
-| --------- | ---- | ---- |
-| %K period | 5    | 14   |
-| %D period | 3    | 3    |
-| Smoothing | 3    | 3    |
-
-- Fast: More signals, more noise
-- Slow (14,3,3): Standard, smoother
+- Uptrend: buy on oversold only (ignore overbought — Stochastic can stay OB in strong trends)
+- Downtrend: sell on overbought only (ignore oversold)
 
 ## Workflow
 
-1. **Get Stochastic** using `get_indicator(indicator_code="stoch")`
-2. **Identify market** type (trending vs ranging)
-3. **Apply appropriate strategy**
-4. **Wait for confirmation** (%K/%D cross)
-5. **Enter with stop** beyond recent swing
+1. **Get Stochastic**:
+   ```
+   get_indicator(indicator_code="stoch", symbol=<symbol>, interval=<interval>)
+   ```
 
-## Avoid These Mistakes
+2. **Determine market type** (trending vs ranging) to select strategy
 
-- Selling just because stochastic is overbought (can stay OB)
-- Trading against strong trends
-- Ignoring divergences
+3. **Check for %K/%D cross** in OB/OS zone
+
+4. **Confirm with candle data**:
+   ```
+   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   ```
+
+5. **Enter with confirmation** candle; stop beyond recent swing
+
+## Key Rules
+
+- NEVER sell just because Stochastic is overbought; in strong trends it stays OB for extended periods
+- NEVER trade Stochastic divergence in mid-range (20-80); only valid at extremes
+- NEVER trade against strong trends; use Stochastic only for pullback entries in trend direction
+- Settings: slow (14,3,3) is standard; fast (5,3,3) gives more signals but more noise
 
 ## Related Skills
 
-- **rsi-divergence** — Stochastic divergence combined with RSI divergence strengthens reversal signals
-- **bollinger-bands** — Stochastic overbought/oversold at BB extremes provides high-probability mean reversion entries
-- **range-trading** — Stochastic is most reliable in ranging markets for timing boundary entries
+- **rsi-divergence** — Stochastic divergence + RSI divergence together strengthens reversal signals
+- **bollinger-bands** — Stochastic OB/OS at BB extremes provides high-probability mean reversion entries

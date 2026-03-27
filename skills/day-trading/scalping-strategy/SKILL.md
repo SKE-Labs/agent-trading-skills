@@ -4,85 +4,104 @@ description: Execute high-frequency small profit trades for quick gains. Use whe
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["all"]
+  version: "1.1"
 ---
 
 # Scalping Strategy
 
-Scalping targets small, frequent profits from minimal price movements within seconds to minutes.
+Target small, frequent profits from minimal price movements on 1m-5m timeframes.
 
-## Scalping Essentials
+## Setup Conditions
 
-| Factor          | Requirement        |
-| --------------- | ------------------ |
-| Timeframe       | 1m, 5m             |
-| Trades per day  | 10-100+            |
-| Profit target   | 5-20 pips/0.1-0.5% |
-| Trade duration  | Seconds to minutes |
-| Win rate target | 60%+               |
-
-## Best Conditions
-
-- High liquidity assets (BTC, ETH, major forex)
-- High volatility periods (kill zones)
-- Tight spreads
-- Fast execution
+| Factor | Requirement |
+| --- | --- |
+| Timeframe | 1m, 5m |
+| Profit target | 5-20 pips / 0.1-0.5% |
+| Trade duration | Seconds to minutes |
+| Win rate target | 60%+ |
+| Assets | High liquidity only (BTC, ETH, major forex) |
+| Timing | High volume periods (kill zones) only |
 
 ## Scalping Techniques
 
-### 1. Spread Scalping
+### 1. Momentum Scalping
 
-- Profit from bid-ask spread
-- Market make around VWAP
-- Requires very low fees
+Enter on strong momentum candles on 1m, ride for small gain, exit immediately on momentum loss.
 
-### 2. Momentum Scalping
+```
+get_indicator(indicator_code="rsi", symbol=<symbol>, interval="1m")
+get_indicator(indicator_code="macd", symbol=<symbol>, interval="1m")
+```
 
-- Enter on strong momentum candles
-- Ride momentum for small gain
-- Exit quickly on momentum loss
+RSI crossing 50 with expanding MACD histogram on 1m = entry trigger. Exit when histogram shrinks.
 
-### 3. Level Scalping
+### 2. Level Scalping
 
-- Trade bounces at S/R
-- Quick in-and-out at key levels
-- Tight stops required
+Quick bounces at key S/R levels with tight stops.
 
-### 4. Range Scalping
+```
+get_candles_around_date(symbol=<symbol>, interval="5m", date=<date>)
+```
 
-- Trade within defined range
-- Buy support, sell resistance
-- Repeat until range breaks
+Identify S/R on 5m, enter on rejection candle on 1m. Stop just beyond the level. Target 1:1 to 1:1.5 R:R.
 
-## Entry Rules
+### 3. Range Scalping
 
-1. **Confirm direction** on 5m (higher TF)
-2. **Enter on 1m** in direction of 5m
-3. **Tight stop** (5-10 pips max)
-4. **Quick target** (1:1 to 1:1.5 R:R)
-5. **Exit immediately** if wrong
+Buy support, sell resistance within a defined micro-range. Repeat until range breaks.
 
-## Risk Management
+```
+get_indicator(indicator_code="dmi", symbol=<symbol>, interval="5m")
+```
 
-| Rule             | Guideline               |
-| ---------------- | ----------------------- |
-| Position size    | Small (0.5-1% risk max) |
-| Stop loss        | Tight, non-negotiable   |
-| Daily loss limit | 2-3% of capital         |
-| Trading hours    | Only during high volume |
+ADX <20 on 5m confirms micro-range. Mark boundaries, trade bounces at edges.
 
-## Best Practices
+## Workflow
 
-- Use limit orders when possible
-- Factor in fees (can eat profits)
-- Avoid news events (unpredictable)
-- Take breaks regularly
-- Stop after 3 consecutive losses
+### 1. Confirm Direction on 5m
+
+```
+get_indicator(indicator_code="ema", symbol=<symbol>, interval="5m")
+get_indicator(indicator_code="dmi", symbol=<symbol>, interval="5m")
+```
+
+Establish bias from higher timeframe before scalping on 1m.
+
+### 2. Identify Setup on 1m
+
+```
+get_candles_around_date(symbol=<symbol>, interval="1m", date=<date>)
+get_indicator(indicator_code="rsi", symbol=<symbol>, interval="1m")
+```
+
+Pick one technique (momentum, level, or range) based on current conditions.
+
+### 3. Mark Key Levels
+
+```
+draw_chart_analysis(action="create", drawing={
+    "type": "support",
+    "points": [
+        {"time": <touch_1>, "price": <level>},
+        {"time": <touch_2>, "price": <level>}
+    ],
+    "options": {"text": "Scalp Level"}
+})
+```
+
+### 4. Report to Orchestrator
+
+Technique selected, entry level, stop (tight -- 5-10 pips max), target, 5m directional bias.
+
+## Key Rules
+
+- NEVER scalp during news events -- unpredictable spikes destroy tight stops
+- NEVER scalp low-liquidity assets -- spreads eat the small profits
+- NEVER hold a losing scalp hoping for recovery -- exit immediately if wrong
+- Stop after 3 consecutive losses -- reassess conditions before continuing
+- Always confirm 1m direction aligns with 5m bias before entering
+- Factor in fees -- they can consume scalping profits entirely
 
 ## Related Skills
 
-- **range-trading** — Range scalping buys support and sells resistance within defined ranges
-- **bollinger-bands** — BB band touches on 1m/5m charts provide scalping reversal signals
-- **stochastic-trading** — Stochastic overbought/oversold on fast timeframes times scalp entries
+- **range-trading** -- range scalping is a micro-timeframe application of range principles
+- **momentum-trading** -- momentum scalping borrows directional confirmation logic

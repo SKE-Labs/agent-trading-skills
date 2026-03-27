@@ -4,85 +4,78 @@ description: Trade rising and falling wedge patterns for reversals and continuat
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending", "ranging"]
+  version: "1.1"
 ---
 
 # Wedge Pattern Trading
 
-Wedges are converging trendlines that typically signal reversals (most common) or continuations.
+Converging trendlines sloping in the same direction, typically signaling reversals.
 
-## Wedge Types
+## Pattern Structure
 
 ### Rising Wedge (Mostly Bearish)
-
-- Both lines slope **upward**
-- Higher highs + higher lows (but compressing)
-- **In uptrend**: Reversal signal (bearish)
-- **In downtrend**: Continuation signal (bearish)
+- Both lines slope **upward**, HH + HL but compressing
+- In uptrend = reversal; in downtrend = continuation
+- Breaks down ~68% of the time
 
 ### Falling Wedge (Mostly Bullish)
+- Both lines slope **downward**, LH + LL but compressing
+- In downtrend = reversal; in uptrend = continuation
+- Breaks up ~68% of the time
 
-- Both lines slope **downward**
-- Lower highs + lower lows (but compressing)
-- **In downtrend**: Reversal signal (bullish)
-- **In uptrend**: Continuation signal (bullish)
+| Feature | Wedge | Triangle |
+|---------|-------|----------|
+| Slopes | Both lines slope **same** direction | Lines converge from **opposite** directions |
 
-## Wedge vs Triangle
+## Workflow
 
-| Pattern  | Upper Line      | Lower Line               |
-| -------- | --------------- | ------------------------ |
-| Wedge    | Sloping         | Sloping (same direction) |
-| Triangle | Flat or sloping | Sloping (converging)     |
+### 1. Get Swing Point Data
 
-## Identification Criteria
+```
+get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<swing_date>)
+```
 
-1. **Two converging trendlines** sloping in same direction
-2. **Minimum 4 touch points** (2 per line)
-3. **Decreasing volume** during formation
-4. **Clear prior trend** exists
+### 2. Draw Wedge Boundaries (2 parallel calls)
 
-## Entry Strategies
+Both trendlines slope in the same direction (this is what distinguishes a wedge from a triangle):
 
-### 1. Breakout Entry
+```
+# Upper boundary (connecting highs — both slope upward for rising wedge)
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <high1_time>, "price": <high1_price>},
+        {"time": <high2_time>, "price": <high2_price>}
+    ],
+    "options": {"text": "Wedge R"}
+})
 
-- Enter on break of wedge boundary
-- Rising wedge: Enter short on downside break
-- Falling wedge: Enter long on upside break
-- Volume spike confirms
+# Lower boundary (connecting lows — also slopes upward for rising wedge)
+draw_chart_analysis(action="create", drawing={
+    "type": "trend",
+    "points": [
+        {"time": <low1_time>, "price": <low1_price>},
+        {"time": <low2_time>, "price": <low2_price>}
+    ],
+    "options": {"text": "Wedge S"}
+})
+```
 
-### 2. Retest Entry (Preferred)
+### 3. Confirm and Enter
 
-- Wait for breakout
-- Wait for retest of broken trendline
-- Enter on rejection
-- Tighter stop, better R:R
+Confirm declining volume with `get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)`.
 
-## Target Calculation
+**Standard:** Rising wedge → short on downside break. Falling wedge → long on upside break. Volume spike confirms. Stop beyond opposite boundary.
+**Preferred:** Wait for breakout + retest of broken trendline. Enter on rejection.
+**Target:** Height at widest part of wedge, projected from breakout.
 
-**Measured Move**:
-
-- Measure height at widest part of wedge
-- Project from breakout point
-
-## Chart Drawing
-
-Use `draw_chart_analysis` with `trend` type:
-
-- Draw upper trendline
-- Draw lower trendline
-- Both sloping in same direction
-
-## Key Insights
-
-- Rising wedges break down ~68% of the time
-- Falling wedges break up ~68% of the time
-- Wedges near end of trend = Higher probability reversal
-- Failed wedges lead to strong continuation in original direction
+## Key Rules
+- Minimum 4 touch points (2 per line) to validate
+- Both trendlines MUST slope in the same direction — otherwise it's a triangle
+- NEVER ignore context: rising wedge in uptrend = reversal, in downtrend = continuation
+- Wedges near the end of extended trends produce higher-probability reversals
+- Decreasing volume during formation is essential for validity
 
 ## Related Skills
-
-- **multi-timeframe-analysis** — Wedges on HTF signal major reversals; LTF wedges are less reliable
-- **triangle-patterns** — Similar converging pattern family; differentiate by whether both lines slope the same direction
-- **position-sizing** — Wedge height projection provides clear measured move targets for position sizing
+- **triangle-patterns** — Similar converging lines but different slope behavior
+- **multi-timeframe-analysis** — HTF wedges signal major reversals

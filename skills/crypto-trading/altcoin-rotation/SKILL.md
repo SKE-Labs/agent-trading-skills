@@ -5,64 +5,21 @@ license: Apache-2.0
 metadata:
   author: ske-labs
   version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending"]
 ---
 
 # Altcoin Rotation Strategy
 
-Rotate between BTC, ETH, and altcoins based on market cycles and dominance trends.
+Rotate between BTC, ETH, and altcoins based on market cycle phase and BTC dominance trends.
 
 ## Market Cycle Phases
 
-| Phase        | BTC Dominance  | Strategy              |
-| ------------ | -------------- | --------------------- |
-| BTC Season   | Rising (>50%)  | Hold BTC, reduce alts |
-| Transition   | Stable         | Begin alt exposure    |
-| ALT Season   | Falling (<45%) | Increase alt exposure |
-| Capitulation | Spike high     | Cash or BTC only      |
-
-## BTC Dominance Guide
-
-| Dominance  | Market State  | Action                |
-| ---------- | ------------- | --------------------- |
-| >55%       | BTC dominant  | 80%+ in BTC           |
-| 50-55%     | Transitioning | Start adding ETH      |
-| 45-50%     | Alt friendly  | Add quality alts      |
-| <45%       | Alt season    | Maximize alt exposure |
-| Spiking up | Risk-off      | Exit alts to BTC      |
-
-## Rotation Workflow
-
-### 1. Accumulation Phase (Bear Market)
-
-- Focus on BTC and ETH
-- DCA into quality only
-- Avoid altcoins
-
-### 2. Early Bull (BTC Rally)
-
-- 70% BTC, 25% ETH, 5% alts
-- Wait for BTC to stabilize
-- Research alt candidates
-
-### 3. Mid Bull (Alt Season Start)
-
-- 40% BTC, 30% ETH, 30% alts
-- Rotate into strong altcoin narratives
-- Take profits on 2-3x moves
-
-### 4. Late Bull (Peak Alt Season)
-
-- 20% BTC, 20% ETH, 60% alts
-- Highest risk, highest reward
-- Tight stops, quick profits
-
-### 5. Distribution (Topping)
-
-- Rotate back to BTC/ETH
-- Exit altcoins progressively
-- Increase stablecoin position
+| Phase        | BTC Dominance  | Strategy              | Allocation             |
+| ------------ | -------------- | --------------------- | ---------------------- |
+| Accumulation | High (>55%)    | BTC/ETH only, DCA     | 80% BTC, 20% ETH      |
+| Early Bull   | Stable (50-55%)| Begin alt research    | 70% BTC, 25% ETH, 5%  |
+| Mid Bull     | Falling (45-50%)| Rotate into alts     | 40% BTC, 30% ETH, 30% |
+| Peak Alt     | Low (<45%)     | Max alt exposure      | 20% BTC, 20% ETH, 60% |
+| Distribution | Spiking up     | Exit alts, back to BTC| Reduce to BTC/stables  |
 
 ## Alt Selection Criteria
 
@@ -73,33 +30,41 @@ Rotate between BTC, ETH, and altcoins based on market cycles and dominance trend
 | Volume     | High liquidity        |
 | Technical  | Breaking out of base  |
 
-## Risk Management
+## Workflow
 
-| Rule           | Guideline                |
-| -------------- | ------------------------ |
-| Single alt max | 10% of portfolio         |
-| Total alts max | 30-60% (cycle dependent) |
-| Stop losses    | Always set               |
-| Profit taking  | Scale out at targets     |
+1. **Check BTC dominance trend** using news and price data:
+```
+get_financial_news(query="BTC dominance altcoin season")
+get_latest_candle(symbol="BTCUSDT")
+```
 
-## Key Signals
+2. **Assess momentum** to identify cycle phase:
+```
+get_indicator(indicator_code="rsi", symbol="BTCUSDT", interval="1d")
+get_indicator(indicator_code="rsi", symbol="ETHUSDT", interval="1d")
+```
 
-Watch for rotation triggers:
+3. **Evaluate ETH/BTC ratio** as alt season proxy:
+```
+get_latest_candle(symbol="ETHBTC")
+```
 
-- BTC consolidating after rally → Alt rotation
-- BTC dominance falling → Alt season
-- ETH/BTC rising → Risk-on for alts
-- BTC breaking down → Exit all alts
+4. **Screen alt candidates** matching selection criteria:
+```
+get_financial_news(query="top performing altcoins crypto narrative")
+```
 
-## Common Mistakes
+5. **Report allocation recommendation** with cycle phase, dominance trend, and suggested weights.
 
-- Holding alts through BTC correction
-- Chasing pumped altcoins
-- Over-allocating to micro-caps
-- Not taking profits during alt season
+## Key Rules
+
+- NEVER hold alts through a BTC correction -- rotate back to BTC at first dominance spike
+- NEVER over-allocate to a single alt (cap at 10% of portfolio)
+- NEVER chase altcoins that have already pumped 3x+ without consolidation
+- Take profits on 2-3x alt moves; scale out, do not wait for tops
+- Rotation triggers: BTC consolidating after rally, dominance falling, ETH/BTC rising
 
 ## Related Skills
 
-- **on-chain-analysis** — On-chain metrics (exchange flows, whale behavior) confirm accumulation/distribution phases in the rotation cycle
-- **sector-rotation** — Similar rotation concept applied to crypto market cycles instead of economic sectors
-- **dca-strategy** — DCA into BTC/ETH during accumulation phases provides disciplined entry during bear markets
+- **on-chain-analysis** -- on-chain metrics confirm accumulation/distribution phases
+- **dca-strategy** -- DCA into BTC/ETH during accumulation phases

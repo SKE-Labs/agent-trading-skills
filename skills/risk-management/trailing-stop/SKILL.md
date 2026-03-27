@@ -4,9 +4,7 @@ description: Lock in profits with dynamic trailing stop strategies. Use when rid
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["trending"]
+  version: "2.0"
 ---
 
 # Trailing Stop Strategies
@@ -15,39 +13,25 @@ Trailing stops lock in profits while allowing trades to run.
 
 ## Trailing Methods
 
-### 1. Fixed Distance Trail
+### 1. ATR Trail (Recommended)
 
-- Move stop by fixed amount (pips/%)
-- Example: Trail by 20 pips behind price
-- Simple but can be too static
+`Trailing Stop = Highest High - (ATR x 2)`. Adjusts to volatility -- tighter in calm markets, wider in volatile markets.
 
-### 2. ATR Trail (Recommended)
+### 2. Structure Trail
 
-```
-Trailing Stop = Highest High - (ATR × 2)
-```
+Move stop below each new swing low (long) or above each new swing high (short). Lets the trade breathe while locking in structure.
 
-- Adjusts to volatility
-- Tighter in calm markets
-- Wider in volatile markets
+### 3. Moving Average Trail
 
-### 3. Structure Trail
+Use MA as trailing stop (common: 10 EMA, 20 EMA). Exit when price closes below MA.
 
-- Move stop below each new swing low (long)
-- Move stop above each new swing high (short)
-- Lets trade breathe but locks in structure
+### 4. Chandelier Exit
 
-### 4. Moving Average Trail
+Trail from highest high by ATR multiple. Classic exit strategy, good for trending markets.
 
-- Use MA as trailing stop
-- Common: 10 EMA, 20 EMA
-- Exit when price closes below MA
+### 5. Fixed Distance Trail
 
-### 5. Chandelier Exit
-
-- Trail from highest high by ATR multiple
-- Classic exit strategy
-- Good for trending markets
+Move stop by fixed amount (pips/%). Simple but can be too static -- prefer ATR or structure.
 
 ## When to Start Trailing
 
@@ -58,25 +42,9 @@ Trailing Stop = Highest High - (ATR × 2)
 | New structure break | Dynamic      |
 | Immediately         | Aggressive   |
 
-## Trail Management
-
-### Do
-
-- Pre-define trailing rules
-- Trail only in profit direction
-- Consider volatility
-- Allow some drawdown
-
-### Don't
-
-- Trail too tightly (noise exit)
-- Trail against trend structure
-- Override during trade
-- Manually exit before stop
-
 ## Hybrid Approach
 
-Combine methods:
+Combine methods for staged exit management:
 
 1. Fixed initial stop
 2. Move to breakeven at 1R
@@ -92,17 +60,25 @@ Combine methods:
 | Reversal candle | Tighten trail     |
 | Structure break | Consider exiting  |
 
-## Example Workflow
+## Workflow
 
-**Long trade at $100, stop at $95:**
+**Example -- Long trade at $100, stop at $95:**
 
-1. Price hits $108 (1.5R) → Move stop to $100 (breakeven)
-2. Price hits $115 (3R) → Trail to $110 (below last swing)
-3. Price hits $120 → Trail to $115
-4. Price pulls back → Stop hit at $115 (3R locked)
+1. Price hits $108 (1.5R) -> Move stop to $100 (breakeven)
+2. Price hits $115 (3R) -> Trail to $110 (below last swing)
+3. Price hits $120 -> Trail to $115
+4. Price pulls back -> Stop hit at $115 (3R locked)
+
+## Key Rules
+
+- NEVER trail too tightly -- noise will stop you out prematurely
+- NEVER trail against trend structure -- only move stops in the profit direction
+- NEVER override your trailing rules during a trade -- define them before entry
+- NEVER manually exit before your trailing stop is hit unless structure clearly breaks
+- Pre-define trailing rules before entering the trade
+- Allow some drawdown from highs -- that is the cost of catching extended moves
 
 ## Related Skills
 
-- **stop-loss-strategies** — Initial stop placement determines when trailing begins; this skill manages exits after entry
-- **partial-profit-taking** — Combine trailing stops with partial exits for optimal profit capture
-- **momentum-trading** — Trailing stops are essential for riding momentum moves without giving back profits
+- **stop-loss-strategies** -- initial stop placement determines when trailing begins
+- **partial-profit-taking** -- combine trailing stops with partial exits for optimal capture

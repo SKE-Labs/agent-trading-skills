@@ -4,107 +4,87 @@ description: Track insider buying and selling for trading signals. Use when asse
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
-  target_agents: ["*"]
-  market_conditions: ["all"]
+  version: "2.0"
 ---
 
 # Insider Activity Trading
 
-Insider transactions can signal management's view on company value.
+Insider transactions reveal management conviction -- buying is a strong signal, selling requires context.
 
-## Insider Types
+## Insider Significance
 
-| Insider    | Significance         |
-| ---------- | -------------------- |
-| CEO/CFO    | Highest significance |
-| Directors  | High significance    |
-| 10% owners | Medium significance  |
-| Officers   | Medium significance  |
+| Insider | Significance |
+| --- | --- |
+| CEO / CFO | Highest |
+| Directors | High |
+| 10% owners | Medium |
+| Other officers | Medium |
 
 ## Signal Interpretation
 
-### Insider Buying (Generally Bullish)
+### Buying (Generally Bullish)
 
-| Factor            | Stronger Signal          |
-| ----------------- | ------------------------ |
-| Multiple insiders | Cluster buying           |
-| Large purchases   | Meaningful % of holdings |
-| Recent price drop | Buying the dip           |
-| C-suite buying    | CEO/CFO conviction       |
+Insiders only buy for one reason: they think it's undervalued.
 
-### Insider Selling (Context Matters)
+| Factor | Stronger Signal |
+| --- | --- |
+| Multiple insiders buying | Cluster buying (strongest) |
+| Large purchases | Meaningful % of holdings |
+| After price drop | Buying the dip |
+| C-suite buying | CEO/CFO conviction |
 
-| Selling Reason   | Signal Strength     |
-| ---------------- | ------------------- |
+### Selling (Context-Dependent)
+
+Insiders sell for many reasons: diversification, taxes, personal needs. Selling alone is weaker signal.
+
+| Selling Reason | Signal Strength |
+| --- | --- |
 | Planned (10b5-1) | Neutral (scheduled) |
-| Diversification  | Weak negative       |
-| After big run-up | Moderate negative   |
-| Unusual amount   | Stronger negative   |
-| Multiple selling | Concerning          |
+| Diversification | Weak negative |
+| After big run-up | Moderate negative |
+| Unusual amount | Stronger negative |
+| Multiple C-suite selling | Concerning (strongest) |
 
-## Key Insight
+## Bullish vs Bearish Patterns
 
-**Buying is more meaningful than selling.**
+| Bullish | Bearish |
+| --- | --- |
+| CEO buying the dip | Multiple C-suite selling |
+| Cluster buying (3+ insiders) | Selling right after guidance |
+| Large $ purchases on weakness | Unusual volume of sales |
+| Buying after bad news | Selling before scheduled news |
 
-- Insiders only buy for one reason: They think it's undervalued
-- Insiders sell for many reasons: Diversification, taxes, personal needs
+## Workflow
 
-## Trading Strategy
+### 1. Research Insider Activity
 
-### Following Insider Buys
+```
+get_financial_news(topic="AAPL insider buying selling SEC Form 4 filing", max_results=15)
+get_fundamentals(ticker="AAPL")
+```
 
-1. Identify cluster buying (multiple insiders)
-2. Check purchase size (meaningful $$$)
-3. Research company fundamentals
-4. Enter with technical confirmation
-5. Set stop based on structure
+Look for: recent Form 4 filings, transaction size, buyer/seller role, and whether purchases are scheduled (10b5-1) or discretionary.
 
-### Avoiding Insider Sells
+### 2. Assess Pattern
 
-1. Note unusual selling patterns
-2. Check if scheduled (10b5-1) or not
-3. Compare to historical selling
-4. Weight as one factor in analysis
+- Single insider selling = low signal, check if 10b5-1 planned
+- Single insider buying = moderate signal, check size relative to holdings
+- Cluster buying (3+ insiders within 2 weeks) = strong bullish signal
+- C-suite selling unusual amounts = red flag, investigate further
 
-## What to Look For
+### 3. Combine with Fundamentals
 
-| Bullish Pattern          | Bearish Pattern          |
-| ------------------------ | ------------------------ |
-| CEO buying dip           | Multiple C-suite selling |
-| Multiple insiders buying | Selling after guidance   |
-| Large $ purchases        | Unusual volume of sales  |
-| Buying after bad news    | Selling before news      |
+Insider activity is a confirming signal, not standalone. Cross-reference with company fundamentals, recent earnings, and technical setup before acting.
 
-## Data Sources
+## Key Rules
 
-Use `get_financial_news` and `get_fundamentals` to find:
-
-- Recent insider transaction filings
-- Form 4 SEC filings
-- Transaction patterns
-- Historical comparison
-- Company fundamentals context
-
-## Limitations
-
-| Limitation     | Reality                         |
-| -------------- | ------------------------------- |
-| Lagging        | Filings come 2 days after trade |
-| Small sample   | May have few transactions       |
-| Context needed | Selling reasons vary            |
-| Not timing     | Insiders often early            |
-
-## Best Practice
-
-Use insider activity as:
-
-- Confirmation of fundamental view
-- Warning sign (unusual selling)
-- One input among many
-- Not as sole trading signal
+- NEVER trade on insider activity alone -- use as confirmation of fundamental/technical view
+- NEVER treat all selling as bearish -- most insider sales are routine (10b5-1 plans, diversification, tax events)
+- NEVER ignore cluster buying -- multiple insiders buying within a short window is one of the highest-conviction fundamental signals
+- Insider filings lag by 2 business days -- the trade already happened
+- Insiders are often early -- conviction is right but timing can be off by weeks/months
 
 ## Related Skills
 
-- **earnings-trading** — Insider buying/selling around earnings provides additional signal on management confidence
-- **sentiment-analysis** — Insider activity is a high-credibility sentiment signal that feeds into composite scoring
+- **earnings-trading** -- Insider activity around earnings signals management confidence
+- **sentiment-analysis** -- Insider buying is a high-credibility input to sentiment scoring
