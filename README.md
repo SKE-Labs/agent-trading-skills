@@ -1,10 +1,10 @@
 # 📈 Agent Trading Skills
 
-A curated collection of **56 trading skills** designed for AI agents. Built for [Embient.ai](https://embient.ai), but compatible with any agent that supports skills—including **Claude Code**, **Antigravity**, **Cursor**, and more.
+A curated collection of **56 trading skills** designed for AI agents. Built for [DeepAlpha](https://deepalpha.mn), but compatible with any agent that supports skills—including **Claude Code**, **Antigravity**, **Cursor**, and more.
 
 [![Apache 2.0 License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-56-green.svg)](#skill-categories)
-[![Embient](https://img.shields.io/badge/platform-Embient.ai-purple.svg)](https://embient.ai)
+[![DeepAlpha](https://img.shields.io/badge/platform-DeepAlpha-purple.svg)](https://deepalpha.mn)
 
 ---
 
@@ -45,9 +45,9 @@ Each skill is a standalone markdown file with clear instructions, formulas, and 
 
 ## Quick Start
 
-### Using with Embient.ai
+### Using with DeepAlpha
 
-1. Visit [embient.ai](https://embient.ai)
+1. Visit [deepalpha.mn](https://deepalpha.mn)
 2. Browse the Skills Marketplace
 3. Fork skills to your profile
 4. Your AI trading assistant will use them automatically
@@ -127,9 +127,9 @@ We welcome contributions! To add a new skill:
 
 ## Related Links
 
-- **Embient Platform**: [embient.ai](https://embient.ai)
-- **Skills Marketplace**: [embient.ai/marketplace](https://embient.ai/marketplace)
-- **Documentation**: [docs.embient.ai](https://docs.embient.ai)
+- **DeepAlpha Platform**: [deepalpha.mn](https://deepalpha.mn)
+- **Skills Marketplace**: [deepalpha.mn/marketplace](https://deepalpha.mn/marketplace)
+- **Documentation**: [docs.deepalpha.mn](https://docs.deepalpha.mn)
 
 ---
 
@@ -146,7 +146,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ---
 
 <p align="center">
-  <a href="https://embient.ai">
-    <strong>🚀 Discover more skills at Embient.ai</strong>
+  <a href="https://deepalpha.mn">
+    <strong>🚀 Discover more skills at DeepAlpha</strong>
   </a>
 </p>

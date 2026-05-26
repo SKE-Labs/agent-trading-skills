@@ -5,7 +5,7 @@ Parses all SKILL.md files, extracts YAML frontmatter and content,
 then POSTs to the Basement marketplace sync endpoint.
 
 Required environment variables:
-  BASEMENT_API_URL   - Basement API base URL (e.g. https://basement.embient.ai)
+  BASEMENT_API_URL   - Basement API base URL (e.g. https://basement.deepalpha.mn)
   SUPABASE_SERVICE_KEY - Supabase service role key (used as Bearer token)
   AUTHOR_ID          - UUID of the marketplace author for these skills
 """
