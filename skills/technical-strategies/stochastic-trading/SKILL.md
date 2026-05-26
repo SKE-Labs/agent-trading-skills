@@ -55,7 +55,7 @@ Stochastic measures momentum by comparing closing price to the price range over 
 
 1. **Get Stochastic**:
    ```
-   get_indicator(indicator_code="stoch", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="stoch", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 2. **Determine market type** (trending vs ranging) to select strategy
@@ -64,7 +64,7 @@ Stochastic measures momentum by comparing closing price to the price range over 
 
 4. **Confirm with candle data**:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 
 5. **Enter with confirmation** candle; stop beyond recent swing

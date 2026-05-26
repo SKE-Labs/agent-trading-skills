@@ -33,7 +33,7 @@ Bullish continuation pattern indicating accumulation before a breakout.
 ### 1. Get Exact Data
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<cup_bottom_date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<cup_bottom_date>)
 ```
 
 ### 2. Mark Key Structure

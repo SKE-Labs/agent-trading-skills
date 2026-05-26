@@ -1,10 +1,10 @@
 ---
 name: multi-timeframe-analysis
-description: Analyze markets using 3 timeframes with signal priority scoring and conflict resolution. Use when determining trend direction, timing entries with precision, or validating trade setups across timeframes.
+description: Analyze markets using 3 timeframes with signal priority scoring and conflict resolution. Use when determining trend direction, timing entries with precision, or validating trade setups across timeframes. Uses only free indicators (EMA slope, RSI, MACD) — avoids API-billed ADX/DMI.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "2.1"
+  version: "3.0"
 ---
 
 # Multi-Timeframe Analysis (MTF)
@@ -57,31 +57,56 @@ Each timeframe should be 4-6x the one below it. Pick one combination and use con
 
 ## Workflow
 
-1. **Higher TF — establish bias**:
+1. **Higher TF — establish bias** via EMA stack + slope (no ADX — use the canonical slope computation). `get_indicators` returns one indicator per call — fetch each separately:
    ```
-   generate_chart(symbol=<symbol>, interval=<htf_interval>)
-   get_indicator(indicator_code="ema", symbol=<symbol>, interval=<htf_interval>)
-   get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<htf_interval>)
+   get_candles(symbol=<symbol>, exchange=<exchange>, interval=<htf_interval>, count=120)
+   get_indicators(indicator_code="ema_21", symbol=<symbol>, exchange=<exchange>, interval=<htf_interval>, count=120)
+   get_indicators(indicator_code="ema_50", symbol=<symbol>, exchange=<exchange>, interval=<htf_interval>, count=120)
+   get_indicators(indicator_code="atr_14", symbol=<symbol>, exchange=<exchange>, interval=<htf_interval>, count=120)
+   get_indicators(indicator_code="donchian_20", symbol=<symbol>, exchange=<exchange>, interval=<htf_interval>, count=120)
    ```
-   Determine trend direction (HH/HL, LH/LL, or ranging), strength (ADX), and mark major S/R.
+   Then compute trend strength via slope %:
+   ```
+   execute python3 -c "ema50=[<...>]; s=(ema50[-1]-ema50[-5])/ema50[-5]*100; print(f'htf_ema50_slope_pct={s:.3f}')"
+   ```
+   - `slope > +0.5%` and `ema_21 > ema_50` → HTF bullish
+   - `slope < −0.5%` and `ema_21 < ema_50` → HTF bearish
+   - `|slope| ≤ 0.15%` → HTF ranging (skip directional entries; range-trading playbook only)
+
+   Mark major HTF S/R: prior swing pivots, donchian_20 boundaries, Fibonacci extensions, weekly open / prior week high-low.
 
 2. **Primary TF — find setup** aligned with HTF bias:
    ```
-   generate_chart(symbol=<symbol>, interval=<primary_interval>)
-   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<primary_interval>)
-   get_indicator(indicator_code="macd", symbol=<symbol>, interval=<primary_interval>)
+   get_candles(symbol=<symbol>, exchange=<exchange>, interval=<primary_interval>, count=60)
+   get_indicators(indicator_code="ema_9",   symbol=<symbol>, exchange=<exchange>, interval=<primary_interval>, count=60)
+   get_indicators(indicator_code="ema_21",  symbol=<symbol>, exchange=<exchange>, interval=<primary_interval>, count=60)
+   get_indicators(indicator_code="ema_50",  symbol=<symbol>, exchange=<exchange>, interval=<primary_interval>, count=60)
+   get_indicators(indicator_code="rsi_21",  symbol=<symbol>, exchange=<exchange>, interval=<primary_interval>, count=60)
+   get_indicators(indicator_code="macd_fast", symbol=<symbol>, exchange=<exchange>, interval=<primary_interval>, count=60)
+   get_indicators(indicator_code="atr_14",  symbol=<symbol>, exchange=<exchange>, interval=<primary_interval>, count=60)
    ```
-   If HTF bullish → look for bullish setups (pullbacks, OBs, demand zones). Mark setup zones.
+   If HTF bullish → look for bullish setups (pullbacks to ema_21 / ema_50 / 50-61.8% Fib, demand zones, order blocks). Mark setup zones.
+
+   Cite the RSI / MACD slope as a 3–5 value progression (latest value alone is folklore):
+   - `RSI21 53.2 (49.8 → 51.4 → 52.9 → 53.2) rising` ← evidence of momentum continuation
+   - `MACD hist +8.4 (−1.2 → +3.6 → +8.4) accelerating bull` ← evidence of impulse
 
 3. **Lower TF — time the entry**:
    ```
-   generate_chart(symbol=<symbol>, interval=<ltf_interval>)
-   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<ltf_interval>)
-   get_indicator(indicator_code="ema", symbol=<symbol>, interval=<ltf_interval>)
+   get_candles(symbol=<symbol>, exchange=<exchange>, interval=<ltf_interval>, count=20)
+   get_indicators(indicator_code="rsi_21",    symbol=<symbol>, exchange=<exchange>, interval=<ltf_interval>, count=20)
+   get_indicators(indicator_code="macd_fast", symbol=<symbol>, exchange=<exchange>, interval=<ltf_interval>, count=20)
+   get_indicators(indicator_code="atr_14",    symbol=<symbol>, exchange=<exchange>, interval=<ltf_interval>, count=20)
    ```
-   Entry triggers: BOS in HTF direction, rejection candle at setup zone, RSI divergence, volume spike.
+   Entry triggers (any ONE confirmed at LTF candle close):
+   - **BOS in HTF direction** — break of structure on LTF (HH for long, LL for short)
+   - **Rejection candle at setup zone** — engulfing, hammer, pin
+   - **RSI hook back toward midline** from extreme (e.g. RSI 36 → 42 in 2 bars after a pullback)
+   - **MACD histogram flip** in HTF direction after a reset
 
-4. **Score and report**: calculate signal priority score, report HTF bias + primary setup + LTF confirmation + score + recommended action + key levels marked on chart.
+   The LTF candle must be **closed** (not forming) before counting it as a trigger.
+
+4. **Score and report**: calculate signal priority score, report HTF bias (with slope %) + primary setup + LTF confirmation + score + recommended action + key levels marked.
 
 ## Key Rules
 
@@ -89,6 +114,7 @@ Each timeframe should be 4-6x the one below it. Pick one combination and use con
 - NEVER skip HTF analysis; the extra time checking HTF prevents chasing bad trades
 - NEVER use more than 3 timeframes; a 4th or 5th adds confusion, not clarity
 - NEVER force trades in ranging HTF; when HTF has no clear trend, wait for directional bias
+- Use the EMA slope % (computed via `execute`) as the HTF bias gate; do NOT call ADX / DMI / Supertrend (API-billed, not in the free whitelist)
 - Use **market-regime-detection** skill to classify the regime before applying MTF weights; regime determines which timeframe dominates
 
 ## Related Skills

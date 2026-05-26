@@ -43,12 +43,12 @@ VWAP (Volume Weighted Average Price) is the institutional benchmark for intraday
 
 1. **Get VWAP/price data** for the session:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 
 2. **Get EMA** for trend context:
    ```
-   get_indicator(indicator_code="ema", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="ema", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 3. **Calculate deviation**: `(Price - VWAP) / VWAP * 100`

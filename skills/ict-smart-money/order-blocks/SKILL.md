@@ -37,7 +37,7 @@ Institutional buy/sell zones that leave footprints for future price reactions.
 1. **Identify** the order block on HTF (4H/Daily) for bias, LTF (15m/5m) for entry
 2. **Get candle data** around the zone:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 3. **Mark the zone** using `draw_chart_analysis` with type `demand` (bullish) or `supply` (bearish)
 4. **Wait for price to return** to the order block zone

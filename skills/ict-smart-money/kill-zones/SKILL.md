@@ -31,7 +31,7 @@ Specific session windows when institutional activity peaks, creating the best tr
 
 1. **Pre-session**: Mark Asian session high/low, identify HTF key levels, note scheduled news events
    ```
-   get_candles_around_date(symbol=<symbol>, interval="15m", date=<asian_session_date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval="15m", date=<asian_session_date>)
    ```
 2. **Session open** (first 15-30 min): Observe manipulation. Wait for sweep of Asian high/low
 3. **Entry timing**: Enter after kill zone manipulation (sweeps), typically 30-60 min into the session. Watch for LTF structure shift as confirmation

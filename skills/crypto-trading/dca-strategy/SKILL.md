@@ -43,20 +43,20 @@ Example ($100/week):
 
 ## Workflow
 
-1. **Check current price** against historical average:
+1. **Check current price** against the historical average:
 ```
-get_latest_candle(symbol="BTCUSDT")
-get_indicator(indicator_code="sma", symbol="BTCUSDT", interval="1w")
+get_candles(symbol="BTC/USD", exchange="binance", interval="1d", count=1)
+get_indicators(indicator_code="sma_50", symbol="BTC/USD", exchange="binance", interval="1w")
 ```
 
 2. **Assess if Enhanced DCA bonus applies** (price below 200-day MA):
 ```
-get_indicator(indicator_code="sma", symbol="BTCUSDT", interval="1d")
+get_indicators(indicator_code="sma_200", symbol="BTC/USD", exchange="binance", interval="1d")
 ```
 
 3. **Evaluate macro conditions** for DCA continuation or pause:
 ```
-get_financial_news(query="BTC macro outlook accumulation")
+get_financial_news(topic="BTC macro outlook accumulation")
 ```
 
 4. **Report recommendation**: current price vs DCA average, whether to buy standard or enhanced amount, and any flags to pause (fundamental deterioration).

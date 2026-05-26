@@ -32,7 +32,7 @@ Converging trendlines sloping in the same direction, typically signaling reversa
 ### 1. Get Swing Point Data
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<swing_date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<swing_date>)
 ```
 
 ### 2. Draw Wedge Boundaries (2 parallel calls)
@@ -63,7 +63,7 @@ draw_chart_analysis(action="create", drawing={
 
 ### 3. Confirm and Enter
 
-Confirm declining volume with `get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)`.
+Confirm declining volume with `get_indicators(indicator_code="mfi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)`.
 
 **Standard:** Rising wedge → short on downside break. Falling wedge → long on upside break. Volume spike confirms. Stop beyond opposite boundary.
 **Preferred:** Wait for breakout + retest of broken trendline. Enter on rejection.

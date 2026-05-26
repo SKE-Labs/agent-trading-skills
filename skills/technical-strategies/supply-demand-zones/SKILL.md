@@ -47,7 +47,7 @@ Supply and demand zones mark areas of institutional accumulation (demand) and di
 
 1. **Get candle data** on HTF (4H/Daily) to identify zones:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 
 2. **Mark zones** on chart:
@@ -64,7 +64,7 @@ Supply and demand zones mark areas of institutional accumulation (demand) and di
 
 3. **Confirm with indicators**:
    ```
-   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
    Check for oversold/overbought at zone.
 

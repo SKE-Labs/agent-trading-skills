@@ -36,13 +36,13 @@ Candlestick patterns provide visual entry/exit signals based on price action psy
 
 ### 1. Identify Key Level
 
-Use `get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)` to find S/R levels from price action (swing highs/lows, prior rejection zones).
+Use `get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)` to find S/R levels from price action (swing highs/lows, prior rejection zones).
 
 ### 2. Confirm Pattern at Level
 
 Wait for a candlestick pattern to form at the key level. Confirm:
 - Direction matches HTF bias
-- Volume context via `get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)`
+- Volume context via `get_indicators(indicator_code="mfi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)`
 
 ### 3. Mark Key Candles
 

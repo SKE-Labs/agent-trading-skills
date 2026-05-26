@@ -36,7 +36,7 @@ Reliable reversal pattern signaling the end of an uptrend (or downtrend for inve
 ### 1. Get Exact Data
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<head_date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<head_date>)
 ```
 
 ### 2. Mark Structure Points (3 parallel highlight calls)

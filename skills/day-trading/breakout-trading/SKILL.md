@@ -31,7 +31,7 @@ Also require: candle **closes** beyond level (not just wick), follow-through for
 ### 1. Identify Consolidation
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
 ```
 
 Look for tight range with 3+ touches on support/resistance.
@@ -52,9 +52,9 @@ draw_chart_analysis(action="create", drawing={
 ### 3. Check Volume and Momentum
 
 ```
-get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)
-get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
-get_indicator(indicator_code="macd", symbol=<symbol>, interval=<interval>)
+get_indicators(indicator_code="mfi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+get_indicators(indicator_code="macd", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
 ```
 
 Breakout candle volume must be >1.5x 20-period average. RSI trending in breakout direction. MACD histogram expanding.

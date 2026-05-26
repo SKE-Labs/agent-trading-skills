@@ -39,7 +39,7 @@ Divergence between price and RSI signals weakening momentum before price reverse
 
 1. **Get RSI**:
    ```
-   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 2. **Identify swing points** on price chart and corresponding RSI swings
@@ -48,7 +48,7 @@ Divergence between price and RSI signals weakening momentum before price reverse
 
 4. **Get candles** for chart marking:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 
 5. **Mark divergence**:

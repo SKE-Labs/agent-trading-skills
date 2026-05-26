@@ -29,7 +29,7 @@ The market oscillates between premium (expensive) and discount (cheap) zones aro
 
 1. **Identify the swing range** on HTF (Weekly/Daily for zone, 4H for swing range):
    ```
-   get_candles_around_date(symbol=<symbol>, interval="1d", date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval="1d", date=<date>)
    ```
 2. **Draw Fibonacci** using `draw_chart_analysis` with `fib_retracement` (0% = Swing High, 100% = Swing Low)
 3. **Determine current position**: Above 50% = Premium, Below 50% = Discount

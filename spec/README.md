@@ -71,22 +71,73 @@ description: A skill for order blocks trading.
 
 ## Tool References
 
-Skills may reference tools available to AI analysts. Always include required parameters:
+Skills may reference tools available to AI analysts. Always include required parameters.
 
-| Tool                      | Signature                                                           | Purpose                                      |
-| ------------------------- | ------------------------------------------------------------------- | -------------------------------------------- |
-| `get_indicator`           | `get_indicator(indicator_code, symbol, interval)`                   | Technical indicator values (RSI, MACD, etc.) |
-| `get_candles_around_date` | `get_candles_around_date(symbol, interval, date)`                   | 21 candles around a target date              |
-| `get_latest_candle`       | `get_latest_candle(symbol)`                                         | Current price data                           |
-| `generate_chart`          | `generate_chart(symbol, interval)`                                  | Candlestick chart images                     |
-| `draw_chart_analysis`     | `draw_chart_analysis(action, drawing={type, points, options})`      | Draw zones, levels, trends, fib on chart     |
-| `draw_position`           | `draw_position(action, drawing={type, points, options})`            | Draw long/short position markers             |
-| `get_financial_news`      | `get_financial_news(topic, max_results)`                            | Financial news from trusted sources          |
-| `get_fundamentals`        | `get_fundamentals(ticker)`                                          | Stock fundamentals (valuation, earnings)     |
-| `get_economics_calendar`  | `get_economics_calendar(from_date, to_date, impact)`                | Economic events (NFP, CPI, FOMC)             |
-| `calculate_position_size` | `calculate_position_size(symbol, entry_price, stop_loss)`           | Risk-based position sizing                   |
+### Market data
+
+| Tool                      | Signature                                                                         | Notes                                                              |
+| ------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `get_candles`             | `get_candles(symbol, exchange, interval, count=1)`                                | Last N candles (1–200). `count=1` for spot price, `count>1` for context. |
+| `get_candles_around_date` | `get_candles_around_date(symbol, exchange, interval, date)`                       | 21 candles centered on a target date.                              |
+| `get_specific_candle_data`| `get_specific_candle_data(symbol, exchange, interval, timestamp)`                 | Nearest candle to a unix timestamp.                                |
+| `get_indicators`          | `get_indicators(indicator_code, symbol, exchange, interval, count=1)`             | One indicator per call. `count>1` returns history for slope/divergence. |
+| `view_chart`              | `view_chart(symbol, exchange, interval, from_date?, to_date?)`                    | Renders a candlestick chart image (vision-capable models).         |
+| `get_order_flow`          | `get_order_flow(symbol, interval, lookback=50)`                                   | Binance taker buy/sell + delta + CVD (crypto only).                |
+
+### Research
+
+| Tool                      | Signature                                                                         | Notes                                                              |
+| ------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `get_financial_news`      | `get_financial_news(topic, time_range?, max_results=10, fetch_content=False)`     | `time_range` is `"day" | "week" | "month"`.                        |
+| `get_fundamentals`        | `get_fundamentals(ticker, data_type="overview")`                                  | `data_type` selects overview, valuation, earnings, etc.            |
+| `get_economics_calendar`  | `get_economics_calendar(from_date, to_date, country?, impact?, event?)`           | Dates are `YYYY-MM-DD`. `impact` is `"High" | "Medium" | "Low"`.   |
+| `get_social_media_sentiment` | `get_social_media_sentiment(ticker)`                                           | Reddit-based sentiment counts.                                     |
+| `get_user_watchlist`      | `get_user_watchlist()`                                                            | User's favorited tickers.                                          |
+
+### Signals & risk
+
+| Tool                      | Signature                                                                         | Notes                                                              |
+| ------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `preview_position_size`   | `preview_position_size(symbol, side, entry, stop_loss, risk_usd?, risk_pct?)`     | Advisory sizing — no order placed.                                 |
+| `get_portfolio_risk_state`| `get_portfolio_risk_state()`                                                      | Balance, margin used, committed risk, remaining R budget.          |
+| `get_user_trading_insights`| `get_user_trading_insights(ticker?, status?, trade_type?)`                       | Lists active/executed/closed signals.                              |
+| `create_trading_insight`  | `create_trading_insight(symbol, side, entry, stop_loss, take_profits, trade_type, risk_usd?, notes?)` | Creates a signal; user-approval required.                          |
+| `update_trading_insight`  | `update_trading_insight(signal_id, entry?, stop_loss?, take_profits?, status?, notes?)` | Edit a pending insight.                                            |
+
+### Chart drawing & UI
+
+| Tool                      | Signature                                                                         | Notes                                                              |
+| ------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `draw_chart_analysis`     | `draw_chart_analysis(action, drawing={type, points, options})`                    | Types: `demand`, `supply`, `consolidation`, `breakout`, `support`, `resistance`, `level`, `trend`, `fib_retracement`, `highlight`. All require 2 points. |
+| `draw_position`           | `draw_position(action, drawing={type, points, options})`                          | Types: `long_position`, `short_position`. `options.stopLoss`/`takeProfit` are raw prices. |
+| `change_user_chart`       | `change_user_chart(symbol, exchange?, interval?)`                                 | Switches the live chart view.                                      |
+| `request_chart_screenshot`| `request_chart_screenshot(reason)`                                                | HITL — pauses for the user's live TradingView screenshot.          |
+
+### Spawn-only (autonomous tasks)
+
+| Tool                      | Signature                                                                         | Notes                                                              |
+| ------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `execute_trade`           | `execute_trade(signal_id)`                                                        | Executes a pending insight at market.                              |
+| `close_position`          | `close_position(signal_id, exit_price, reason)`                                   | Closes an open position.                                           |
+| `adjust_stop_loss`        | `adjust_stop_loss(signal_id, new_stop_loss, reason)`                              | Tighten only (long can only raise, short can only lower).          |
+| `adjust_take_profit`      | `adjust_take_profit(signal_id, take_profits, reason)`                             |                                                                    |
+| `cancel_signal`           | `cancel_signal(signal_id, reason)`                                                | Cancel before execution.                                           |
+| `write_artifact`          | `write_artifact(content)`                                                         | Persistent markdown artifact for the spawn.                        |
+| `create_price_trigger`    | `create_price_trigger(symbol, trigger_price, direction, fire_mode, ...)`          | Real-time price trigger that fires a mini or wakes the task.       |
+| `invoke_mini_agent`       | `invoke_mini_agent(mini_type, name, task, schedule="now", ...)`                   | Delegate to a fixed-tool mini agent.                               |
+| `send_notification`       | `send_notification(title, body, type?)`                                           | Push to user.                                                      |
+
+### Code execution
+
+The `execute` tool runs shell commands in a restricted sandbox (PATH scrubbed to `/usr/local/bin:/usr/bin:/bin`, `PYTHONPATH` cleared). Use it for slope/divergence math that isn't already an indicator and for short numpy/pandas snippets. Reach for `get_indicators` first — it returns pre-computed values and caches.
+
+```
+execute python3 -c "ema=[<ema_50_history>]; s=(ema[-1]-ema[-5])/ema[-5]*100; print(f'slope_pct={s:.3f}')"
+```
+
+**Exchange parameter:** `exchange` is REQUIRED for `get_candles`, `get_candles_around_date`, `get_specific_candle_data`, `get_indicators`, and `view_chart`. Use the venue name (lowercase) — e.g., `"binance"` for crypto, `"nasdaq"` / `"nyse"` for stocks, and `"global"` for forex / commodities / indices that don't trade on a specific venue.
 
 **Rules:**
-- Skills must **NEVER** reference `execute()` or any code execution tool. These do not exist. Use inline formulas or reference the appropriate tool above.
-- Always include `symbol` and `interval` parameters in tool call examples (use `<symbol>` and `<interval>` as placeholders when context-dependent).
+- Always include all required parameters in tool examples (use `<symbol>` / `<exchange>` / `<interval>` placeholders when context-dependent).
 - Reference only tools the agent actually has access to. For cross-domain needs, use delegation notes: "The orchestrator handles position sizing and signal creation."
+- Prefer the canonical tool name over phrasing it generically — agents grep on tool names.

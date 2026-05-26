@@ -32,7 +32,7 @@ Channels define parallel price boundaries for trading bounces or anticipating br
 Fetch exact timestamps and prices for swing highs/lows (need 2+ per line):
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<swing_date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<swing_date>)
 ```
 
 ### 2. Draw the Channel (2 parallel trend lines)
@@ -63,9 +63,9 @@ draw_chart_analysis(action="create", drawing={
 
 ### 3. Confirm and Enter
 
-**Channel Bounce:** Wait for price at boundary + reversal candle + RSI divergence via `get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)`. Stop beyond boundary.
+**Channel Bounce:** Wait for price at boundary + reversal candle + RSI divergence via `get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)`. Stop beyond boundary.
 
-**Channel Breakout:** Wait for candle close outside channel. Confirm with `get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)` for volume. Target = channel width projected from breakout. Mark breakout level:
+**Channel Breakout:** Wait for candle close outside channel. Confirm with `get_indicators(indicator_code="mfi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)` for volume. Target = channel width projected from breakout. Mark breakout level:
 
 ```
 draw_chart_analysis(action="create", drawing={

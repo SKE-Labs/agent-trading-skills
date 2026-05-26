@@ -16,7 +16,7 @@ Enter confirmed directional moves and ride them until momentum decays.
 ### Regime Filter (Required)
 
 ```
-get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
+get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
 ```
 
 | ADX Value | Action |
@@ -39,7 +39,7 @@ get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
 ### 1. Check Regime
 
 ```
-get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
+get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
 ```
 
 ADX must be >25. If <20, report to orchestrator that momentum conditions do not exist.
@@ -47,10 +47,10 @@ ADX must be >25. If <20, report to orchestrator that momentum conditions do not 
 ### 2. Get Price Data and Confirm Momentum
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
-get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
-get_indicator(indicator_code="macd", symbol=<symbol>, interval=<interval>)
-get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
+get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+get_indicators(indicator_code="macd", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+get_indicators(indicator_code="mfi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
 ```
 
 All three must align: RSI trending from 50 toward extreme, MACD histogram expanding, volume above average. Check for accelerating candle sizes and HH/HL (bullish) or LH/LL (bearish) structure.

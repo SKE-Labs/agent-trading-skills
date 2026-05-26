@@ -25,7 +25,7 @@ Use after: BOS/CHoCH pullbacks, liquidity sweeps, trending move continuations.
 
 1. **Identify the impulse** -- a strong displacement move with clear swing low to swing high (or vice versa):
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 2. **Draw Fibonacci** using `draw_chart_analysis` with `fib_retracement`:
    - Bullish: Point 1 = swing low, Point 2 = swing high

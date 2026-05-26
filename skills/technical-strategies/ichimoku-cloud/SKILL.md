@@ -63,13 +63,13 @@ All 4 = strong signal. 3/4 = moderate. <3 = weak/skip.
 
 1. **Get Ichimoku components**:
    ```
-   get_indicator(indicator_code="ema", symbol=<symbol>, interval=<interval>)
-   get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="ema", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+   get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 2. **Get candle data** to calculate Ichimoku manually:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
    Compute: `Tenkan = (9H + 9L) / 2`, `Kijun = (26H + 26L) / 2`, `Senkou A = (Tenkan + Kijun) / 2`, `Senkou B = (52H + 52L) / 2`
 

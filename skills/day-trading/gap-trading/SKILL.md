@@ -16,7 +16,7 @@ Trade price gaps by classifying gap type first -- different types require opposi
 A gap exists when current open > previous high (gap up) or current open < previous low (gap down).
 
 ```
-get_candles_around_date(symbol=<symbol>, interval="1D", date=<date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval="1D", date=<date>)
 ```
 
 Gap size = (Open - Previous Close) / Previous Close x 100. Ignore gaps < 0.5% (noise).
@@ -35,8 +35,8 @@ Gap size = (Open - Previous Close) / Previous Close x 100. Ignore gaps < 0.5% (n
 ### 1. Detect and Classify
 
 ```
-get_candles_around_date(symbol=<symbol>, interval="1D", date=<date>)
-get_indicator(indicator_code="mfi", symbol=<symbol>, interval="1D")
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval="1D", date=<date>)
+get_indicators(indicator_code="mfi", symbol=<symbol>, exchange=<exchange>, interval="1D")
 ```
 
 Calculate gap size %. Compare volume to 20-period average. Classify using table above.
@@ -44,8 +44,8 @@ Calculate gap size %. Compare volume to 20-period average. Classify using table 
 ### 2. Check Trend Context
 
 ```
-get_indicator(indicator_code="dmi", symbol=<symbol>, interval="1D")
-get_indicator(indicator_code="ema", symbol=<symbol>, interval="1D")
+get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval="1D")
+get_indicators(indicator_code="ema", symbol=<symbol>, exchange=<exchange>, interval="1D")
 ```
 
 Determine if ranging, starting trend, mid-trend, or extended trend to confirm classification.

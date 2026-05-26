@@ -45,7 +45,7 @@ Fibonacci ratios identify key retracement and extension levels for entries and t
 
 1. **Get candle data** around the swing:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<swing_date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<swing_date>)
    ```
 
 2. **Draw Fibonacci retracement** on chart (auto-renders all standard levels):
@@ -62,8 +62,8 @@ Fibonacci ratios identify key retracement and extension levels for entries and t
 
 3. **Check confluence** with indicators:
    ```
-   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
-   get_indicator(indicator_code="macd", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+   get_indicators(indicator_code="macd", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 4. **Mark confluence zones** where Fib levels overlap with other structures:

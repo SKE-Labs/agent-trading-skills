@@ -32,7 +32,7 @@ Continuation patterns that form during pauses in strong trends.
 Identify the flagpole and consolidation boundaries:
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<flag_date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<flag_date>)
 ```
 
 ### 2. Draw Flag/Pennant Boundaries (2 parallel calls)
@@ -65,7 +65,7 @@ draw_chart_analysis(action="create", drawing={
 
 ### 3. Confirm and Enter
 
-Confirm declining volume during consolidation via `get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)`.
+Confirm declining volume during consolidation via `get_indicators(indicator_code="mfi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)`.
 
 **Standard:** Enter on break of flag/pennant boundary with volume spike. Stop beyond opposite side.
 **Conservative:** Wait for breakout + retest of boundary. Enter on bounce.

@@ -30,7 +30,7 @@ Reversal patterns that form when price fails to break a level twice.
 ### 1. Get Exact Data
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<peak_date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<peak_date>)
 ```
 
 ### 2. Mark Peaks/Troughs (2 parallel highlight calls)

@@ -48,7 +48,7 @@ MACD (Moving Average Convergence Divergence) combines trend-following and moment
 
 1. **Get MACD**:
    ```
-   get_indicator(indicator_code="macd", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="macd", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 2. **Determine trend** from zero line: MACD > 0 → look for longs; MACD < 0 → look for shorts
@@ -59,7 +59,7 @@ MACD (Moving Average Convergence Divergence) combines trend-following and moment
 
 5. **Get candles for context**:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 
 6. **Exit signals**: opposite crossover, divergence forming, or histogram shrinking significantly

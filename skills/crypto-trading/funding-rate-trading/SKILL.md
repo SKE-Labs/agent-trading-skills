@@ -48,18 +48,18 @@ Perpetual futures use funding rates to keep price aligned with spot -- creating 
 
 1. **Get current funding rate data**:
 ```
-get_financial_news(query="BTC perpetual funding rate Binance Bybit")
+get_financial_news(topic="BTC perpetual funding rate Binance Bybit")
 ```
 
 2. **Check spot price and momentum**:
 ```
-get_latest_candle(symbol="BTCUSDT")
-get_indicator(indicator_code="rsi", symbol="BTCUSDT", interval="4h")
+get_candles(symbol="BTC/USD", exchange="binance", interval="4h", count=1)
+get_indicators(indicator_code="rsi", symbol="BTC/USD", exchange="binance", interval="4h")
 ```
 
 3. **Assess futures-spot premium**:
 ```
-get_financial_news(query="BTC futures premium spot basis")
+get_financial_news(topic="BTC futures premium spot basis")
 ```
 
 4. **Calculate arb APR** if funding is extreme: APR = rate x 3 x 365.

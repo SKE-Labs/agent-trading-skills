@@ -72,12 +72,13 @@ Quarter Kelly achieves ~75% of full Kelly's growth rate with far less drawdown r
 ## Workflow
 
 1. **Get entry and stop loss** from the technical analyst's analysis
-2. **Check for correlated positions** -- are existing positions in correlated assets?
-3. **Select sizing method** based on situation (see table above)
-4. **Calculate position size** using `calculate_position_size` (pass entry, stop loss, user profile with balance/risk settings)
-5. **Verify against limits** -- single trade <= 2%, daily exposure within limit, correlated positions within combined limit
-6. **Adjust for events** -- reduce 50-75% if high-impact economic event within 24h
-7. **Create signal** with the calculated size via `create_trading_signal`
+2. **Check committed risk and balance** via `get_portfolio_risk_state()` (remaining R budget, margin used)
+3. **Check for correlated positions** -- are existing positions in correlated assets?
+4. **Select sizing method** based on situation (see table above)
+5. **Preview the size** via `preview_position_size(symbol=<symbol>, side=<BUY|SELL>, entry=<entry>, stop_loss=<stop>, risk_usd=<dollars>)` — returns quantity, leverage, notional. Use it to sanity-check before creating the insight.
+6. **Verify against limits** -- single trade <= 2%, daily exposure within limit, correlated positions within combined limit
+7. **Adjust for events** -- reduce 50-75% if high-impact economic event within 24h
+8. **Create the insight** via `create_trading_insight(symbol, side, entry, stop_loss, take_profits, trade_type, risk_usd=<dollars>)` — sizing is recomputed server-side; `preview_position_size` is advisory only.
 
 ## Key Rules
 

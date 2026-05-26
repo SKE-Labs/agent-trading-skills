@@ -34,24 +34,24 @@ Rotate between BTC, ETH, and altcoins based on market cycle phase and BTC domina
 
 1. **Check BTC dominance trend** using news and price data:
 ```
-get_financial_news(query="BTC dominance altcoin season")
-get_latest_candle(symbol="BTCUSDT")
+get_financial_news(topic="BTC dominance altcoin season")
+get_candles(symbol="BTC/USD", exchange="binance", interval="1d", count=1)
 ```
 
 2. **Assess momentum** to identify cycle phase:
 ```
-get_indicator(indicator_code="rsi", symbol="BTCUSDT", interval="1d")
-get_indicator(indicator_code="rsi", symbol="ETHUSDT", interval="1d")
+get_indicators(indicator_code="rsi", symbol="BTC/USD", exchange="binance", interval="1d")
+get_indicators(indicator_code="rsi", symbol="ETH/USD", exchange="binance", interval="1d")
 ```
 
 3. **Evaluate ETH/BTC ratio** as alt season proxy:
 ```
-get_latest_candle(symbol="ETHBTC")
+get_candles(symbol="ETH/BTC", exchange="binance", interval="1d", count=20)
 ```
 
 4. **Screen alt candidates** matching selection criteria:
 ```
-get_financial_news(query="top performing altcoins crypto narrative")
+get_financial_news(topic="top performing altcoins crypto narrative")
 ```
 
 5. **Report allocation recommendation** with cycle phase, dominance trend, and suggested weights.

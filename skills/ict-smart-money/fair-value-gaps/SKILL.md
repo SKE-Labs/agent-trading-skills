@@ -36,7 +36,7 @@ metadata:
 
 1. **Identify FVG** after impulsive move using candle data:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 2. **Mark the zone** using `draw_chart_analysis` with type `demand` (bullish) or `supply` (bearish)
 3. **Wait for retracement** into the gap

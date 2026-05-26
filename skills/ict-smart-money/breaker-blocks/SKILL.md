@@ -36,7 +36,7 @@ Failed order blocks that flip polarity -- bullish OB becomes bearish resistance,
 
 1. **Find a failed order block** using candle data:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 2. **Confirm the break** with CHoCH or BOS through the original OB
 3. **Mark the breaker zone** using `draw_chart_analysis` with `demand` (bullish) or `supply` (bearish)

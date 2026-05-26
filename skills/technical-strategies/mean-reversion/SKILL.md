@@ -44,20 +44,20 @@ Use 25/75 thresholds (not 30/70): RSI <25 = deeply oversold (buy), RSI >75 = dee
 
 1. **Check regime** (must pass first):
    ```
-   get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
    ADX > 25 → stop. Mean reversion not applicable.
 
 2. **Get BB and RSI**:
    ```
-   get_indicator(indicator_code="bbands", symbol=<symbol>, interval=<interval>)
-   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
-   get_indicator(indicator_code="ema", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="bbands", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+   get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+   get_indicators(indicator_code="ema", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 3. **Get candles** for confirmation:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 
 4. **Mark setup**:

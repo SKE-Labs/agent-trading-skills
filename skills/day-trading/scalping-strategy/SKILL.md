@@ -29,8 +29,8 @@ Target small, frequent profits from minimal price movements on 1m-5m timeframes.
 Enter on strong momentum candles on 1m, ride for small gain, exit immediately on momentum loss.
 
 ```
-get_indicator(indicator_code="rsi", symbol=<symbol>, interval="1m")
-get_indicator(indicator_code="macd", symbol=<symbol>, interval="1m")
+get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval="1m")
+get_indicators(indicator_code="macd", symbol=<symbol>, exchange=<exchange>, interval="1m")
 ```
 
 RSI crossing 50 with expanding MACD histogram on 1m = entry trigger. Exit when histogram shrinks.
@@ -40,7 +40,7 @@ RSI crossing 50 with expanding MACD histogram on 1m = entry trigger. Exit when h
 Quick bounces at key S/R levels with tight stops.
 
 ```
-get_candles_around_date(symbol=<symbol>, interval="5m", date=<date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval="5m", date=<date>)
 ```
 
 Identify S/R on 5m, enter on rejection candle on 1m. Stop just beyond the level. Target 1:1 to 1:1.5 R:R.
@@ -50,7 +50,7 @@ Identify S/R on 5m, enter on rejection candle on 1m. Stop just beyond the level.
 Buy support, sell resistance within a defined micro-range. Repeat until range breaks.
 
 ```
-get_indicator(indicator_code="dmi", symbol=<symbol>, interval="5m")
+get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval="5m")
 ```
 
 ADX <20 on 5m confirms micro-range. Mark boundaries, trade bounces at edges.
@@ -60,8 +60,8 @@ ADX <20 on 5m confirms micro-range. Mark boundaries, trade bounces at edges.
 ### 1. Confirm Direction on 5m
 
 ```
-get_indicator(indicator_code="ema", symbol=<symbol>, interval="5m")
-get_indicator(indicator_code="dmi", symbol=<symbol>, interval="5m")
+get_indicators(indicator_code="ema", symbol=<symbol>, exchange=<exchange>, interval="5m")
+get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval="5m")
 ```
 
 Establish bias from higher timeframe before scalping on 1m.
@@ -69,8 +69,8 @@ Establish bias from higher timeframe before scalping on 1m.
 ### 2. Identify Setup on 1m
 
 ```
-get_candles_around_date(symbol=<symbol>, interval="1m", date=<date>)
-get_indicator(indicator_code="rsi", symbol=<symbol>, interval="1m")
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval="1m", date=<date>)
+get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval="1m")
 ```
 
 Pick one technique (momentum, level, or range) based on current conditions.

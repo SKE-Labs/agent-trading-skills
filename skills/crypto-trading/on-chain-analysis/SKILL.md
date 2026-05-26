@@ -62,15 +62,15 @@ NVT works best as a macro indicator; use multi-day averages to filter noise.
 
 1. **Gather on-chain intelligence** from news sources:
 ```
-get_financial_news(query="BTC on-chain exchange outflow whale accumulation")
-get_financial_news(query="BTC MVRV NVT realized cap ratio")
+get_financial_news(topic="BTC on-chain exchange outflow whale accumulation")
+get_financial_news(topic="BTC MVRV NVT realized cap ratio")
 ```
 
 2. **Check current price and momentum** for technical confirmation:
 ```
-get_latest_candle(symbol="BTCUSDT")
-get_indicator(indicator_code="rsi", symbol="BTCUSDT", interval="1d")
-get_indicator(indicator_code="macd", symbol="BTCUSDT", interval="1d")
+get_candles(symbol="BTC/USD", exchange="binance", interval="1d", count=1)
+get_indicators(indicator_code="rsi", symbol="BTC/USD", exchange="binance", interval="1d")
+get_indicators(indicator_code="macd", symbol="BTC/USD", exchange="binance", interval="1d")
 ```
 
 3. **Classify regime**: Map news findings to the tables above -- accumulation, distribution, or neutral.

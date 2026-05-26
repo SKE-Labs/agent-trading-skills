@@ -39,16 +39,16 @@ Only viable if Net Profit > 0 after all fees.
 
 1. **Fetch current prices** for the target asset across pairs:
 ```
-get_latest_candle(symbol="BTCUSDT")
-get_latest_candle(symbol="ETHUSDT")
-get_latest_candle(symbol="ETHBTC")
+get_candles(symbol="BTC/USD", exchange="binance", interval="5m", count=1)
+get_candles(symbol="ETH/USD", exchange="binance", interval="5m", count=1)
+get_candles(symbol="ETH/BTC", exchange="binance", interval="5m", count=1)
 ```
 
 2. **Calculate cross rates** and compare to actual market rates for triangular arb detection.
 
 3. **Check for futures-spot spread** via funding rate data:
 ```
-get_financial_news(query="BTC funding rate perpetual futures premium")
+get_financial_news(topic="BTC funding rate perpetual futures premium")
 ```
 
 4. **Estimate all costs** (maker/taker fees, withdrawal fees, gas, slippage) and compute net profit.

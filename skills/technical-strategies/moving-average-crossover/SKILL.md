@@ -55,14 +55,14 @@ MA crossovers provide systematic signals for trend identification and entry timi
 
 1. **Get EMAs**:
    ```
-   get_indicator(indicator_code="ema", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="ema", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 2. **Identify cross** direction and confirm with price position relative to MAs
 
 3. **Get candle data** for entry timing:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 
 4. **Enter on pullback** to fast MA (conservative) or on cross (aggressive)

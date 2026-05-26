@@ -37,7 +37,7 @@ Clustered stop losses that institutions target for order fills before reversing 
 
 1. **Identify liquidity pool** (equal highs/lows, obvious swing points):
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 2. **Mark levels** using `draw_chart_analysis`: `resistance` for BSL, `support` for SSL, `highlight` for sweep points
 3. **Wait for sweep** — price takes out the level

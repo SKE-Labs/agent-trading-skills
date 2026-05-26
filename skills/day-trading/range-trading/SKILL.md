@@ -34,7 +34,7 @@ Profit from price oscillating between clear support and resistance in non-trendi
 ### 1. Confirm Ranging Regime
 
 ```
-get_indicator(indicator_code="dmi", symbol=<symbol>, interval=<interval>)
+get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
 ```
 
 ADX <20 confirms ranging market. If ADX >25, this is a trend -- use momentum-trading or pullback-trading instead.
@@ -42,7 +42,7 @@ ADX <20 confirms ranging market. If ADX >25, this is a trend -- use momentum-tra
 ### 2. Identify Range Boundaries
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
 ```
 
 Find flat support/resistance with 2+ touches each side.

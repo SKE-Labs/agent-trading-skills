@@ -31,7 +31,7 @@ Identify trend direction and potential reversals through swing point analysis.
 
 1. **Identify current trend** on HTF (4H/Daily):
    ```
-   get_candles_around_date(symbol=<symbol>, interval="4h", date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval="4h", date=<date>)
    ```
 2. **Mark swing points** using `draw_chart_analysis` with `highlight` type (label HH, HL, LH, LL)
 3. **Watch for structure breaks**:

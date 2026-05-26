@@ -29,7 +29,7 @@ Triangles form during consolidation and typically break in the direction of the 
 Identify at least 2 swing highs and 2 swing lows (4+ total touch points):
 
 ```
-get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<swing_date>)
+get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<swing_date>)
 ```
 
 ### 2. Draw Converging Trendlines (2 parallel calls)
@@ -60,7 +60,7 @@ For ascending: upper line is flat (`resistance` type instead of `trend`). For de
 
 ### 3. Confirm and Enter
 
-Check volume declining during formation via `get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)`.
+Check volume declining during formation via `get_indicators(indicator_code="mfi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)`.
 
 **Standard:** Enter on break + candle close outside triangle with volume spike. Stop inside triangle on opposite side.
 **Preferred:** Wait for breakout, then retest of broken trendline. Enter on rejection.

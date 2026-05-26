@@ -49,7 +49,7 @@ Bollinger Bands measure volatility and identify potential reversals and breakout
 
 1. **Get Bollinger Bands**:
    ```
-   get_indicator(indicator_code="bbands", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="bbands", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 2. **Calculate Band Width**: `(Upper - Lower) / Middle * 100`
@@ -58,7 +58,7 @@ Bollinger Bands measure volatility and identify potential reversals and breakout
 
 3. **Confirm with RSI**:
    ```
-   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 4. **Identify setup**: band edge + reversal candle → mean reversion; squeeze + volume → breakout

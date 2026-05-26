@@ -47,12 +47,12 @@ Volume Profile shows how much trading occurred at each price level, revealing in
 
 1. **Get price and volume data** (need 50+ candles minimum):
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 
 2. **Check volume indicator**:
    ```
-   get_indicator(indicator_code="mfi", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="mfi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 3. **Identify profile levels** from candle data: group by price bins, sum volume per bin. Highest bin = POC. 70% of total volume = Value Area.
@@ -81,8 +81,8 @@ Volume Profile shows how much trading occurred at each price level, revealing in
 
 5. **Confirm with indicators**:
    ```
-   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
-   get_indicator(indicator_code="ema", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+   get_indicators(indicator_code="ema", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 6. **Report**: POC level, VA boundaries, price position (inside/above/below VA), key LVNs, trade setup

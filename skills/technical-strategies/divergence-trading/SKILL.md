@@ -50,9 +50,9 @@ Divergence occurs when price and an indicator move in opposite directions, signa
 
 1. **Get indicator data**:
    ```
-   get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
-   get_indicator(indicator_code="macd", symbol=<symbol>, interval=<interval>)
-   get_indicator(indicator_code="stoch", symbol=<symbol>, interval=<interval>)
+   get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+   get_indicators(indicator_code="macd", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+   get_indicators(indicator_code="stoch", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
 2. **Compare swings**: For each indicator, identify last two significant peaks/troughs and compare direction vs price direction
@@ -61,7 +61,7 @@ Divergence occurs when price and an indicator move in opposite directions, signa
 
 4. **Get candles for chart drawing**:
    ```
-   get_candles_around_date(symbol=<symbol>, interval=<interval>, date=<date>)
+   get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
 
 5. **Mark divergence on chart**:
