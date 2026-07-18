@@ -1,15 +1,15 @@
 ---
 name: multi-timeframe-analysis
-description: Analyze markets using 3 timeframes with signal priority scoring and conflict resolution. Use when determining trend direction, timing entries with precision, or validating trade setups across timeframes. Uses only free indicators (EMA slope, RSI, MACD) — avoids API-billed ADX/DMI.
+description: Map context, setup, and execution states across fixed timeframes. Use when measuring normalized EMA slope, objective structure, closed-bar triggers, and aligned or conflicting states without hand-built confidence scores.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "3.0"
+  version: "4.0"
 ---
 
 # Multi-Timeframe Analysis (MTF)
 
-Analyze 3 timeframes to align trend, structure, and entry. Never trade a lower timeframe signal that contradicts the higher timeframe bias.
+Map context, setup, and execution states across fixed timeframes. Higher-timeframe information may help, but it does not automatically dominate; validate aligned and conflicting states separately.
 
 ## Timeframe Selection
 
@@ -30,30 +30,20 @@ Each timeframe should be 4-6x the one below it. Pick one combination and use con
 | **Primary** | Trade structure | Patterns, setups, key levels             |
 | **Lower**   | Entry timing    | Precise entries, confirmation, tight stops |
 
-## Signal Priority
+## State Output
 
-| HTF Bias | Primary Setup | LTF Entry | Score | Action |
-| --- | --- | --- | --- | --- |
-| Bullish | Bullish setup | Bullish confirmation | **10/10** | Full size, high confidence |
-| Bullish | Bullish setup | No LTF signal yet | **7/10** | Wait for LTF, don't force |
-| Bullish | Ranging | — | **4/10** | Wait for primary setup |
-| Bullish | Bearish setup | Bearish confirmation | **2/10** | Skip — counter-trend |
-| Ranging | Bullish setup | Bullish confirmation | **6/10** | Reduced size (no HTF support) |
-| Ranging | Ranging | — | **1/10** | No trade — wait |
-| Bearish | Bullish setup | Bullish confirmation | **3/10** | Skip — against HTF |
-
-**Minimum score**: 6/10 for standard entries, 8/10 for full-size positions.
+Report each timeframe as bullish, bearish, ranging, or uncertain under its objective rule. Combine them as `aligned`, `mixed`, `counter-context`, or `incomplete`. Do not turn a hand-built score into confidence or position size; size comes from portfolio risk.
 
 ## Conflict Resolution
 
 | Conflict | Resolution |
 | --- | --- |
-| HTF bullish, Primary bearish | **Wait.** Primary is likely a pullback in HTF trend. |
-| HTF bearish, LTF bullish | **Skip.** LTF bullish in HTF downtrend = counter-trend trap. |
-| HTF ranging, Primary trending | **Reduce size.** 50% normal — no HTF confirmation. |
+| HTF bullish, Primary bearish | Label mixed; evaluate the predeclared mixed-state policy. |
+| HTF bearish, LTF bullish | Label counter-context; trade only if that state is validated. |
+| HTF ranging, Primary trending | Label mixed; do not map to arbitrary size. |
 | All timeframes conflicting | **No trade.** Clarity is a prerequisite. |
 
-**When in doubt, the higher timeframe wins. Period.**
+When evidence is incomplete or a state was not validated, return `no trade`.
 
 ## Workflow
 
@@ -69,9 +59,7 @@ Each timeframe should be 4-6x the one below it. Pick one combination and use con
    ```
    execute python3 -c "ema50=[<...>]; s=(ema50[-1]-ema50[-5])/ema50[-5]*100; print(f'htf_ema50_slope_pct={s:.3f}')"
    ```
-   - `slope > +0.5%` and `ema_21 > ema_50` → HTF bullish
-   - `slope < −0.5%` and `ema_21 < ema_50` → HTF bearish
-   - `|slope| ≤ 0.15%` → HTF ranging (skip directional entries; range-trading playbook only)
+   Calibrate price/ATR-normalized slope bands in training data, then combine with the EMA stack. Absolute percentage thresholds are not portable across timeframes/assets.
 
    Mark major HTF S/R: prior swing pivots, donchian_20 boundaries, Fibonacci extensions, weekly open / prior week high-low.
 
@@ -106,14 +94,22 @@ Each timeframe should be 4-6x the one below it. Pick one combination and use con
 
    The LTF candle must be **closed** (not forming) before counting it as a trigger.
 
-4. **Score and report**: calculate signal priority score, report HTF bias (with slope %) + primary setup + LTF confirmation + score + recommended action + key levels marked.
+4. **Report states**: show timestamps, normalized slope, context/setup/execution states, conflict label, closed-bar trigger, invalidation, and `valid`, `watch`, or `no trade`.
+
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Lo, Mamaysky & Wang](https://www.nber.org/papers/w7613) supports objective conditional price-pattern analysis; timeframe weights and scores are heuristics that must be frozen before testing.
 
 ## Key Rules
 
-- NEVER trade LTF signals against HTF trend; a 15m bullish signal means nothing if the daily is bearish
-- NEVER skip HTF analysis; the extra time checking HTF prevents chasing bad trades
-- NEVER use more than 3 timeframes; a 4th or 5th adds confusion, not clarity
-- NEVER force trades in ranging HTF; when HTF has no clear trend, wait for directional bias
+- Test counter-context and aligned states rather than declaring one meaningless.
+- Use higher-timeframe context only when it adds held-out value.
+- Fix the number and ratios of timeframes before testing; more timeframes increase multiple-testing risk.
+- Apply a predeclared policy to ranging/uncertain context.
 - Use the EMA slope % (computed via `execute`) as the HTF bias gate; do NOT call ADX / DMI / Supertrend (API-billed, not in the free whitelist)
 - Use **market-regime-detection** skill to classify the regime before applying MTF weights; regime determines which timeframe dominates
 

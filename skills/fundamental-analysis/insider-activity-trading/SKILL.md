@@ -1,56 +1,49 @@
 ---
 name: insider-activity-trading
-description: Track insider buying and selling for trading signals. Use when assessing management confidence, finding accumulation signals, or confirming fundamental views.
+description: Parse and evaluate SEC insider filings as delayed contextual evidence. Use when analyzing Form 4 codes, holdings changes, footnotes, amendments, purchase/sale clusters, and 10b5-1 disclosures.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "2.0"
+  version: "4.0"
 ---
 
 # Insider Activity Trading
 
-Insider transactions reveal management conviction -- buying is a strong signal, selling requires context.
+Use insider filings as delayed, contextual evidence. A transaction may reflect valuation views, compensation, taxes, liquidity needs, ownership policy, or a trading plan; it does not reveal motive by itself.
 
-## Insider Significance
+## Filing Fields
 
-| Insider | Significance |
-| --- | --- |
-| CEO / CFO | Highest |
-| Directors | High |
-| 10% owners | Medium |
-| Other officers | Medium |
+Record issuer, insider role, filing and transaction timestamps, direct/indirect ownership, transaction code, price, shares, post-transaction holdings, footnotes, derivative status, and 10b5-1 disclosure. Confirm amendments and avoid double counting the same beneficial owner.
 
 ## Signal Interpretation
 
-### Buying (Generally Bullish)
-
-Insiders only buy for one reason: they think it's undervalued.
+### Open-Market Purchases
 
 | Factor | Stronger Signal |
 | --- | --- |
-| Multiple insiders buying | Cluster buying (strongest) |
+| Multiple independent insiders buying | Candidate cluster; define window before testing |
 | Large purchases | Meaningful % of holdings |
 | After price drop | Buying the dip |
 | C-suite buying | CEO/CFO conviction |
 
-### Selling (Context-Dependent)
+### Sales and Other Codes
 
-Insiders sell for many reasons: diversification, taxes, personal needs. Selling alone is weaker signal.
+Separate open-market purchases/sales (`P`/`S`) from grants, option exercises, tax withholding, gifts, and other codes. Read footnotes and plan disclosures; even an open-market purchase or sale has an unobserved motive.
 
 | Selling Reason | Signal Strength |
 | --- | --- |
-| Planned (10b5-1) | Neutral (scheduled) |
+| Planned (10b5-1) | Contextual; inspect adoption date, terms, and amendments |
 | Diversification | Weak negative |
 | After big run-up | Moderate negative |
 | Unusual amount | Stronger negative |
-| Multiple C-suite selling | Concerning (strongest) |
+| Multiple C-suite selling | Candidate cluster requiring plan/code/holdings context |
 
 ## Bullish vs Bearish Patterns
 
 | Bullish | Bearish |
 | --- | --- |
 | CEO buying the dip | Multiple C-suite selling |
-| Cluster buying (3+ insiders) | Selling right after guidance |
+| Independently defined purchase cluster | Selling right after guidance |
 | Large $ purchases on weakness | Unusual volume of sales |
 | Buying after bad news | Selling before scheduled news |
 
@@ -69,20 +62,28 @@ Look for: recent Form 4 filings, transaction size, buyer/seller role, and whethe
 
 - Single insider selling = low signal, check if 10b5-1 planned
 - Single insider buying = moderate signal, check size relative to holdings
-- Cluster buying (3+ insiders within 2 weeks) = strong bullish signal
+- Purchase cluster = count independent insiders within a predeclared window and compare with issuer history
 - C-suite selling unusual amounts = red flag, investigate further
 
 ### 3. Combine with Fundamentals
 
 Insider activity is a confirming signal, not standalone. Cross-reference with company fundamentals, recent earnings, and technical setup before acting.
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: The [SEC Form 3/4/5 bulletin](https://www.sec.gov/file/forms-3-4-5pdf) explains codes and two-business-day reporting, while the [10b5-1 rule](https://www.sec.gov/rules-regulations/2022/12/insider-trading-arrangements-related-disclosures) requires plan-related disclosures.
+
 ## Key Rules
 
-- NEVER trade on insider activity alone -- use as confirmation of fundamental/technical view
-- NEVER treat all selling as bearish -- most insider sales are routine (10b5-1 plans, diversification, tax events)
-- NEVER ignore cluster buying -- multiple insiders buying within a short window is one of the highest-conviction fundamental signals
-- Insider filings lag by 2 business days -- the trade already happened
-- Insiders are often early -- conviction is right but timing can be off by weeks/months
+- Never trade on a headline; parse the filed form, codes, footnotes, ownership, and amendments.
+- Do not equate a 10b5-1 label with neutrality or a transaction with a disclosed motive.
+- Normalize transaction value by prior holdings, compensation, market capitalization, and insider history.
+- Use filing availability time—not transaction time—to prevent look-ahead bias; Form 4 is generally due within two business days, subject to form rules.
+- Define cluster windows and event exclusions before testing; report `no trade` when context is missing.
 
 ## Related Skills
 

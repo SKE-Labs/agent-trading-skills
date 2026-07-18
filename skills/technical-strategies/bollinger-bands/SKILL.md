@@ -1,10 +1,10 @@
 ---
 name: bollinger-bands
-description: Trade Bollinger Band squeezes, breakouts, and mean reversion. Use when measuring volatility, finding overbought/oversold conditions, or anticipating breakout moves.
+description: Define and test Bollinger bandwidth, percent-b, squeeze, continuation, and mean-reversion rules. Use when measuring relative volatility and evaluating closed-band triggers without treating tags as signals.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Bollinger Bands Trading
@@ -16,8 +16,8 @@ Bollinger Bands measure volatility and identify potential reversals and breakout
 | Band       | Calculation    | Meaning               |
 | ---------- | -------------- | --------------------- |
 | **Middle** | 20 SMA         | Trend baseline        |
-| **Upper**  | SMA + 2 StdDev | Resistance/overbought |
-| **Lower**  | SMA - 2 StdDev | Support/oversold      |
+| **Upper**  | SMA + k StdDev | Upper volatility envelope |
+| **Lower**  | SMA - k StdDev | Lower volatility envelope |
 
 **Band Width** = `(Upper - Lower) / Middle * 100`
 
@@ -25,15 +25,15 @@ Bollinger Bands measure volatility and identify potential reversals and breakout
 
 ### Mean Reversion (Range Trading)
 
-- Price touches upper band + RSI >70 → look for short toward middle band
-- Price touches lower band + RSI <30 → look for long toward middle band
-- Requires confirmation candle (engulfing, hammer, pin bar)
+- A band tag is descriptive, not a reversal signal.
+- Define regime, `%b`/distance, objective reversal trigger, invalidation, and middle-band target before testing.
+- Calibrate any RSI or candlestick filter; both are derived from the same price history.
 
 ### Bollinger Squeeze (Breakout)
 
-- Band Width <2% = low volatility, breakout imminent
-- Wait for price to close outside band with volume
-- Enter in breakout direction, target extended move
+- Define a squeeze by rolling bandwidth percentile within the same instrument/session.
+- A squeeze indicates low relative volatility, not that a breakout is imminent or directional.
+- Test closed-band exit, retest, and volume rules with a fixed horizon.
 
 ### Band Riding (Trend Trading)
 
@@ -53,8 +53,7 @@ Bollinger Bands measure volatility and identify potential reversals and breakout
    ```
 
 2. **Calculate Band Width**: `(Upper - Lower) / Middle * 100`
-   - Narrow (<2%) → expect breakout
-   - Wide (>4%) → expect mean reversion
+   - Report rolling percentile and historical sample; do not use universal percentage cutoffs.
 
 3. **Confirm with RSI**:
    ```
@@ -75,13 +74,21 @@ Bollinger Bands measure volatility and identify potential reversals and breakout
    })
    ```
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: John Bollinger's [22 rules](https://cmtassociation.org/technically_speaking/technically-speaking-march-2013/) state that band tags are not signals and outside closes are initially continuation—not reversal—signals.
+
 ## Key Rules
 
-- NEVER trade mean reversion when Band Width is expanding (trend in progress)
-- NEVER enter on band touch alone; require confirmation candle + RSI extreme
-- Band Width <2% signals squeeze; prepare for breakout, not mean reversion
-- Default settings: 20 SMA, 2 StdDev. Use 10/1.5 for more signals, 50/2.5 for fewer
-- A close outside the band is not a signal by itself; wait for follow-through or reversal
+- Treat band expansion as a regime feature and test mean reversion/continuation separately.
+- Never enter on a band tag alone; apply the predeclared price trigger.
+- Define squeezes by an instrument-specific rolling percentile.
+- Treat 20/2 as a conventional starting specification; record every lookback/multiplier tried.
+- Per Bollinger's rules, an outside close is initially continuation information, not automatic reversal.
 
 ## Related Skills
 

@@ -1,10 +1,10 @@
 ---
 name: flag-pennant
-description: Trade bull and bear flags and pennants for trend continuation. Use when riding strong trends, entering on pullbacks, or trading momentum breakouts.
+description: Define and test flag or pennant continuation shapes. Use when measuring an impulse, consolidation, closed-bar break, invalidation, and measured-move hypothesis.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Flag & Pennant Patterns
@@ -71,10 +71,18 @@ Confirm declining volume during consolidation via `get_indicators(indicator_code
 **Conservative:** Wait for breakout + retest of boundary. Enter on bounce.
 **Target:** Flagpole length projected from breakout point.
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Lo, Mamaysky & Wang](https://www.nber.org/papers/w7613) supports objective pattern definitions and conditional testing rather than visual labels alone.
+
 ## Key Rules
-- Pole must be strong and impulsive (3+ candles of directional momentum)
-- NEVER trade a flag that retraces more than 50% of the pole — this invalidates the pattern
-- NEVER enter without volume decline during formation + spike on breakout
+- Quantify the pole with return divided by ATR and a maximum bar count; “looks impulsive” is not reproducible
+- Define and calibrate the maximum retracement rather than assuming 50% is universal
+- Treat volume contraction and breakout expansion as candidate filters; report their measured values
 - Quick formations are more reliable than extended consolidations
 - Flag duration should be short relative to the pole
 

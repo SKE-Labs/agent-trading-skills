@@ -1,10 +1,10 @@
 ---
 name: divergence-trading
-description: Identify regular and hidden divergences across RSI, MACD, Stochastic, and OBV for reversal and continuation signals. Use when price makes new highs/lows but indicators disagree, or when confirming trend exhaustion.
+description: Define and test regular or hidden divergence at objective pivots. Use when aligning RSI, MACD, Stochastic, MFI, or volume features to exact price-pivot timestamps without counting correlated indicators as independent votes.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Divergence Trading
@@ -34,17 +34,15 @@ Divergence occurs when price and an indicator move in opposite directions, signa
 | RSI | OB/OS exhaustion | <30 or >70 for regular div |
 | MACD histogram | Momentum shifts | Compare histogram peaks/troughs with price |
 | Stochastic | Ranging markets | <20 or >80 (skip mid-range div) |
-| MFI (volume proxy) | Smart money confirmation | Rising MFI + falling price = accumulation |
+| MFI (price/volume transform) | Volume-aware momentum | Define pivots and compare slopes |
 
-**Strength**: 1 indicator diverging = note only. 2 = trade with confirmation. 3+ = high probability.
+RSI, MACD, and Stochastic are correlated transforms of price, while MFI also uses volume. Do not count them as independent votes or map the count to probability; compare each feature and any combination with a price-only baseline.
 
 ## Validation Rules
 
-- Minimum **5 candles** between comparison points (fewer is noise)
-- Maximum **50 candles** between comparison points (too far = weak)
-- RSI must be in extreme zone (<30 or >70) for regular divergence
-- If RSI crosses 50 between the two points, divergence is invalidated
-- Both price swings must be visually clear, not micro-swings
+- Use an objective pivot algorithm with fixed left/right bars or ATR reversal and exclude the unconfirmed right-edge pivot.
+- Calibrate minimum/maximum spacing and optional oscillator zones by instrument/timeframe.
+- Match indicator values at the exact price-pivot timestamps; use closed data and specify equality tolerance.
 
 ## Workflow
 
@@ -57,7 +55,7 @@ Divergence occurs when price and an indicator move in opposite directions, signa
 
 2. **Compare swings**: For each indicator, identify last two significant peaks/troughs and compare direction vs price direction
 
-3. **Score**: Count diverging indicators (1-3). Check if at key S/R level for bonus confluence.
+3. **Evaluate**: report each divergence and contextual feature separately; use a numeric score only if calibrated on held-out labels.
 
 4. **Get candles for chart drawing**:
    ```
@@ -78,13 +76,21 @@ Divergence occurs when price and an indicator move in opposite directions, signa
 
 6. **Wait for confirmation candle** (engulfing, hammer, pin bar) at the divergence zone before entry
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: The [technical-analysis evidence review](https://papers.ssrn.com/sol3/Delivery.cfm/SSRN_ID603481_code17745.pdf?abstractid=603481) finds mixed performance and common data-snooping problems; multiple correlated oscillators do not create independent confirmation.
+
 ## Key Rules
 
-- NEVER trade single-indicator divergence alone; require 2+ indicators
-- NEVER trade mid-range RSI divergence (RSI 40-60 is meaningless)
-- NEVER enter without a confirmation candle; divergence is a warning, not an entry
-- Higher timeframe divergence is far more reliable than LTF; use 1H+ minimum
-- Divergence can persist in strong trends; use hidden divergence (continuation) in trends, regular divergence only at extremes
+- Do not treat multiple price-derived oscillators as independent confirmation.
+- Calibrate oscillator zones rather than declaring mid-range values meaningless.
+- Define an objective closed-bar entry and invalidate beyond the second pivot plus buffer.
+- Test timeframe and regime interactions; no timeframe is universally more reliable.
+- Keep unresolved divergences and failures in the evaluation sample.
 - Entry on confirmation candle close; stop beyond the second divergence swing point
 
 ## Related Skills

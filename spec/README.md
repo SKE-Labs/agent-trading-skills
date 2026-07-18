@@ -113,7 +113,7 @@ Skills may reference tools available to AI analysts. Always include required par
 | `change_user_chart`       | `change_user_chart(symbol, exchange?, interval?)`                                 | Switches the live chart view.                                      |
 | `request_chart_screenshot`| `request_chart_screenshot(reason)`                                                | HITL — pauses for the user's live TradingView screenshot.          |
 
-### Spawn-only (autonomous tasks)
+### Agent-run tools
 
 | Tool                      | Signature                                                                         | Notes                                                              |
 | ------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
@@ -122,10 +122,14 @@ Skills may reference tools available to AI analysts. Always include required par
 | `adjust_stop_loss`        | `adjust_stop_loss(signal_id, new_stop_loss, reason)`                              | Tighten only (long can only raise, short can only lower).          |
 | `adjust_take_profit`      | `adjust_take_profit(signal_id, take_profits, reason)`                             |                                                                    |
 | `cancel_signal`           | `cancel_signal(signal_id, reason)`                                                | Cancel before execution.                                           |
-| `write_artifact`          | `write_artifact(content)`                                                         | Persistent markdown artifact for the spawn.                        |
-| `create_price_trigger`    | `create_price_trigger(symbol, trigger_price, direction, fire_mode, ...)`          | Real-time price trigger that fires a mini or wakes the task.       |
-| `invoke_mini_agent`       | `invoke_mini_agent(mini_type, name, task, schedule="now", ...)`                   | Delegate to a fixed-tool mini agent.                               |
+| `write_artifact`          | `write_artifact(content)`                                                         | Replace the running agent's persistent markdown artifact.          |
+| `create_price_trigger`    | `create_price_trigger(symbol, trigger_price, direction, action, specialist_profile?, specialist_task?, wake_note?, ...)` | On a crossing, either delegate a bounded specialist or wake the owning agent. `action` is `"specialist"` or `"wake_agent"`. |
+| `delegate_to_specialist`  | `delegate_to_specialist(profile, name, task, schedule="now", ...)`               | Delegate one bounded assignment to a fixed-profile specialist. Durable agents only; specialists cannot nest. |
 | `send_notification`       | `send_notification(title, body, type?)`                                           | Push to user.                                                      |
+
+Public tool and prompt text must use agent, agent run, and specialist. Retired
+spawn/mini names may remain in Park's internal Python filenames but must not be
+introduced into skills.
 
 ### Code execution
 

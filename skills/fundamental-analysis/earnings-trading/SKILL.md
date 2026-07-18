@@ -4,45 +4,32 @@ description: Trade around earnings announcements for stocks. Use when positionin
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "2.0"
+  version: "4.0"
 ---
 
 # Earnings Trading
 
-Trade volatility and price moves around quarterly earnings, where **surprise vs expectations** drives the reaction.
+Analyze and trade earnings only from time-stamped expectations, primary filings, and an explicit event-risk plan. Surprise is important, but price also reflects guidance, revisions, positioning, valuation, liquidity, and regime.
 
-## Earnings Impact Matrix
+## Earnings Evidence Matrix
 
-| Scenario | Typical Reaction |
+| Dimension | Record |
 | --- | --- |
-| Beat EPS + Beat Revenue + Raise Guidance | Strong rally (highest conviction long) |
-| Beat EPS + Beat Revenue | Moderate pop |
-| Meet expectations | Muted / slight dip |
-| Miss EPS or Revenue | Drop |
-| Miss + Lower Guidance | Strong sell-off (highest conviction short) |
+| Earnings | GAAP and adjusted EPS, reconciliation, point-in-time consensus, surprise |
+| Revenue | Reported revenue, organic/segment mix, consensus, FX effects |
+| Outlook | Prior versus new ranges and assumptions; do not reduce guidance to one word |
+| Quality | Cash flow, margins, working capital, one-offs, share count |
+| Context | Pre-event move, options-implied move if available, valuation, liquidity |
 
-## Whisper Number
+## Priced Expectations
 
-The published consensus is the "official" expectation, but the **real expectation** (whisper number) determines the reaction.
-
-- Stock runs up 15% into earnings = market expects a big beat regardless of published consensus
-- "Beat consensus by 2% but stock drops" = whisper was much higher than consensus
-- "Missed by 1% but stock rallies" = whisper was even lower than consensus
-
-Estimate the whisper from pre-earnings price action and sentiment:
-- Strong rally into earnings = whisper well above consensus
-- Pre-earnings selling = whisper below consensus
-- Flat = whisper roughly equals consensus
+Do not invent a numeric "whisper" from price direction. Report observable proxies separately: estimate revisions and dispersion, pre-event abnormal return, short interest, options-implied move/skew, and source-dated analyst commentary. Label any inference about positioning as uncertain.
 
 ## Post-Earnings Drift
 
 Stocks that surprise on earnings tend to continue drifting in the same direction -- one of the most documented market anomalies.
 
-- Stocks beating EPS by >10% continue drifting same direction ~65% of the time for 60+ days
-- Drift is strongest in the first 5 trading days
-- Drift is significantly stronger when accompanied by raised guidance
-- Entry: after initial reaction settles (1-2 hours post-release or next open)
-- Use a trailing stop rather than fixed target
+Post-earnings-announcement drift is an empirical research finding, not a fixed probability or holding period. Define standardized unexpected earnings using point-in-time estimates, form size/liquidity buckets, and test horizons without overlapping-sample leakage. Compare closed-bar entry times and fixed, time, and trailing exits after spread and slippage.
 
 ## Workflow
 
@@ -52,15 +39,15 @@ Stocks that surprise on earnings tend to continue drifting in the same direction
 get_fundamentals(ticker="AAPL")
 ```
 
-Pull EPS estimates, revenue estimates, earnings date, and historical beat/miss pattern.
+Pull point-in-time EPS/revenue estimates, estimate dispersion, earnings timestamp, and historical surprises. Verify event time and results in the issuer's 8-K/earnings release and 10-Q.
 
 ### 2. Research Expectations and Sentiment
 
 ```
-get_financial_news(topic="AAPL earnings Q1 2026 expectations analyst", max_results=15)
+get_financial_news(topic="AAPL earnings <quarter> <current year> expectations analyst", max_results=15)
 ```
 
-Look for analyst notes, price target changes, pre-earnings sentiment shifts, and whisper number clues.
+Look for dated estimate revisions, price-target changes, and positioning proxies. Separate facts from commentary and deduplicate syndicated stories.
 
 ### 3. Analyze Call Transcript (Post-Release)
 
@@ -68,27 +55,30 @@ Look for analyst notes, price target changes, pre-earnings sentiment shifts, and
 get_financial_news(topic="AAPL earnings call transcript summary management tone", max_results=10)
 ```
 
-Score management tone:
-- **Confident**: Specific numbers, guidance raised, "record revenue", "ahead of schedule"
-- **Cautious**: Hedging, qualifiers, "headwinds", "cautious outlook", "monitoring closely"
-- **Evasive**: Deflecting analyst questions, pivoting to unrelated metrics -- most bearish signal
-
-Key signal: tone shift vs prior quarter. "Confident" to "Cautious" is a red flag even if they beat.
+Compare the transcript with the prior quarter using reproducible features: quantified outlook changes, topics raised by analysts, answer specificity, and risk-language changes. Quote minimally with timestamps and treat tone as interpretation, not a deterministic label.
 
 ### 4. Score and Decide
 
-Rate on three dimensions: EPS (beat/meet/miss), Revenue (beat/meet/miss), Guidance (raised/maintained/lowered). Combine with management tone and whisper number assessment for the final signal.
+Report each dimension separately, price reaction versus any implied move, liquidity, and `valid`, `watch`, or `no trade`. If trading, state entry trigger, gap-aware invalidation, time exit, maximum event loss, and source timestamps.
+
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Livnat & Mendenhall](https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1475-679X.2006.00196.x) documents post-earnings-announcement drift, but its magnitude depends on how surprise is measured and does not justify a fixed continuation probability.
 
 ## Key Rules
 
-- NEVER hold full position size through earnings -- reduce by at least 50%
-- NEVER ignore the whisper number -- most "irrational" post-earnings moves are explained by whisper vs consensus gap
-- NEVER rush entry after release -- wait for initial volatility to settle (1-2 hours minimum for large caps)
-- "Buy the rumor, sell the news" applies frequently: stocks run up into expected good earnings, then sell on the actual news even on a beat
-- If analysts press hard on a topic during Q&A and management deflects, that area is likely weak
-- Best post-earnings drift setups: large EPS beat (>10%) + raised guidance + confident management tone
+- Do not hold through earnings unless the mandate explicitly permits gap and halt risk.
+- Never infer a hidden expectation as fact; show the observable positioning proxies.
+- Calibrate entry delay in closed bars for the instrument and session rather than imposing a universal clock time.
+- Verify adjusted metrics against GAAP reconciliation and use point-in-time consensus.
+- Treat transcript tone and analyst questioning as contextual evidence, not standalone signals.
+- Size from the stress gap loss and portfolio risk limit, not a fixed percentage reduction.
 
 ## Related Skills
 
-- **sentiment-analysis** -- Whisper number estimation via sentiment
+- **sentiment-analysis** -- source-dated expectations and positioning evidence
 - **economic-calendar-trading** -- Macro events near earnings amplify volatility

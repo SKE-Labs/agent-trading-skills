@@ -96,12 +96,13 @@ Step-by-step with tool calls
 - Critical rules and NEVER items
 ```
 
-The frontmatter requires only two fields:
+The frontmatter requires three fields:
 
 | Field         | Description                                                     |
 | ------------- | --------------------------------------------------------------- |
 | `name`        | Unique identifier (lowercase, hyphens for spaces)               |
 | `description` | What the skill does **and when to use it** (trigger conditions) |
+| `license`     | SPDX-style license identifier, such as `Apache-2.0`             |
 
 Use the [template](template/SKILL.md) as a starting point. See the [spec](spec/README.md) for detailed guidelines.
 

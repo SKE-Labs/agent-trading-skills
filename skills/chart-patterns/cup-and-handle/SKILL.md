@@ -1,31 +1,31 @@
 ---
 name: cup-and-handle
-description: Trade cup and handle breakout patterns for bullish continuation. Use when identifying accumulation patterns, finding breakout setups, or timing entries on established stocks/crypto.
+description: Define and test cup-and-handle breakout shapes. Use when measuring a rounded base, handle depth, lip break, retest, invalidation, and measured-move hypothesis without inferring accumulation.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Cup and Handle Pattern
 
-Bullish continuation pattern indicating accumulation before a breakout.
+A conventionally bullish continuation shape. Treat its geometry, breakout direction, and measured move as testable hypotheses rather than evidence of accumulation.
 
 ## Pattern Structure
 
 ### The Cup
 - Price rounds down from resistance, forms a "U" shaped bottom (not "V"), rises back to resistance
-- Duration: 7-65 weeks (classic), or scaled for crypto/lower timeframes
+- Duration and symmetry are market- and timeframe-specific; define minimum and maximum bars before scanning
 
 ### The Handle
 - Small pullback from resistance into a declining flag/pennant
-- Should retrace 10-15% of cup depth (up to 33% acceptable)
-- Must stay in upper half of cup
+- Define handle depth as `(lip - handle_low) / (lip - cup_low)` and reject only at a pretested threshold
+- Require the handle to remain above the cup midpoint only if that rule is part of the frozen specification
 
-| Factor | Ideal | Acceptable |
+| Factor | Preferred seed definition | Alternative to test |
 |--------|-------|------------|
 | Cup shape | Rounded "U" | Slightly V-shaped |
-| Handle depth | 10-15% of cup | Up to 33% |
+| Handle depth | Shallow relative to cup | Predeclare a tested maximum |
 | Volume | Decreasing in handle | Stable |
 
 ## Workflow
@@ -90,10 +90,18 @@ draw_chart_analysis(action="create", drawing={
 **Conservative:** Wait for breakout + retest of lip (now support).
 **Target:** Breakout level + cup depth (lip to bottom distance).
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Lo, Mamaysky & Wang](https://www.nber.org/papers/w7613) supports testing objectively defined chart patterns, not assuming that a named shape has a universal measured-move edge.
+
 ## Key Rules
 - NEVER enter before the handle forms — cup alone is incomplete
-- NEVER trust a handle that drops below 50% of cup depth — invalidates pattern
-- Volume must decline in handle and spike on breakout
+- Treat a break below the cup midpoint as structural invalidation only when the chosen specification says so
+- Measure relative volume during the handle and breakout; do not require an untested universal multiple
 - Failure at lip on second attempt = potential double top, not cup and handle
 
 ## Related Skills

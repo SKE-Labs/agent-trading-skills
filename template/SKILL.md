@@ -29,7 +29,7 @@ How to identify the pattern, setup, or condition:
 ### 1. Get Data
 
 ```
-get_indicator(indicator_code="rsi", symbol=<symbol>, interval=<interval>)
+get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>, count=20)
 ```
 
 ### 2. Analyze

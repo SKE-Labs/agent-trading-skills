@@ -4,12 +4,12 @@ description: Implement Dollar Cost Averaging for systematic long-term accumulati
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
+  version: "4.0"
 ---
 
 # Dollar Cost Averaging (DCA)
 
-Invest fixed amounts at regular intervals regardless of price, reducing timing risk and emotional decision-making.
+Invest new cash on a fixed schedule. Distinguish paycheck-style periodic investing from deliberately delaying a lump sum that is already available.
 
 ## DCA Mechanics
 
@@ -33,33 +33,35 @@ Example ($100/week):
 | Enhanced DCA      | Base amount + bonus when price drops below MA     |
 | Lump Sum + DCA    | Deploy 50% immediately, DCA the remaining 50%    |
 
-## Best Assets for DCA
+## Asset Eligibility
 
-| Suitable         | Less Suitable              |
+| Candidate         | Reject or escalate              |
 | ---------------- | -------------------------- |
-| BTC, ETH         | Low-cap altcoins           |
-| Major indices    | Meme coins                 |
-| Blue chip stocks | Highly volatile micro-caps |
+| Diversified, liquid exposure | Unclear rights or custody |
+| Assets with a documented thesis | Failing liquidity or security |
+| Instruments compatible with the horizon | Position already above its risk cap |
 
 ## Workflow
 
-1. **Check current price** against the historical average:
+1. **Capture the plan**: goal, horizon, target allocation, contribution amount, frequency, funding source, custody, fees, and maximum allocation. Do not change the schedule from short-term price forecasts.
+
+2. **Check allocation drift and current price context**:
 ```
 get_candles(symbol="BTC/USD", exchange="binance", interval="1d", count=1)
 get_indicators(indicator_code="sma_50", symbol="BTC/USD", exchange="binance", interval="1w")
 ```
 
-2. **Assess if Enhanced DCA bonus applies** (price below 200-day MA):
+3. **Apply any enhanced-DCA rule only if it was predeclared and validated**; a 200-day moving-average rule is optional, not inherent to DCA:
 ```
 get_indicators(indicator_code="sma_200", symbol="BTC/USD", exchange="binance", interval="1d")
 ```
 
-3. **Evaluate macro conditions** for DCA continuation or pause:
+4. **Re-underwrite the asset**, not the next candle:
 ```
 get_financial_news(topic="BTC macro outlook accumulation")
 ```
 
-4. **Report recommendation**: current price vs DCA average, whether to buy standard or enhanced amount, and any flags to pause (fundamental deterioration).
+5. **Report** scheduled contribution, post-trade allocation, weighted average cost, fees, custody or concentration flags, and whether a written pause condition was triggered.
 
 ## When to Stop DCA
 
@@ -67,12 +69,20 @@ get_financial_news(topic="BTC macro outlook accumulation")
 - Fundamentals have materially deteriorated
 - Better risk/reward opportunity identified elsewhere
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Vanguard research](https://corporate.vanguard.com/content/dam/corp/research/pdf/cost_averaging_invest_now_or_temporarily_hold_your_cash.pdf) found immediate lump-sum investment historically beat temporary cost averaging about two-thirds of the time; DCA is mainly a cash-flow and behavior plan.
+
 ## Key Rules
 
-- NEVER skip a scheduled DCA buy based on short-term price action -- consistency is the point
-- NEVER DCA into low-cap altcoins or meme tokens -- stick to BTC, ETH, or major assets
+- Do not skip or enlarge a scheduled purchase from an improvised price forecast
+- Do not confuse DCA with averaging down an invalidated speculative thesis
 - Review quarterly, not daily; over-monitoring defeats the purpose
-- Lump sum beats DCA ~67% of the time in rising markets, but DCA reduces regret and improves follow-through
+- For cash already available, explicitly compare immediate investment with staged deployment; DCA may reduce short-term regret at the cost of expected time in market
 
 ## Related Skills
 

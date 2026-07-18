@@ -1,99 +1,86 @@
 ---
 name: economic-calendar-trading
-description: Trade around scheduled economic events using impact ranking, deviation scoring, and structured scenario analysis. Use when positioning for FOMC, CPI, NFP, GDP, or other macro events, or when assessing how upcoming events affect existing positions.
+description: Plan scheduled macro-event risk from official calendars and point-in-time expectations. Use for FOMC, employment, inflation, GDP, or other releases requiring standardized surprise, component, revision, scenario, and execution analysis.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "3.0"
+  version: "4.0"
 ---
 
 # Economic Calendar Trading
 
-Trade scheduled economic releases where the **deviation from consensus**, not the number itself, drives price.
+Plan macro-event risk from live official calendars, time-stamped consensus, release vintages, and observable price triggers. Surprise matters, but revisions, components, positioning, uncertainty, and regime affect the response.
 
-## Event Impact Ranking
+## Event Map
 
-| Event | Impact | Frequency | Release (ET) | Assets Affected |
-| --- | --- | --- | --- | --- |
-| FOMC Rate Decision | 10 | 8x/year | 2:00 PM + presser 2:30 PM | All markets |
-| Non-Farm Payrolls | 9 | 1st Friday/month | 8:30 AM | USD, Stocks, Bonds |
-| CPI (Inflation) | 8.5 | ~10th-15th/month | 8:30 AM | Stocks, Bonds, Crypto |
-| GDP | 7 | Quarterly | 8:30 AM | Broad market |
-| PCE (Fed's inflation) | 7 | Monthly | 8:30 AM | Fed-sensitive assets |
-| PMI (Mfg/Services) | 6 | Monthly | 10:00 AM | Sector-specific |
-| Retail Sales | 5.5 | Monthly | 8:30 AM | Consumer stocks |
-| Jobless Claims | 4 | Weekly | 8:30 AM | USD, short-term |
+| Event family | Components to record | Primary source |
+| --- | --- | --- |
+| FOMC | Decision, statement changes, SEP, press conference | Federal Reserve |
+| Employment | Payrolls, unemployment, participation, wages, revisions | BLS |
+| Inflation | Headline/core, monthly/annual, category breadth, revisions | BLS/BEA |
+| Growth/activity | Real/nominal detail, inventories, revisions, survey components | Source agency |
 
-## Deviation Thresholds
+## Standardized Surprise
 
 ```
-Deviation Score = (Actual - Forecast) / Forecast x 100
+Standardized surprise = (Actual - consensus) / historical standard deviation of surprises
 ```
 
-| Event | Small | Moderate | Large (market-moving) |
-| --- | --- | --- | --- |
-| NFP | +/-25K jobs | +/-50K jobs | +/-100K+ jobs |
-| CPI (YoY) | +/-0.1% | +/-0.2% | +/-0.3%+ |
-| GDP (QoQ) | +/-0.2% | +/-0.5% | +/-1.0%+ |
-| Fed Funds Rate | -- | +/-25bps surprise | +/-50bps surprise |
-| PMI | +/-0.5 pts | +/-1.0 pts | +/-2.0+ pts |
-| Retail Sales | +/-0.2% | +/-0.5% | +/-1.0%+ |
+Use a point-in-time consensus and same-definition historical series. State source, sample, standard deviation, revisions, and transformation. If history is insufficient, report raw surprise and forecast range without a synthetic score.
 
 ## Workflow
 
 ### 1. Check Calendar
 
 ```
-get_economics_calendar(from_date="2026-03-20", to_date="2026-03-27", impact="high")
+get_economics_calendar(from_date=<start>, to_date=<end>, impact="high")
 ```
 
-Flag events with Impact >= 7. Check every Monday.
+Refresh before each session and verify date, time, timezone, and revision policy against the official agency calendar; third-party impact labels are screening aids only.
 
 ### 2. Research Consensus
 
 ```
-get_financial_news(topic="CPI inflation forecast consensus March 2026", max_results=10)
+get_financial_news(topic="<event> forecast consensus <month> <year>", max_results=10)
 ```
 
 Extract: consensus forecast, range of estimates, leading indicators, and current market positioning.
 
 ### 3. Build Scenario Matrix
 
-For each high-impact event, map beat/meet/miss scenarios with estimated probability, expected market reaction, and position recommendation.
+Map component combinations, revisions, and price triggers. Include `no trade` for mixed releases or failed liquidity conditions; do not assign probabilities without a calibrated model.
 
-### 4. Post-Release: Wait Before Entry
+### 4. Post-Release Execution Gate
 
-| Impact Score | Wait Time | Rationale |
-| --- | --- | --- |
-| 9-10 (FOMC, NFP) | 30-45 min | Maximum volatility, whipsaws common |
-| 7-8.5 (CPI, GDP, PCE) | 15-30 min | High vol but settles faster |
-| 5-6 (PMI, Retail) | 5-15 min | Moderate vol, quicker absorption |
-| <5 (Claims, etc.) | Immediate OK | Low impact, fast pricing |
+Use a pretested bar-based delay or price-structure trigger. Require verified actuals, acceptable spread/depth, stable timestamps, and a calculable stop; event labels do not determine a universal waiting period.
 
 ### 5. Trade the Reaction
 
-- **Continuation**: Enter in the direction of the established move after the wait period
-- **Fade overreaction**: Only if move exceeds 2 ATR in <30 min, fade back toward VWAP
+- **Continuation candidate**: enter only on the specified closed-bar or retest trigger.
+- **Fade candidate**: define overreaction in normalized returns and test separately; VWAP is a benchmark, not a guaranteed destination.
 
 ### 6. FOMC Analysis
 
 Use `get_financial_news` to analyze FOMC statements and press conferences for hawk/dove tone shifts.
 
-| FOMC Outcome | Market Reaction | Duration |
-| --- | --- | --- |
-| Dovish surprise | Risk-on: stocks up, USD down, bonds/crypto up | 1-3 days |
-| Hawkish surprise | Risk-off: stocks down, USD up, bonds/crypto down | 1-3 days |
-| As expected | Muted initial, trade statement nuance | Hours |
+Analyze the decision, statement redlines, projections, and press conference separately. Measure the response in policy-rate futures/yields and the traded asset; do not infer fixed direction or duration from a hawkish/dovish label.
+
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: Use the official [Federal Reserve calendar](https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm) and [BLS release calendar](https://www.bls.gov/schedule/) because dates can change; Federal Reserve research shows reaction depends on surprise, disagreement, and regime.
 
 ## Key Rules
 
-- NEVER trade the prediction -- trade the reaction after the number drops
-- NEVER enter during the initial 5-15 minute whipsaw; wait the full recommended time per impact score
-- NEVER use market orders around events -- spreads widen, use limit orders only
-- NEVER hold full position size into Impact >= 8 events -- reduce or close beforehand
-- When multiple events cluster (e.g., NFP + unemployment + wages), increase wait time by 50%
-- A "beat" or "miss" only matters relative to consensus -- CPI at 3.2% vs 3.1% consensus is small; 3.5% vs 3.1% is market-moving
-- Reduce all correlated positions before events, not just direct exposure
+- Verify actuals and revisions from the primary source before interpretation.
+- Use the predeclared execution gate; neither immediate trading nor a fixed wait is universally safe.
+- Choose order type from the fill-versus-price-risk tradeoff; limits may not fill and markets may slip.
+- Aggregate direct, correlated, and factor exposures in the event stress test.
+- Treat clustered or conflicting components as lower confidence or `no trade`.
+- Size from stress loss, not a vendor impact score.
 
 ## Related Skills
 

@@ -4,7 +4,7 @@ description: Lock in profits with dynamic trailing stop strategies. Use when rid
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "2.0"
+  version: "4.0"
 ---
 
 # Trailing Stop Strategies
@@ -15,7 +15,7 @@ Trailing stops lock in profits while allowing trades to run.
 
 ### 1. ATR Trail (Recommended)
 
-`Trailing Stop = Highest High - (ATR x 2)`. Adjusts to volatility -- tighter in calm markets, wider in volatile markets.
+Long example: `Trailing Stop = Highest High - (ATR × multiplier)`; mirror for shorts. Declare ATR lookback, multiplier, update frequency, and whether intrabar or closed-bar highs apply.
 
 ### 2. Structure Trail
 
@@ -23,7 +23,7 @@ Move stop below each new swing low (long) or above each new swing high (short). 
 
 ### 3. Moving Average Trail
 
-Use MA as trailing stop (common: 10 EMA, 20 EMA). Exit when price closes below MA.
+Use a predeclared moving average and exit condition. Treat any period as a candidate parameter and prevent look-ahead by updating from available bars only.
 
 ### 4. Chandelier Exit
 
@@ -35,21 +35,16 @@ Move stop by fixed amount (pips/%). Simple but can be too static -- prefer ATR o
 
 ## When to Start Trailing
 
-| Trigger             | Strategy     |
-| ------------------- | ------------ |
-| After 1R profit     | Conservative |
-| After 2R profit     | Moderate     |
-| New structure break | Dynamic      |
-| Immediately         | Aggressive   |
+Test start conditions such as immediate, an R-multiple, elapsed bars, or a new objective swing. These labels do not imply conservative/aggressive risk without the resulting payoff distribution.
 
 ## Hybrid Approach
 
 Combine methods for staged exit management:
 
 1. Fixed initial stop
-2. Move to breakeven at 1R
-3. Trail by structure after 2R
-4. Tight ATR trail near target
+2. Optional, tested transition rule
+3. One precisely defined trailing method
+4. Time or terminal exit for any remaining quantity
 
 ## Exit Scenarios
 
@@ -57,26 +52,28 @@ Combine methods for staged exit management:
 | --------------- | ----------------- |
 | New high/low    | Move stop up/down |
 | Consolidation   | Keep stop same    |
-| Reversal candle | Tighten trail     |
-| Structure break | Consider exiting  |
+| Predefined reversal trigger | Apply the specified update |
+| Objective structure break | Exit or update as predeclared |
 
 ## Workflow
 
-**Example -- Long trade at $100, stop at $95:**
+For each bar or tick, update the high-water mark and stop exactly once under the chosen rule; never lower a long trail or raise a short trail. Record trigger price versus fill price and handle gaps, partial fills, halts, and venue-specific trailing-order semantics.
 
-1. Price hits $108 (1.5R) -> Move stop to $100 (breakeven)
-2. Price hits $115 (3R) -> Trail to $110 (below last swing)
-3. Price hits $120 -> Trail to $115
-4. Price pulls back -> Stop hit at $115 (3R locked)
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: The [SEC stop-order bulletin](https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-15) explains trailing-stop mechanics and warns that short-term fluctuations can trigger an order and execution can differ from the stop.
 
 ## Key Rules
 
-- NEVER trail too tightly -- noise will stop you out prematurely
-- NEVER trail against trend structure -- only move stops in the profit direction
-- NEVER override your trailing rules during a trade -- define them before entry
-- NEVER manually exit before your trailing stop is hit unless structure clearly breaks
-- Pre-define trailing rules before entering the trade
-- Allow some drawdown from highs -- that is the cost of catching extended moves
+- Freeze lookbacks, multipliers, start condition, update clock, and terminal exit before entry.
+- Never loosen the authorized trailing stop; account for order replacement races.
+- Compare the trail against fixed-target, time-exit, and unchanged-stop baselines.
+- Model trigger/fill gaps, fees, stop-limit nonexecution, and partial fills.
+- Do not override the rule using hindsight; an emergency risk-off action must be logged separately.
 
 ## Related Skills
 

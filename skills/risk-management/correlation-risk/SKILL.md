@@ -4,7 +4,7 @@ description: Manage correlated positions to prevent concentrated exposure. Use w
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "2.0"
+  version: "4.0"
 ---
 
 # Correlation Risk Management
@@ -23,42 +23,22 @@ Correlation coefficient ranges from -1 to +1:
 | -0.5        | Moderate negative                 |
 | -1.0        | Perfect negative (move opposite)  |
 
-## Common Correlations
-
-| Asset Pair                | Correlation   |
-| ------------------------- | ------------- |
-| BTC / ETH                 | +0.85         |
-| BTC / Altcoins            | +0.7 to +0.9  |
-| EUR/USD vs GBP/USD        | +0.8          |
-| USD/JPY vs USD/CHF        | +0.7          |
-| Tech stocks (same sector) | +0.7          |
-| AUD/USD vs Gold           | +0.6          |
-| S&P vs individual stocks  | +0.5          |
+Estimate correlation from aligned, same-currency returns over predeclared horizons. Report sample length, frequency, confidence interval, and current versus stress estimates; never use a permanent pair table.
 
 ## Combined Risk
 
-For two positions with known correlation, combined risk is:
+Use covariance to estimate portfolio **return volatility**: `sigma_p = sqrt(w' Sigma w)`. Do not insert stop-loss dollars into that formula: stop losses are nonlinear, can gap, and are not standard deviations. For loss control, aggregate factor exposures and run joint gap, correlation-to-one, volatility-spike, and liquidity scenarios.
 
-`Combined Risk = sqrt(R1^2 + R2^2 + 2 * R1 * R2 * Correlation)`
+## Exposure Limits
 
-Example: BTC 1% risk + ETH 1% risk at 0.85 correlation => sqrt(1 + 1 + 1.7) = ~1.92%. For drawdown purposes, treat as 2%.
-
-## Maximum Exposure Rules
-
-| Correlation | Max Combined Risk        |
-| ----------- | ------------------------ |
-| >0.7        | Treat as single position -- max 2% total |
-| 0.4-0.7     | 1.5x normal combined     |
-| <0.4        | Full individual sizing   |
-
-**Practical rule**: 3 positions in BTC-correlated assets => each gets 0.67% risk (2% / 3) instead of 1% each.
+Apply portfolio-mandated limits by issuer, sector, country, currency, duration, beta, and common factor. Reduce or hedge positions until both normal covariance risk and stress loss fit the remaining risk budget. State the hedge basis and residual risk; a long and short are not diversified merely because signs differ.
 
 ## Workflow
 
 1. **List all open positions**
-2. **Assess correlations** between them (use common correlations table or recent data)
-3. **Sum correlated risk** as single exposure using combined risk formula
-4. **Reduce sizing** if combined risk exceeds limits
+2. **Align returns and estimate covariance/beta** with uncertainty
+3. **Map factor and scenario losses**, including gaps past stops
+4. **Reduce or hedge** until mandate limits pass under normal and stress assumptions
 5. **Monitor** -- correlations shift over time, especially in stress events
 
 ## Diversification Strategies
@@ -66,15 +46,23 @@ Example: BTC 1% risk + ETH 1% risk at 0.85 correlation => sqrt(1 + 1 + 1.7) = ~1
 - Spread across uncorrelated asset classes (crypto, forex, equities, commodities)
 - Mix long and short when possible to reduce directional exposure
 - Use inversely correlated positions as hedges when appropriate
-- Different timeframes add some diversification benefit
+- Different timeframes diversify only if their realized return streams and stress losses demonstrate it
+
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Ang & Bekaert](https://www.nber.org/papers/w7056) documents time-varying correlations and higher-correlation stress regimes; estimate recent covariance and run stress scenarios instead of using permanent pair values.
 
 ## Key Rules
 
-- NEVER treat correlated positions as independent -- 5 long tech positions at 1% each is a single 5% sector bet
-- NEVER assume correlations are static -- they spike toward +1 during market stress
-- NEVER rely on diversification alone -- even "uncorrelated" assets can correlate in a crash
-- Max 3% total risk in highly correlated assets (>0.7)
-- Multiple positions in correlated assets = one big position, size accordingly
+- Aggregate shared factor, collateral, venue, liquidity, and gap risk across positions.
+- Do not assume correlations are static; show rolling estimates and adverse stress matrices.
+- Never rely on one covariance estimate—use scenarios and concentration limits too.
+- Take limits from the portfolio mandate rather than universal percentages.
+- Report assumptions, missing exposures, and the largest normal and stressed risk contributors.
 
 ## Related Skills
 

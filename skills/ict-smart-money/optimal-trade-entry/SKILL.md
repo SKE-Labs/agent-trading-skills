@@ -1,22 +1,22 @@
 ---
 name: optimal-trade-entry
-description: Execute Optimal Trade Entry (OTE) using Fibonacci retracement between 62-79%. Use when entering after structure breaks, timing entries on pullbacks, or finding high-probability retracement levels.
+description: Define and test the ICT Optimal Trade Entry retracement convention. Use when measuring whether a 62–79% pullback region adds value after an objectively defined impulse.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
+  version: "4.0"
 ---
 
 # Optimal Trade Entry (OTE)
 
-The sweet spot retracement zone (62%-79% Fib) where smart money typically enters positions.
+The ICT convention labels a 62–79% retracement region as OTE. Treat it as a candidate coordinate band; candles do not reveal where "smart money" entered, and empirical evidence does not support special standalone Fibonacci power.
 
 ## OTE Zone Levels
 
-| Fib Level | Significance             |
+| Fib Level | Convention |
 | --------- | ------------------------ |
 | 61.8%     | Start of OTE zone        |
-| 70.5%     | Midpoint (CE equivalent) |
+| 70.5%     | Arithmetic midpoint of 61.8% and 79% |
 | 79%       | End of OTE zone          |
 
 Use after: BOS/CHoCH pullbacks, liquidity sweeps, trending move continuations.
@@ -35,9 +35,9 @@ Use after: BOS/CHoCH pullbacks, liquidity sweeps, trending move continuations.
    - OTE Mid: Swing High - Range * 0.705
    - OTE End: Swing High - Range * 0.79
 4. **Mark OTE zone** using `draw_chart_analysis` with `demand` (bullish) or `supply` (bearish)
-5. **Enter** at 70.5% midpoint (limit order) or wait for price action confirmation in zone
+5. **Test entry choices** at the boundary, midpoint, full traversal, or an objective confirmation; do not privilege 70.5% without evidence
 6. **Stop loss** beyond the 100% level (swing point)
-7. **Target** extension levels: -27% (1.27x), -62% (1.62x), or the impulse origin (0%)
+7. **Set target** from objective structure/time logic; extensions are candidate coordinates only
 
 ### Example Calculation
 
@@ -46,14 +46,22 @@ High=52000, Low=45000, Range=7000:
 - OTE Mid (70.5%): 47,065
 - OTE End (79%): 46,470
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: Empirical [Fibonacci research](https://www.sciencedirect.com/science/article/abs/pii/S0957417421012495) found Fibonacci zones did not outperform non-Fibonacci zones as standalone rules; treat 62–79% as a candidate region only.
+
 ## Key Rules
 
-- Best OTE entries have an order block or FVG within the 62-79% zone (confluence)
-- NEVER enter an OTE against HTF bias
-- NEVER use OTE without a preceding impulsive displacement move
-- Entry at 70.5% yields minimum ~2.3 R:R to the impulse origin; extension targets improve this significantly
+- Define the impulse endpoints without hindsight and normalize displacement by ATR/bars.
+- Test higher-timeframe state, order-block, and FVG overlap as correlated candidate features.
+- Compare the 62–79% region with equal-width non-Fibonacci and continuous-retracement baselines.
+- Compute R:R from the actual entry, stop, target, side, and costs; no coordinate guarantees a minimum R:R.
 
 ## Related Skills
 
-- **order-blocks** — Best OTE entries have an OB within the 62-79% zone
+- **order-blocks** — test whether a separately defined candle zone adds information to the OTE band
 - **premium-discount** — OTE in discount for longs, premium for shorts maximizes probability

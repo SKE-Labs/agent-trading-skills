@@ -1,44 +1,40 @@
 ---
 name: mean-reversion
-description: Trade price extremes back toward the statistical mean using z-scores, Bollinger Bands, and RSI. Use when price is overextended from its average in ranging markets, or when identifying exhaustion at extremes.
+description: Test whether a price or spread reverts toward a modeled center. Use when evaluating stationarity, half-life, z-score bands, regime breaks, time stops, and net execution costs.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Mean Reversion
 
-Price tends to revert to its statistical mean after moving to extremes. Mean reversion profits from buying oversold and selling overbought in ranging markets.
+Mean reversion is a hypothesis that a specified price/spread process returns toward a modeled center fast enough to overcome costs. Verify stationarity or stable conditional behavior before trading; an individual price level may trend indefinitely.
 
 ## Detection Methods
 
 ### Z-Score
 
-`Z-Score = (Price - SMA) / Standard Deviation`. Enter at |Z| > 2.0, target Z = 0 (the mean).
+`Z-Score = (Series - rolling mean) / rolling standard deviation`. Select the series, lookback, entry/exit bands, and time stop in training data. A z-score is descriptive and is not normally distributed by assumption.
 
 | Z-Score | Signal |
 | --- | --- |
-| > +2.0 | Strongly overbought → sell/short |
-| -1.0 to +1.0 | Normal → no signal |
-| < -2.0 | Strongly oversold → buy/long |
+| Positive extreme | Candidate short only if reversion model passes |
+| Near center | No new extreme under the chosen rule |
+| Negative extreme | Candidate long only if reversion model passes |
 
 ### Bollinger Band Method
 
 - Band touch/pierce + reversal candle → trade toward middle band
-- Confirmation: band touch + RSI extreme + reversal candle = high probability
+- Test band, RSI, and reversal features for incremental value; they are correlated price transforms
 
 ### RSI Extreme Method
 
-Use 25/75 thresholds (not 30/70): RSI <25 = deeply oversold (buy), RSI >75 = deeply overbought (sell).
+Calibrate RSI percentiles/bands to the instrument and regime; no fixed threshold creates a buy or sell.
 
-## Regime Filter (Critical)
+## Regime and Stationarity Gate
 
-| ADX | Mean Reversion? |
-| --- | --- |
-| < 20 | **Yes** — ideal |
-| 20-25 | **Caution** — reduced size |
-| > 25 | **No** — trending, skip |
+Use an objective, calibrated regime/stationarity gate. ADX can be one feature but does not establish mean reversion or set size.
 
 ## Workflow
 
@@ -46,7 +42,7 @@ Use 25/75 thresholds (not 30/70): RSI <25 = deeply oversold (buy), RSI >75 = dee
    ```
    get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
-   ADX > 25 → stop. Mean reversion not applicable.
+   Apply the frozen regime and stationarity gates; return `no trade` when either fails.
 
 2. **Get BB and RSI**:
    ```
@@ -72,18 +68,27 @@ Use 25/75 thresholds (not 30/70): RSI <25 = deeply oversold (buy), RSI >75 = dee
    })
    ```
 
-5. **Targets**: conservative = middle band (~65% WR), standard = 75% to middle (~55%), aggressive = opposite band (~35%)
+5. **Exits**: predeclare center, partial-center, opposite-band, stop, and maximum-holding-time variants; retain only net-positive held-out logic without universal win rates.
+
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: Mean reversion is a model assumption, not a universal property. [Optimal mean-reversion research](https://arxiv.org/abs/2003.10502) derives thresholds under an Ornstein–Uhlenbeck process; verify that the spread is stationary before applying them.
 
 ## Key Rules
 
-- NEVER use mean reversion in trending markets (ADX > 25); "oversold" in a downtrend gets more oversold
+- Never assume a series mean reverts; verify the process and monitor parameter/stationarity breaks.
 - NEVER enter on BB touch alone; require confirmation candle (engulfing, hammer, doji)
-- NEVER hold for opposite band as the plan; middle band (SMA) is the realistic target
-- NEVER ignore BB Width squeeze (<20th pctl); a breakout is coming and mean reversion will fail
-- Require 2+ confirming signals (BB + RSI + Z-Score) for entry
+- Compare center and opposite-band exits rather than assigning realism beforehand.
+- A squeeze is compression, not proof that a breakout is coming.
+- Do not count BB, RSI, and z-score as independent confirmation.
+- Use a time stop tied to estimated half-life and exit on a stationarity/regime break.
 - If price is at lower BB due to fundamental repricing (earnings, news), it is not "oversold"
 
 ## Related Skills
 
 - **bollinger-bands** — BB touches are the primary visual mean reversion signal
-- **market-regime-detection** — ADX must confirm ranging market before any mean reversion trade
+- **market-regime-detection** — supply a calibrated regime feature and uncertainty state

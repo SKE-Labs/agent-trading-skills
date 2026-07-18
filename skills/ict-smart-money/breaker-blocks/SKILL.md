@@ -1,15 +1,15 @@
 ---
 name: breaker-blocks
-description: Trade failed order blocks that flip into breaker patterns. Use when a previous support becomes resistance (or vice versa), identifying high-probability reversal zones after structure breaks.
+description: Define and test breaker-block polarity-flip setups. Use when a previously labeled candle zone is crossed and later retested as support or resistance.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
+  version: "4.0"
 ---
 
 # Breaker Blocks Trading
 
-Failed order blocks that flip polarity -- bullish OB becomes bearish resistance, bearish OB becomes bullish support.
+A discretionary label for a candle zone that is crossed and later tested from the opposite side. It is a support/resistance hypothesis, not evidence of trapped or institutional orders.
 
 ## Identification
 
@@ -25,12 +25,12 @@ Failed order blocks that flip polarity -- bullish OB becomes bearish resistance,
 3. The broken OB flips to resistance (bearish breaker)
 4. Trade shorts when price returns to this zone
 
-### Quality Criteria
+### Testable Features
 
-- **Break strength**: Impulsive, 3+ candles (not slow grinding)
-- **FVG created**: Yes, on the break = strong; no FVG = weak
-- **HTF alignment**: Must match HTF direction
-- **Freshness**: First retest only; multiple tests weaken the zone
+- Normalize break distance and speed by ATR and elapsed bars.
+- Define the zone from exact OHLC fields and an objective swing rule.
+- Record overlap with an FVG, higher-timeframe state, and retest count as candidate features—not quality grades.
+- Use a closed-bar crossing buffer and prevent future bars from changing the original label.
 
 ## Workflow
 
@@ -38,19 +38,27 @@ Failed order blocks that flip polarity -- bullish OB becomes bearish resistance,
    ```
    get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval=<interval>, date=<date>)
    ```
-2. **Confirm the break** with CHoCH or BOS through the original OB
+2. **Confirm the break** with the predeclared swing and close-plus-buffer rule
 3. **Mark the breaker zone** using `draw_chart_analysis` with `demand` (bullish) or `supply` (bearish)
 4. **Wait for price to return** to the zone from the opposite side
 5. **Enter with LTF confirmation** (structure shift or rejection)
 6. **Stop loss** beyond the breaker zone
 7. **Target** next liquidity level or POI
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: Treat breaker blocks as a discretionary support/resistance labeling convention. [Lo, Mamaysky & Wang](https://www.nber.org/papers/w7613) supports objective pattern testing, not claims about hidden institutional intent.
+
 ## Key Rules
 
-- Breakers work because traders trapped at the original OB provide fuel for the new direction
-- NEVER trade a breaker without an impulsive break through the original OB
-- NEVER trade a breaker that has already been retested
-- The break must create displacement; a slow grind through the OB is not a valid breaker
+- Do not claim knowledge of trapped traders or hidden order intent from candles alone.
+- Define displacement in ATR and bars before testing.
+- Test first and later retests separately rather than assuming only the first works.
+- Return `no trade` when swing, break, retest, liquidity, or cost definitions are incomplete.
 
 ## Related Skills
 

@@ -1,27 +1,27 @@
 ---
 name: wedge-patterns
-description: Trade rising and falling wedge patterns for reversals and continuations. Use when spotting weakening trends, anticipating reversal moves, or identifying continuation patterns.
+description: Define and test rising or falling wedge resolutions. Use when fitting same-direction converging boundaries and evaluating breakout, retest, invalidation, and measured-move rules.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Wedge Pattern Trading
 
-Converging trendlines sloping in the same direction, typically signaling reversals.
+Converging boundaries sloping in the same direction. Reversal versus continuation behavior depends on the specification, context, market, and sample.
 
 ## Pattern Structure
 
-### Rising Wedge (Mostly Bearish)
+### Rising Wedge (Conventionally Bearish)
 - Both lines slope **upward**, HH + HL but compressing
 - In uptrend = reversal; in downtrend = continuation
-- Breaks down ~68% of the time
+- Treat downside resolution as a hypothesis and wait for confirmation
 
-### Falling Wedge (Mostly Bullish)
+### Falling Wedge (Conventionally Bullish)
 - Both lines slope **downward**, LH + LL but compressing
 - In downtrend = reversal; in uptrend = continuation
-- Breaks up ~68% of the time
+- Treat upside resolution as a hypothesis and wait for confirmation
 
 | Feature | Wedge | Triangle |
 |---------|-------|----------|
@@ -69,12 +69,19 @@ Confirm declining volume with `get_indicators(indicator_code="mfi", symbol=<symb
 **Preferred:** Wait for breakout + retest of broken trendline. Enter on rejection.
 **Target:** Height at widest part of wedge, projected from breakout.
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Lo, Mamaysky & Wang](https://www.nber.org/papers/w7613) supports making visual patterns algorithmic and testing them conditionally; it does not support a fixed breakout probability.
+
 ## Key Rules
 - Minimum 4 touch points (2 per line) to validate
 - Both trendlines MUST slope in the same direction — otherwise it's a triangle
-- NEVER ignore context: rising wedge in uptrend = reversal, in downtrend = continuation
-- Wedges near the end of extended trends produce higher-probability reversals
-- Decreasing volume during formation is essential for validity
+- Record preceding direction and test reversal/continuation outcomes separately; context does not determine the result.
+- Define “extended trend” and volume contraction quantitatively if they are used as filters
 
 ## Related Skills
 - **triangle-patterns** — Similar converging lines but different slope behavior

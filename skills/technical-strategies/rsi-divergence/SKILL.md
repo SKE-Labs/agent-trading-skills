@@ -1,15 +1,15 @@
 ---
 name: rsi-divergence
-description: Identify bullish and bearish RSI divergence for reversal signals. Use when spotting weakening momentum, finding potential reversal points, or confirming trend exhaustion.
+description: Define and test RSI divergence at confirmed price pivots. Use when aligning exact pivot timestamps, spacing, equality tolerances, oscillator zones, closed-bar entry, and invalidation.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # RSI Divergence Trading
 
-Divergence between price and RSI signals weakening momentum before price reverses.
+RSI divergence is a geometric relationship between confirmed price pivots and RSI values at the same timestamps. It is a candidate feature, not a reversal signal by itself.
 
 ## Divergence Types
 
@@ -17,8 +17,8 @@ Divergence between price and RSI signals weakening momentum before price reverse
 
 | Type        | Price Action | RSI Action | Signal      |
 | ----------- | ------------ | ---------- | ----------- |
-| **Bullish** | Lower Low    | Higher Low | Buy signal  |
-| **Bearish** | Higher High  | Lower High | Sell signal |
+| **Bullish** | Lower Low | Higher Low | Candidate bullish regular divergence |
+| **Bearish** | Higher High | Lower High | Candidate bearish regular divergence |
 
 ### Hidden (Continuation)
 
@@ -31,9 +31,9 @@ Divergence between price and RSI signals weakening momentum before price reverse
 
 | Level | Interpretation |
 | ----- | -------------- |
-| >70   | Overbought — bearish regular divergence strongest here |
-| <30   | Oversold — bullish regular divergence strongest here |
-| 50    | Equilibrium — divergence here is unreliable |
+| High percentile/band | Context for bearish candidates; calibrate |
+| Low percentile/band | Context for bullish candidates; calibrate |
+| Mid-range | Descriptive only; test rather than discard universally |
 
 ## Workflow
 
@@ -42,9 +42,9 @@ Divergence between price and RSI signals weakening momentum before price reverse
    get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
    ```
 
-2. **Identify swing points** on price chart and corresponding RSI swings
+2. **Identify confirmed pivots** with fixed left/right bars or an ATR-reversal rule; exclude the unconfirmed right edge
 
-3. **Compare slopes**: if price makes LL but RSI makes HL → bullish divergence. If price makes HH but RSI makes LH → bearish divergence.
+3. **Compare exact timestamps**: sample RSI at the two price pivots and apply predeclared price/RSI equality tolerances and pivot-spacing limits.
 
 4. **Get candles** for chart marking:
    ```
@@ -70,13 +70,21 @@ Divergence between price and RSI signals weakening momentum before price reverse
 - **Bullish**: enter above confirmation candle at support; stop below swing low; target previous resistance
 - **Bearish**: enter below confirmation candle at resistance; stop above swing high; target previous support
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: The [technical-rule evidence](https://pmc.ncbi.nlm.nih.gov/articles/PMC4583561/) shows oscillator results vary materially across markets and often weaken after costs; RSI extremes and divergence spacing require calibration.
+
 ## Key Rules
 
-- NEVER trade divergence at random price levels; require key S/R confluence
-- NEVER enter without confirmation candle; divergence is an early warning, not an entry
-- NEVER rely on 5m divergence; use 1H+ for reliable signals
-- RSI must be in extreme zone (<30 or >70) for regular divergence to be valid
-- Combine with structure analysis; divergence + S/R = high probability
+- Define any support/resistance and entry trigger objectively before evaluation.
+- Enter only from the specified closed-bar trigger; divergence alone is `watch`.
+- Test timeframe interactions; no 1H minimum is universally reliable.
+- Calibrate optional RSI zones and pivot spacing by instrument/regime.
+- Do not convert correlated price/structure features into a high-probability claim without calibration.
 
 ## Related Skills
 

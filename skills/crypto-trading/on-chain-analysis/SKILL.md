@@ -1,10 +1,10 @@
 ---
 name: on-chain-analysis
-description: Analyze blockchain data for trading signals (whale movements, exchange flows). Use when understanding smart money, detecting accumulation/distribution, or confirming macro trends.
+description: Analyze on-chain metrics with provider, entity-adjustment, revision, and normalization controls. Use when evaluating holder behavior, exchange flows, valuation ratios, or network activity as contextual trading features.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
+  version: "4.0"
 ---
 
 # On-Chain Analysis
@@ -15,48 +15,33 @@ Interpret blockchain data to understand market participant behavior and identify
 
 ## Exchange Flows
 
-| Metric            | Bullish             | Bearish        |
+| Metric            | Accumulation hypothesis | Distribution hypothesis |
 | ----------------- | ------------------- | -------------- |
-| Exchange inflow   | Low                 | High (selling) |
-| Exchange outflow  | High (accumulation) | Low            |
+| Exchange net flow | Persistent outflow | Persistent inflow |
 | Exchange reserves | Decreasing          | Increasing     |
+| Stablecoin flows | Dry-powder hypothesis | Redemption or risk-off hypothesis |
 
 ## Wallet Activity
 
-| Metric                  | Bullish    | Bearish    |
+| Metric                  | Growth hypothesis | Weakness hypothesis |
 | ----------------------- | ---------- | ---------- |
 | Whale accumulation      | High       | Low        |
 | Long-term holder supply | Increasing | Decreasing |
 | Active addresses        | Growing    | Declining  |
 
-## Key Metric Thresholds
+## Normalization
 
-| Metric                       | Bullish             | Bearish              | Neutral      |
-| ---------------------------- | ------------------- | -------------------- | ------------ |
-| Exchange Net Flow            | <-10K BTC/day out   | >+10K BTC/day in     | +/-10K       |
-| Whale Txns (>1000 BTC)      | Majority to cold    | Majority to exchange | Mixed        |
-| LTH Supply Change (30d)     | >+50K BTC           | <-50K BTC            | +/-50K       |
-| Active Addresses (vs 30d avg)| >120% of average   | <80% of average      | 80-120%      |
-
-When 3+ metrics align in the same direction, the signal is high-confidence.
+Do not reuse absolute BTC thresholds across eras or networks. For every metric, record provider, definition, unit, entity-adjustment status, timestamp, revision policy, and a trailing percentile or robust z-score. Multiple metrics derived from the same transaction graph are correlated and do not count as independent votes.
 
 ## MVRV Ratio
 
 | MVRV Range | Interpretation                        | Action                 |
 | ---------- | ------------------------------------- | ---------------------- |
-| > 3.5      | Market overvalued -- distribution zone | Reduce exposure        |
-| 1.0 - 3.5  | Normal range                          | Standard positioning   |
-| < 1.0      | Below aggregate cost basis            | Historically best buys |
+| High relative to its own history | Large aggregate unrealized profit | Distribution risk, not an automatic sale |
+| Near 1 | Market value near realized value | Cost-basis context, not fair value |
+| Below 1 | Aggregate unrealized loss | Stress context, not an automatic buy |
 
-## NVT Signal
-
-| NVT Range | Interpretation                         | Signal  |
-| --------- | -------------------------------------- | ------- |
-| > 95      | Network overvalued relative to usage   | Bearish |
-| 45 - 95   | Normal range                           | Neutral |
-| < 45      | Network undervalued relative to usage  | Bullish |
-
-NVT works best as a macro indicator; use multi-day averages to filter noise.
+For NVT and activity metrics, match the numerator and denominator frequency and account for batching, L2 migration, exchange-internal transfers, spam, and changes in address clustering. “Active address” is not the same as a user.
 
 ## Workflow
 
@@ -73,14 +58,22 @@ get_indicators(indicator_code="rsi", symbol="BTC/USD", exchange="binance", inter
 get_indicators(indicator_code="macd", symbol="BTC/USD", exchange="binance", interval="1d")
 ```
 
-3. **Classify regime**: Map news findings to the tables above -- accumulation, distribution, or neutral.
+3. **Classify evidence**: separate observed metric changes from provider interpretation and from the trading hypothesis. Reconcile contradictory metrics instead of counting votes.
 
 4. **Report macro thesis**: on-chain regime, metric alignment count, technical confirmation status, key levels, and confidence level.
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Glassnode's MVRV methodology](https://docs.glassnode.com/guides-and-tutorials/metric-guides/mvrv/mvrv-ratio) defines the metric, while [entity-adjustment notes](https://docs.glassnode.com/guides-and-tutorials/on-chain-concepts/entity-adjusted-metrics) explain clustering and revision risk; neither supports universal cutoffs.
+
 ## Key Rules
 
-- NEVER use on-chain metrics for day trading or short-term timing -- they are macro indicators
-- NEVER treat a single metric in isolation; require 3+ aligned metrics for high-confidence signals
+- Match each on-chain metric's timestamp, revision latency, and tested forecast horizon; do not assume one universal horizon.
+- NEVER convert a count of correlated metrics into “high confidence” without testing incremental information
 - Large transfers may be internal exchange movements -- context matters
 - On-chain data is lagging; it confirms trends rather than predicting them
 - LTH selling = distribution phase warning; LTH accumulating = bullish macro signal

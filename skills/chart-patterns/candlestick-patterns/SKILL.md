@@ -1,15 +1,15 @@
 ---
 name: candlestick-patterns
-description: Identify key reversal and continuation candlestick patterns. Use when timing entries/exits, confirming price action signals, or finding reversal confirmation at key levels.
+description: Define and test objective candlestick geometry. Use when labeling OHLC patterns, comparing body/wick rules, or evaluating a closed-bar entry with context and cost controls.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Candlestick Pattern Trading
 
-Candlestick patterns provide visual entry/exit signals based on price action psychology.
+Candlestick patterns are compact OHLC descriptions. Use them to define observable bar geometry, not to infer psychology or direction by themselves.
 
 ## Pattern Identification
 
@@ -19,18 +19,14 @@ Candlestick patterns provide visual entry/exit signals based on price action psy
 - **Doji** — Open ≈ Close (tiny body). Indecision; reversal signal at extremes.
 
 ### Multi-Candle Reversals
-- **Engulfing** — Bullish: green engulfs prior red. Bearish: red engulfs prior green. Strongest single reversal signal.
+- **Engulfing** — Bullish: current real body contains the prior real body and closes up. Bearish: mirror it. State explicitly whether wicks must also be engulfed.
 - **Piercing Line / Dark Cloud Cover** — Second candle opens gap, closes 50%+ into prior candle.
 - **Morning Star / Evening Star** — 3-candle: large, small/doji, large opposite direction.
 
 ### Continuation
 - **Three White Soldiers / Three Black Crows** — Three consecutive strong candles closing progressively higher/lower.
 
-| Strength | Patterns |
-|----------|----------|
-| High | Engulfing, Morning/Evening Star |
-| Medium | Hammer, Shooting Star |
-| Lower | Doji, Piercing/Dark Cloud |
+Normalize definitions before scanning: express body and wick sizes as fractions of the candle range or ATR, set the doji tolerance, and use only completed candles. Do not rank patterns until the ranking has been tested on the target market.
 
 ## Workflow
 
@@ -58,14 +54,22 @@ draw_chart_analysis(action="create", drawing={
 
 Enter on next candle open or break of pattern extreme. Stop beyond pattern's extreme wick. Target the next key S/R level.
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Marshall, Young & Rose](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=980583) found candlestick rules were not generally profitable on large U.S. stocks, so use patterns as contextual features rather than standalone signals.
+
 ## Key Rules
-- NEVER trade a pattern in isolation — require a key level (S/R, supply/demand zone) as confluence
-- NEVER trust a pattern without HTF directional alignment
-- NEVER rely on doji alone — requires adjacent candle confirmation
+- Treat a pattern as a feature and compare it with a price-only baseline.
+- Test higher-timeframe state and nearby levels for incremental value rather than requiring them universally.
+- A doji is geometry, not direction; define any adjacent-bar trigger in advance.
 - HTF patterns carry far more weight than LTF
-- Engulfing is strongest when body exceeds prior candle's full range (wicks included)
+- Keep real-body engulfing and full-range engulfing as separate, predeclared variants
 - Morning/Evening Stars require 3rd candle to close beyond midpoint of 1st candle
 
 ## Related Skills
 - **multi-timeframe-analysis** — HTF patterns far more reliable
-- **supply-demand-zones** — Best confluence for reversal patterns
+- **supply-demand-zones** — test overlap with objectively defined candle zones

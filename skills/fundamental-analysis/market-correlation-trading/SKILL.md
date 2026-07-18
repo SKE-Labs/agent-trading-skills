@@ -1,38 +1,23 @@
 ---
 name: market-correlation-trading
-description: Trade cross-asset correlations, lead-lag relationships, and correlation breakdowns for macro-informed signals. Use when analyzing how related assets move together, identifying divergences between correlated pairs, or assessing macro regime shifts.
+description: Measure time-varying cross-asset correlation, beta, lead-lag, and spread stationarity. Use when evaluating hedges, common factors, regime breaks, divergences, or convergence hypotheses.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "2.0"
+  version: "4.0"
 ---
 
 # Market Correlation Trading
 
-When normally correlated assets diverge, one must revert -- creating high-probability trades.
+Measure time-varying co-movement and test whether a hedge, factor exposure, or stationary spread exists. Divergence can reflect a regime change; correlation alone does not imply convergence, causation, or lead-lag.
 
-## Correlation Matrix
+## Measurement
 
-### Positive (Move Together)
-
-| Pair | Typical Range | Mechanism |
-| --- | --- | --- |
-| BTC / Nasdaq | +0.5 to +0.8 | Risk-on/off sentiment |
-| BTC / ETH | +0.7 to +0.95 | Crypto co-movement |
-| EUR/USD / GBP/USD | +0.8 to +0.9 | Both anti-USD |
-| Gold / Silver | +0.7 to +0.9 | Precious metals |
-| Tech stocks (AAPL/MSFT/GOOGL) | +0.6 to +0.8 | Sector co-movement |
-| Oil / Energy stocks (XLE) | +0.7 to +0.9 | Direct commodity exposure |
-
-### Inverse (Move Opposite)
-
-| Pair | Typical Range | Mechanism |
-| --- | --- | --- |
-| Gold / Real Yields (TIPS) | -0.7 to -0.9 | Gold is anti-yield |
-| USD / Emerging Markets | -0.6 to -0.8 | Strong USD hurts EM |
-| USD / Gold | -0.5 to -0.7 | Dollar-denominated pricing |
-| VIX / S&P 500 | -0.7 to -0.9 | Fear gauge vs market |
-| Bonds (TLT) / Stocks (SPY) | -0.3 to -0.6 | Risk rotation (regime-dependent) |
+- Align exchange calendars, timestamps, currencies, and return intervals; do not correlate price levels.
+- Compute rolling Pearson and rank correlation over predeclared short and long windows, with confidence intervals and enough observations.
+- Estimate rolling beta or a multi-factor model when the objective is hedging.
+- Require an economically linked, stationary spread and out-of-sample half-life before proposing convergence.
+- Test lead-lag with lagged returns while controlling common factors and multiple comparisons.
 
 ## Divergence Signals
 
@@ -43,18 +28,11 @@ When normally correlated assets diverge, one must revert -- creating high-probab
 | Oil rises but energy stocks lag | Energy stocks may catch up |
 | VIX rises but S&P holds | Hedging without selling, watch for resolution |
 
-Measure divergence: compare 20-day vs 60-day rolling correlation. If 20d deviates >0.3 from 60d = breakdown. Duration >5 days = significant.
+Use 20/60 bars only as example windows. Calibrate the windows and breakdown threshold in training data, then report estimates, uncertainty, and observation count.
 
-## Lead-Lag Relationships
+## Lead-Lag Hypotheses
 
-| Leader | Follower | Lag | Application |
-| --- | --- | --- | --- |
-| US Treasury yields | Rate-sensitive stocks | 1-3 days | Rising yields -> short REITs/utilities |
-| DXY (Dollar Index) | EM stocks/currencies | 1-5 days | Rising DXY -> reduce EM exposure |
-| VIX futures curve | SPY | Hours-1 day | VIX backwardation -> defensive |
-| BTC | Altcoins | 1-3 days | BTC breakout -> alts follow |
-| Copper | Industrials (XLI) | 1-5 days | Copper rising -> bullish industrials |
-| Oil | CPI expectations | Weeks | Oil spike -> expect higher CPI |
+For every proposed leader/follower pair, state the economic mechanism, data clock, lags tried, common-factor controls, and held-out result. Never copy a fixed lag table into a trade.
 
 ## Regime-Dependent Correlations
 
@@ -70,10 +48,10 @@ Measure divergence: compare 20-day vs 60-day rolling correlation. If 20d deviate
 ### 1. Check Related Assets
 
 ```
-get_fundamentals(ticker="SPY")
-get_fundamentals(ticker="QQQ")
-get_fundamentals(ticker="TLT")
-get_fundamentals(ticker="GLD")
+get_candles(symbol="SPY", exchange=<exchange>, interval="1D", count=250)
+get_candles(symbol="QQQ", exchange=<exchange>, interval="1D", count=250)
+get_candles(symbol="TLT", exchange=<exchange>, interval="1D", count=250)
+get_candles(symbol="GLD", exchange=<exchange>, interval="1D", count=250)
 ```
 
 Compare recent performance (1W, 1M, 3M) across correlated pairs.
@@ -81,23 +59,31 @@ Compare recent performance (1W, 1M, 3M) across correlated pairs.
 ### 2. Research Macro Context
 
 ```
-get_financial_news(topic="correlation stocks bonds regime shift 2026", max_results=10)
-get_economics_calendar(from_date="2026-03-20", to_date="2026-03-27", impact="high")
+get_financial_news(topic="correlation stocks bonds regime shift <current year>", max_results=10)
+get_economics_calendar(from_date=<start>, to_date=<end>, impact="high")
 ```
 
 Determine whether current correlations are driven by Fed policy, inflation, or event-specific factors. High-impact macro events can trigger regime shifts.
 
 ### 3. Identify and Report Divergences
 
-Report: key correlation pairs and current state, detected divergences with duration, lead-lag signals (leader moved, follower expected to catch up), regime assessment (risk-on/off, inflation/deflation), and specific mispriced assets.
+Report return definition, windows, estimates/uncertainty, beta/factor exposures, divergence z-score, stationarity result, costs, and `hedge`, `watch`, or `no trade`. Do not call an asset mispriced from correlation alone.
+
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Ang & Bekaert](https://www.nber.org/papers/w7056) finds correlations and volatilities vary by regime and often rise in bad times; a static correlation table is not a trading signal.
 
 ## Key Rules
 
-- NEVER assume correlations are permanent -- BTC/Nasdaq was near zero in 2017, +0.8 in 2022; always use recent rolling windows
-- NEVER trade correlations without checking the macro regime -- in a crisis, everything correlates to the downside and traditional diversification fails
-- NEVER size correlated positions independently -- if you're long BTC and long QQQ at 0.7 correlation, that's concentrated risk
-- NEVER confuse correlation with causation -- two assets may both respond to a third factor (e.g., Fed policy)
-- When normally inverse assets start moving together, prioritize macro analysis over standard correlation plays
+- Never assume correlations are permanent; show rolling estimates and adverse stresses toward +1 or -1.
+- Include macro/factor regime and stress correlations; diversification can weaken without every asset moving together.
+- Aggregate positions with shared beta/factor/scenario risk rather than relying on one pair correlation.
+- Correlation is not causation or convergence; control for common drivers where possible.
+- When a historical relationship changes, test for a regime break before proposing convergence.
 
 ## Related Skills
 

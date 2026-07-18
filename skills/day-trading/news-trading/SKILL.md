@@ -1,10 +1,10 @@
 ---
 name: news-trading
-description: Trade volatility around economic news and corporate events. Use deviation-from-consensus scoring to gauge expected move magnitude. Use when capitalizing on market-moving news, trading earnings, or positioning for scheduled events.
+description: Plan and evaluate trades around scheduled economic or corporate releases. Use when the user needs primary-source event data, standardized surprise measurement, scenario triggers, and execution-risk controls.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # News Trading Strategy
@@ -13,36 +13,17 @@ Trade volatility from scheduled economic events using deviation-from-consensus s
 
 ## Setup Conditions
 
-### High-Impact Events
+### Event Inputs
 
-| Event | Impact | Typical Move |
-| --- | --- | --- |
-| FOMC/Fed Rate | Very High | 100+ pips |
-| NFP (Jobs) | Very High | 50-100 pips |
-| CPI (Inflation) | High | 50-80 pips |
-| GDP | High | 30-50 pips |
+Use a live official calendar, release timestamp and revision policy. Record every economically relevant component: for example, headline and core inflation; payrolls, unemployment, wages, and revisions; or a policy decision, statement, projections, and press conference. Do not attach a universal price move to an event name.
 
 ### Deviation-from-Consensus Scoring
 
 ```
-Deviation Score = (Actual - Forecast) / Forecast x 100
+Standardized surprise = (Actual - consensus) / historical standard deviation of surprises
 ```
 
-| Event | Small (skip/minimal) | Moderate (tradeable) | Large (high conviction) |
-| --- | --- | --- | --- |
-| NFP | +/-25K | +/-50K | +/-100K+ |
-| CPI | +/-0.1% | +/-0.2% | +/-0.3%+ |
-| GDP | +/-0.2% | +/-0.5% | +/-1.0%+ |
-
-Meeting consensus rarely produces tradeable moves -- the deviation drives the trade.
-
-### Post-Event Wait Periods
-
-| Event Impact | Wait Time |
-| --- | --- |
-| Very High (FOMC, NFP) | 30-45 min |
-| High (CPI, GDP) | 15-30 min |
-| Medium (Retail Sales, PMI) | 5-15 min |
+Use a rolling, vintage-consistent surprise history and state the consensus provider and cutoff time. If history is insufficient, show the raw surprise and estimate range without inventing a score. Direction also depends on priced expectations, revisions, other components, and policy regime.
 
 ## Workflow
 
@@ -60,37 +41,39 @@ Identify upcoming high-impact events. Note dates, times, affected markets.
 get_financial_news(topic="<event> forecast consensus <month> <year>", max_results=15)
 ```
 
-Find current consensus forecast and range of analyst estimates for each event.
+Find the current consensus, estimate range, cutoff timestamp, and prior value. Confirm the actual and revisions from the official release, not a headline or social post.
 
 ### 3. Plan Scenarios
 
-For each event, pre-plan: **Beat** (direction + entry trigger), **Miss** (opposite direction), **Meet** (no trade).
+Pre-plan multiple component combinations and observable price triggers. A headline beat need not imply one direction when revisions, core measures, guidance, or policy expectations conflict.
 
 ### 4. Post-Release Entry
 
-After the event, apply the wait period above. Then:
-
-- Observe initial reaction (1-5 min)
-- Wait for consolidation (per wait table)
-- Enter breakout of post-news consolidation
-- Use wider stops (volatility is elevated)
-- Target next key level
+Enter only when the selected execution gate is met: spread below a tested limit, quotes stable enough to size, and a closed-bar or order-book trigger. Calibrate any waiting period in bars for the specific market. Use a volatility-based stop with position size reduced to keep risk fixed; include gap, halt, rejection, and slippage scenarios.
 
 ### 5. Event Clustering
 
-When multiple events release in the same window: increase wait time by 50%, wait for ALL numbers before entering. If data points conflict, skip the trade.
+When releases overlap, attribute the move cautiously and wait until all scheduled components are available. If they conflict or the event timestamp/data vintage is uncertain, return `no trade`.
 
 ### 6. Report to Orchestrator
 
 Event details, consensus vs actual, deviation score, recommended action, conviction level.
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Federal Reserve research](https://www.federalreserve.gov/econres/feds/macroeconomic-news-announcements-systemic-risk-financial-market-volatility-and-jumps.htm) finds more volatility jumps on announcement days and sensitivity to surprise and uncertainty.
+
 ## Key Rules
 
-- NEVER enter during the first 60 seconds after release -- whipsaws dominate
-- NEVER hold positions through a high-impact event without a deliberate pre-news plan
-- NEVER trade full size on news -- reduce position size by 50-75% to account for volatility
-- When clustered events produce conflicting signals, skip the trade entirely
-- Always account for widened spreads around news releases
+- Never use unreleased, embargoed, or suspected material nonpublic information.
+- Do not hold through an event without an explicit event-risk mandate and gap-loss scenario.
+- Size from the stress loss and executable stop distance, not a fixed percentage reduction.
+- Skip conflicting clustered releases or failed liquidity gates.
+- Model spread widening, slippage, rejected orders, halts, revisions, and timestamp latency.
 
 ## Related Skills
 

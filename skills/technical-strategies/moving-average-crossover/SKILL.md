@@ -4,33 +4,35 @@ description: Trade EMA/SMA crossover systems for trend following. Use when ident
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Moving Average Crossover Trading
 
 MA crossovers provide systematic signals for trend identification and entry timing.
 
-## Common Combinations
+## Candidate Combinations
 
 | Fast MA | Slow MA | Use Case         |
 | ------- | ------- | ---------------- |
-| 5 EMA   | 13 EMA  | Scalping         |
-| 9 EMA   | 21 EMA  | Day trading      |
-| 20 SMA  | 50 SMA  | Swing trading    |
-| 50 SMA  | 200 SMA | Position trading |
+| 5 EMA | 13 EMA | Fast conventional pair |
+| 9 EMA | 21 EMA | Medium-fast conventional pair |
+| 20 SMA | 50 SMA | Medium conventional pair |
+| 50 SMA | 200 SMA | Slow conventional pair |
+
+These are starting specifications, not style-specific best settings. Record every pair tried and compare against buy-and-hold/cash or an appropriate directional baseline.
 
 ## Signals
 
 ### Golden Cross (Bullish)
 
 - Fast MA crosses above slow MA
-- Strongest when price is above both MAs
+- Record price versus both averages as a candidate filter
 
 ### Death Cross (Bearish)
 
 - Fast MA crosses below slow MA
-- Strongest when price is below both MAs
+- Record price versus both averages as a candidate filter
 
 ## Strategies
 
@@ -40,10 +42,10 @@ MA crossovers provide systematic signals for trend identification and entry timi
 
 ### Price + MA Confirmation
 - Wait for crossover, then wait for pullback to fast MA
-- Enter on bounce from MA — reduces whipsaws significantly
+- Enter on an objectively defined pullback trigger; test whether it changes whipsaw rate and net expectancy
 
 ### Triple MA System (5-8-13)
-- All 3 aligned = strong trend
+- All 3 aligned = ordered-average state; not independent confirmation
 - Entry: 5 crosses 8, both above 13
 - Exit: 5 crosses below 8
 
@@ -53,9 +55,10 @@ MA crossovers provide systematic signals for trend identification and entry timi
 
 ## Workflow
 
-1. **Get EMAs**:
+1. **Get each chosen average explicitly**:
    ```
-   get_indicators(indicator_code="ema", symbol=<symbol>, exchange=<exchange>, interval=<interval>)
+   get_indicators(indicator_code="ema_<fast>", symbol=<symbol>, exchange=<exchange>, interval=<interval>, count=<enough>)
+   get_indicators(indicator_code="ema_<slow>", symbol=<symbol>, exchange=<exchange>, interval=<interval>, count=<enough>)
    ```
 
 2. **Identify cross** direction and confirm with price position relative to MAs
@@ -81,13 +84,21 @@ MA crossovers provide systematic signals for trend identification and entry timi
    })
    ```
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: The [technical-analysis evidence review](https://papers.ssrn.com/sol3/Delivery.cfm/SSRN_ID603481_code17745.pdf?abstractid=603481) finds mixed market- and era-dependent profitability and highlights transaction costs and data snooping.
+
 ## Key Rules
 
-- NEVER use MA crossovers in ranging markets; check ADX >25 first to confirm trend
-- NEVER trade every crossover; most are false in choppy conditions
-- Faster MAs = more signals + more false signals; slower MAs = fewer but more reliable
-- EMA reacts faster (more whipsaws); SMA is smoother (slower signals)
-- Combine with other confluence; crossover alone is a weak signal
+- Use a regime filter only if it adds held-out net value; ADX does not confirm trend by itself.
+- A crossover rule must specify closed-bar timing, order timing, stop, exit, and warm-up.
+- Faster averages react sooner and trade more often; reliability is empirical after costs.
+- EMA weights recent data more heavily; SMA weights its window equally.
+- Test additional features incrementally and control parameter/data-snooping risk.
 
 ## Related Skills
 

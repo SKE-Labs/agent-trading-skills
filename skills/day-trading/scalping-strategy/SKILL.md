@@ -1,10 +1,10 @@
 ---
 name: scalping-strategy
-description: Execute high-frequency small profit trades for quick gains. Use when trading highly liquid markets, taking advantage of short-term volatility, or building consistent small wins.
+description: Evaluate and plan very short-horizon trades in highly liquid markets. Use when the user needs an executable scalp with latency, spread, fee, slippage, and capacity controls.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Scalping Strategy
@@ -15,12 +15,11 @@ Target small, frequent profits from minimal price movements on 1m-5m timeframes.
 
 | Factor | Requirement |
 | --- | --- |
-| Timeframe | 1m, 5m |
-| Profit target | 5-20 pips / 0.1-0.5% |
-| Trade duration | Seconds to minutes |
-| Win rate target | 60%+ |
-| Assets | High liquidity only (BTC, ETH, major forex) |
-| Timing | High volume periods (kill zones) only |
+| Data | Timestamped quotes/trades plus closed bars |
+| Cost gate | Expected gross edge exceeds spread, fees, slippage, and adverse selection |
+| Liquidity | Tested depth, order size, fill rate, and cancellation behavior |
+| Risk | Hard per-trade and session loss limits from the portfolio mandate |
+| Deployment | Positive held-out expectancy in the intended venue and session |
 
 ## Scalping Techniques
 
@@ -33,7 +32,7 @@ get_indicators(indicator_code="rsi", symbol=<symbol>, exchange=<exchange>, inter
 get_indicators(indicator_code="macd", symbol=<symbol>, exchange=<exchange>, interval="1m")
 ```
 
-RSI crossing 50 with expanding MACD histogram on 1m = entry trigger. Exit when histogram shrinks.
+Define an objective closed-bar momentum trigger and exit. RSI/MACD are correlated price transforms; retain them only if they improve held-out net results over a price-only baseline.
 
 ### 2. Level Scalping
 
@@ -43,7 +42,7 @@ Quick bounces at key S/R levels with tight stops.
 get_candles_around_date(symbol=<symbol>, exchange=<exchange>, interval="5m", date=<date>)
 ```
 
-Identify S/R on 5m, enter on rejection candle on 1m. Stop just beyond the level. Target 1:1 to 1:1.5 R:R.
+Identify levels on the context timeframe, define a numerical rejection on the execution timeframe, and place invalidation beyond the level plus expected stop slippage. Require the planned payoff to remain positive after costs.
 
 ### 3. Range Scalping
 
@@ -53,7 +52,7 @@ Buy support, sell resistance within a defined micro-range. Repeat until range br
 get_indicators(indicator_code="dmi", symbol=<symbol>, exchange=<exchange>, interval="5m")
 ```
 
-ADX <20 on 5m confirms micro-range. Mark boundaries, trade bounces at edges.
+Use a calibrated range classifier; ADX alone does not confirm a micro-range. Stop applying the rule when the closed-bar invalidation or liquidity gate fails.
 
 ## Workflow
 
@@ -90,16 +89,24 @@ draw_chart_analysis(action="create", drawing={
 
 ### 4. Report to Orchestrator
 
-Technique selected, entry level, stop (tight -- 5-10 pips max), target, 5m directional bias.
+Technique selected, timestamped quote, order type, expected fill, entry, invalidation, target, total cost estimate, capacity, and context-timeframe bias.
+
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Barber et al.](https://academic.oup.com/raps/article-pdf/10/1/61/31788119/raz006.pdf) found aggregate day-trader performance was negative and persistent profitability rare, making net-of-cost evidence and strict loss limits essential.
 
 ## Key Rules
 
-- NEVER scalp during news events -- unpredictable spikes destroy tight stops
-- NEVER scalp low-liquidity assets -- spreads eat the small profits
-- NEVER hold a losing scalp hoping for recovery -- exit immediately if wrong
-- Stop after 3 consecutive losses -- reassess conditions before continuing
-- Always confirm 1m direction aligns with 5m bias before entering
-- Factor in fees -- they can consume scalping profits entirely
+- Exclude scheduled event windows unless a separately tested event strategy and mandate apply.
+- Reject markets and order sizes that fail the spread, depth, fill-rate, latency, or cost gate.
+- Exit on the predeclared invalidation; do not widen risk after entry.
+- Enforce the mandate's session loss and order-rate limits; pause on feed, clock, or execution anomalies.
+- Compare context-aligned and context-agnostic variants rather than assuming alignment adds edge.
+- Do not deploy from win rate alone; require positive net expectancy and stable tail losses.
 
 ## Related Skills
 

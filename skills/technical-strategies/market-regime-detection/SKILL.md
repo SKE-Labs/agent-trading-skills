@@ -4,44 +4,38 @@ description: Identify current market regime (trending, ranging, squeeze, or vola
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "2.0"
+  version: "4.0"
 ---
 
 # Market Regime Detection
 
-Markets cycle between distinct regimes. Detect the regime first before applying any other skill — the same setup means different things in trend vs range.
+Regime labels summarize observable trend and volatility states. They are model outputs with uncertainty, not natural market categories; measure whether they add held-out value to the downstream strategy.
 
 ## Regime Types
 
 | Regime       | EMA Slope (50, 5-bar) | BB Width  | Price Action                              |
 | ------------ | --------------------- | --------- | ----------------------------------------- |
-| **Trending Up**   | > +0.5% on 1H / 4H    | Expanding | HH + HL, strong directional candles       |
-| **Trending Down** | < −0.5% on 1H / 4H    | Expanding | LH + LL, strong directional candles       |
-| **Ranging**       | \|slope\| ≤ 0.15%     | Mid       | Oscillates around MAs, dojis at boundaries |
-| **Squeeze**       | \|slope\| ≤ 0.15%     | <20th pctl, BB inside KC | Compression; breakout coming |
+| **Trending Up** | Positive normalized slope | Expanding/steady | Objective HH/HL or directional-return state |
+| **Trending Down** | Negative normalized slope | Expanding/steady | Objective LH/LL or directional-return state |
+| **Ranging** | Near-zero normalized slope | Middle distribution | Oscillation under predeclared rule |
+| **Squeeze** | Near-zero normalized slope | Low percentile, optional BB inside KC | Relative compression; direction unknown |
 | **Volatile / Chop** | Slope flipping run-to-run | Very wide | Whipsaws both directions |
 
 ## Detection Inputs (all in the free indicator whitelist)
 
-**EMA Slope (primary trend gate)** — compute the % slope of EMA50 over the last 5 closes:
+**EMA slope candidate** — compute over a predeclared horizon and normalize by price or ATR:
 ```
 ema50_slope_pct = (ema50[-1] - ema50[-5]) / ema50[-5] * 100
 ```
-- `> +0.5%` → bullish trend
-- `< −0.5%` → bearish trend
-- `|slope| ≤ 0.15%` → flat (ranging / squeeze)
-- between 0.15% and 0.5% → transitional, classify by other inputs
+Derive positive, negative, and near-zero bands from training data or rolling historical percentiles for the instrument/timeframe; freeze them before evaluation.
 
 **BB Width** = `(bb_upper - bb_lower) / bb_middle * 100` — rolling-100-period percentile:
 - `> 80th pctl` → expansion, supports a trend read
-- `< 20th pctl` → squeeze, breakout imminent
+- `< 20th pctl` → squeeze candidate; no direction or imminent break is implied
 - mid-band → ranging
 
 **ATR Ratio** = `atr_14 / rolling_median(atr_14, 20)`:
-- `> 1.2x` → elevated vol, trend or volatile
-- `0.8–1.2x` → normal
-- `< 0.8x` → compressed, squeeze
-- `> 1.8x` → volatile / chop (large swings either way)
+Use rolling percentiles or training-set thresholds; ATR ratio measures volatility, not whether price is trending or choppy.
 
 **BB Inside KC** — if `bb_lower > kc_lower AND bb_upper < kc_upper`, the Bollinger band is inside the Keltner channel → compression. Pair with low BB Width to confirm squeeze.
 
@@ -53,20 +47,20 @@ ema50_slope_pct = (ema50[-1] - ema50[-5]) / ema50[-5] * 100
 
 | EMA Slope        | BB Width | ATR Ratio | BB-in-KC | Regime               |
 | ---------------- | -------- | --------- | -------- | -------------------- |
-| > +0.5% / < −0.5% | Expanding | ≥ 1.0x   | No       | **Trending**         |
-| flat (\|slope\| ≤ 0.15%) | < 20th pctl | < 0.8x | Yes | **Squeeze**          |
-| flat             | mid-band | 0.8–1.2x  | No       | **Ranging**          |
-| flipping run-to-run | very wide | > 1.8x | No   | **Volatile / Chop**  |
-| > 0.15% but < 0.5% | mixed  | mixed     | mixed    | **Transitional** (downgrade size) |
+| Outside trained near-zero band | Expanding | Elevated percentile | No | **Trending candidate** |
+| Inside trained near-zero band | Low percentile | Low percentile | Yes | **Squeeze candidate** |
+| Inside trained near-zero band | Middle percentile | Middle percentile | No | **Range candidate** |
+| Unstable sign | Very high percentile | Very high percentile | No | **Volatile candidate** |
+| Mixed | Mixed | Mixed | Mixed | **Transitional/uncertain** |
 
-- 3/4 inputs agree → **high confidence**. 2/4 → **medium**, reduce size ×0.75. Split → **no trade, re-check next bar**.
+The table is a seed specification only. Do not count correlated inputs as independent agreement or map them directly to confidence/size. Calibrate a classifier, report posterior/calibration if available, otherwise report features plus `classified`, `uncertain`, or `no trade`.
 
 ## Regime Change Signals
 
 | Signal                                          | Meaning                                |
 | ----------------------------------------------- | -------------------------------------- |
 | EMA50 5-bar slope crosses through ±0.15%        | Range → trend or trend → range pivot  |
-| BB Width expands >50% in 5 bars                 | Breakout / vol spike                   |
+| BB Width expansion exceeds trained percentile/rate | Volatility expansion; direction unknown |
 | BB Width contracts to <20th pctl + BB inside KC | Squeeze forming                        |
 | ATR Ratio jumps above 1.5x off a low base       | Vol expansion, expect direction reveal |
 | Price closes outside Donchian-20 boundary       | Breakout from prior range              |
@@ -79,7 +73,7 @@ ema50_slope_pct = (ema50[-1] - ema50[-5]) / ema50[-5] * 100
 | **Ranging**     | mean-reversion, bollinger-bands, supply-demand-zones | momentum-trading, MA crossover         |
 | **Squeeze**     | breakout-trading (arm BOTH directions, wait for break) | range-trading (about to break)         |
 | **Volatile / Chop** | wider stops, smaller size, prefer to sit out    | all trend-following, all mean-reversion |
-| **Transitional** | apply trend playbook at ×0.75 size                 | direct A-tier entries                   |
+| **Transitional** | use only strategies validated in this state or wait | untested regime substitution |
 
 ## Workflow
 
@@ -114,7 +108,7 @@ ema50_slope_pct = (ema50[-1] - ema50[-5]) / ema50[-5] * 100
    "
    ```
 
-3. **Classify** using the composite table. Report regime label + confidence (high/med/low) + the four numeric inputs + recommended/avoid skills.
+3. **Classify** using thresholds frozen from training data. Report label, uncertainty, numeric inputs, data window, and which downstream strategies have validated conditional results.
 
 4. **Visualize** (optional, only if user-facing report needs it):
    ```
@@ -128,12 +122,20 @@ ema50_slope_pct = (ema50[-1] - ema50[-5]) / ema50[-5] * 100
    })
    ```
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Ang & Bekaert](https://www.nber.org/papers/w7056) supports regime-dependent volatility and correlation, while [backtest-overfitting research](https://escholarship.org/uc/item/9tq3327h) cautions against selecting thresholds after repeated trials.
+
 ## Key Rules
 
-- NEVER skip regime detection before applying any other strategy
-- NEVER force trades in the transitional zone (0.15% < |slope| < 0.5%); wait for clarity or apply trend playbook at ×0.75 size
-- Combine all four inputs; no single indicator is sufficient. The composite reduces false regime calls
-- Re-check regime on the higher timeframe; HTF regime overrides LTF
+- Use regime detection only when it improves the downstream strategy versus a no-regime baseline.
+- Treat transitional/uncertain states according to predeclared policy; never map them to arbitrary size.
+- The inputs are correlated; feature count does not prove accuracy or reduce false calls.
+- Model higher/lower-timeframe conflicts explicitly; the higher timeframe does not automatically override.
 - Compute EMA slope via `execute`; do NOT call ADX / DMI / Supertrend (API-billed, not in the free whitelist)
 
 ## Related Skills

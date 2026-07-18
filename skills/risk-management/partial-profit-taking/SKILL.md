@@ -1,15 +1,15 @@
 ---
 name: partial-profit-taking
-description: Scale out of positions at multiple targets to lock in gains. Use when managing winning trades, reducing risk, or optimizing exit strategy.
+description: Design and test partial-exit schedules against a single-exit baseline. Use when calculating weighted R outcomes, residual risk, target/stop order mechanics, fees, and partial-fill behavior.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "2.0"
+  version: "4.0"
 ---
 
 # Partial Profit Taking
 
-Scaling out locks in profits while leaving room for extended moves.
+Scaling out changes the payoff distribution. It can reduce variance and regret, but may lower expectancy and adds orders, fees, and partial-fill risk. Select it only against an identical-signal single-exit baseline.
 
 ## Scaling Strategies
 
@@ -25,40 +25,41 @@ Scaling out locks in profits while leaving room for extended moves.
 
 - 25% at 1R, 25% at 2R, 25% at 3R, 25% runner
 
-### 4. All Or Nothing
+### 4. Single Exit Baseline
 
-- Full position to single target. Higher variance but potentially higher reward. For high conviction trades only.
+- Exit the full position using one predeclared target, time stop, or trailing rule. Treat it as the baseline, not a conviction choice.
 
 ## Target Setting
 
 | Exit     | Level                    |
 | -------- | ------------------------ |
-| Target 1 | 1:1 R:R (cover risk)     |
-| Target 2 | 2:1 R:R                  |
-| Target 3 | 3:1 R:R or Fib extension |
-| Runner   | Trail until stopped      |
+| Target 1..n | Predeclared structural, time, or R-multiple exits |
+| Runner | Precisely defined trailing or time exit |
+
+Weights must sum to the executable quantity after lot-size rounding. Compute net R for every branch, including fees/slippage; taking 1R on part of a position does not "cover risk" on the remainder automatically.
 
 ## Stop Management After Partials
 
 After each partial exit:
 
-1. Move stop to protect remaining position
-2. After 1st partial: typically move to breakeven
-3. After 2nd partial: trail below structure
+1. Recalculate remaining quantity, open risk, and portfolio risk after each fill.
+2. Move the stop only according to the pretested schedule; breakeven is not risk-free after gaps, spread, and fees.
+3. Handle rejected/partial target orders, stop quantity replacement, and overfill/race conditions explicitly.
 
 ## Workflow
 
 **Example -- Long entry at $100, stop at $95 (risk $5):**
 
-| Action            | Price | Position | Profit    |
-| ----------------- | ----- | -------- | --------- |
-| Entry             | $100  | 100%     | $0        |
-| Exit 1/3          | $105  | 67%      | +$170     |
-| Move stop to $100 | --    | --       | --        |
-| Exit 1/3          | $110  | 33%      | +$170     |
-| Move stop to $105 | --    | --       | --        |
-| Runner stopped    | $108  | 0%       | +$90      |
-| **Total**         | --    | --       | **+$430** |
+Assume 99 shares to make exact thirds and ignore costs only for this arithmetic example:
+
+| Action | Price | Shares exited | Realized profit |
+| --- | --- | --- | --- |
+| Exit first third | $105 | 33 | $165 |
+| Exit second third | $110 | 33 | $330 |
+| Runner stopped | $108 | 33 | $264 |
+| **Total** | -- | **99** | **$759 = 1.53R** |
+
+Initial risk was `99 × $5 = $495`. Real implementation must subtract costs and model stop slippage.
 
 ## Tradeoffs
 
@@ -66,13 +67,21 @@ After each partial exit:
 
 **Cons**: Reduces total profit if the move continues, more complex execution, must pre-plan levels.
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: Partial exits change the payoff distribution; compare them with a single-exit baseline on identical signals. [Backtest-overfitting research](https://escholarship.org/uc/item/9tq3327h) explains why choosing the best scale-out schedule after many trials creates false discoveries.
+
 ## Key Rules
 
 - NEVER decide scale-out levels during a trade -- pre-define them before entry
-- NEVER skip adjusting the stop after a partial exit -- the remaining position must be protected
-- Use limit orders at targets for clean execution
-- Let the runner ride with a wide trail -- that is where outsized gains come from
-- Adjust remaining stop after every partial, not just the first
+- Do not change stops merely because a partial filled; follow the tested schedule.
+- Choose limit versus marketable orders from the fill/price tradeoff; limits are not guaranteed.
+- Define runner exit, time limit, and stop quantity before entry.
+- Compare net expectancy, drawdown, tail loss, turnover, and capacity with a single-exit baseline.
 
 ## Related Skills
 

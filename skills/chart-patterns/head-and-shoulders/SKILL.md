@@ -1,15 +1,15 @@
 ---
 name: head-and-shoulders
-description: Identify and trade head and shoulders reversal patterns. Use when spotting major trend reversals, validating bearish/bullish structure changes, or finding high R:R reversal setups.
+description: Define and test head-and-shoulders or inverse patterns. Use when measuring objective pivots, neckline breaks/retests, symmetry, invalidation, and measured-move outcomes.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Head and Shoulders Pattern
 
-Reliable reversal pattern signaling the end of an uptrend (or downtrend for inverse).
+A conventional reversal shape following a prior trend. The neckline break and target remain hypotheses whose conditional outcomes must be measured.
 
 ## Pattern Structure
 
@@ -27,7 +27,7 @@ Reliable reversal pattern signaling the end of an uptrend (or downtrend for inve
 
 | Criteria | Requirement |
 |----------|-------------|
-| Volume | Decreasing on right shoulder |
+| Activity | Compare right-shoulder volume with the left using a predeclared statistic |
 | Symmetry | Shoulders roughly equal height |
 | Prior trend | Must have existing trend to reverse |
 
@@ -82,11 +82,19 @@ For inverse H&S, use `"resistance"` instead of `"support"`.
 **Preferred:** Wait for neckline break, then retest. Enter on rejection. Tighter stop.
 **Target:** Head-to-neckline distance projected from break point.
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Lo, Mamaysky & Wang](https://www.nber.org/papers/w7613) studied algorithmic head-and-shoulders recognition and found conditional information in some samples, not a guaranteed reversal.
+
 ## Key Rules
 - NEVER trade before neckline break — pattern incomplete until confirmed
-- NEVER ignore volume: declining volume on right shoulder validates weakness
+- Volume differences are contextual and do not validate the pattern without a neckline break
 - Must have a prior trend to reverse; H&S in a range is invalid
-- Right shoulder failure (doesn't reach LS height) strengthens bearish case
+- Record shoulder-height asymmetry rather than assuming a lower right shoulder always increases expectancy
 
 ## Related Skills
 - **double-top-bottom** — Similar reversal family

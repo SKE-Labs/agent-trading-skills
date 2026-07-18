@@ -4,7 +4,7 @@ description: Trade double and triple top/bottom reversal patterns. Use when iden
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Double Top & Bottom Patterns
@@ -14,16 +14,16 @@ Reversal patterns that form when price fails to break a level twice.
 ## Pattern Structure
 
 ### Double Top (Bearish)
-1. Rally to resistance (Peak 1) → pullback to neckline → rally back to same resistance (Peak 2, within 3%) → failure → reversal
+1. Rally to resistance (Peak 1) → pullback to neckline → retest the resistance within a predeclared price or ATR tolerance → failure
 
 ### Double Bottom (Bullish)
-1. Drop to support (Trough 1) → bounce to neckline → drop back to same support (Trough 2, within 3%) → failure → reversal
+1. Drop to support (Trough 1) → bounce to neckline → retest the support within the same frozen tolerance → failure
 
 | Factor | Strong | Weak |
 |--------|--------|------|
-| Time between tests | 2-4 weeks | Very close or far apart |
+| Time between tests | Within a predeclared bar window | Selected after seeing outcome |
 | Volume | Declining on 2nd test | Higher on 2nd test |
-| Peak/trough alignment | Within 3% | Widely different |
+| Peak/trough alignment | Within a volatility-normalized tolerance | Arbitrary visual match |
 
 ## Workflow
 
@@ -71,10 +71,18 @@ For double top use `"support"` (neckline is below). For double bottom use `"resi
 **Aggressive:** Enter at second peak/trough with LTF reversal confirmation.
 **Target:** Neckline ± (Peak - Neckline). Example: Peak $100, Neckline $90 → Target $80.
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Lo, Mamaysky & Wang](https://www.nber.org/papers/w7613) found incremental information in some algorithmically defined patterns, including double bottoms, but did not establish universal thresholds or profits.
+
 ## Key Rules
 - NEVER trade before neckline confirmation — pattern incomplete until it breaks
-- NEVER ignore volume: declining volume on 2nd test validates the pattern
-- Peaks/troughs must be within 3% to qualify
+- Treat declining activity on the second test as context, not validation by itself
+- Freeze the peak/trough tolerance and bar window before evaluating returns
 - Failed double tops/bottoms lead to strong continuation moves
 
 ## Related Skills

@@ -1,15 +1,15 @@
 ---
 name: fibonacci-trading
-description: Use Fibonacci retracement and extension for entries and targets. Use when finding pullback entries, setting profit targets, or identifying key reversal levels.
+description: Measure Fibonacci retracement and extension coordinates over objective swings. Use when testing candidate pullback/target bands against non-Fibonacci controls rather than assuming special bounce levels.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Fibonacci Trading
 
-Fibonacci ratios identify key retracement and extension levels for entries and targets.
+Fibonacci ratios provide a reproducible coordinate grid over a chosen swing. Empirical evidence does not support special standalone bounce power; use them only as candidate features or chart labels.
 
 ## Levels
 
@@ -20,7 +20,7 @@ Fibonacci ratios identify key retracement and extension levels for entries and t
 | 23.6% | Shallow pullback         |
 | 38.2% | Moderate pullback        |
 | 50.0% | Half retracement         |
-| 61.8% | Golden ratio (key level) |
+| 61.8% | Fibonacci-derived coordinate |
 | 78.6% | Deep pullback            |
 
 **Formula**: `Retracement = High - Range * Ratio` (where Range = High - Low)
@@ -29,17 +29,18 @@ Fibonacci ratios identify key retracement and extension levels for entries and t
 
 | Level  | Use                 |
 | ------ | ------------------- |
-| 127.2% | Conservative target |
-| 161.8% | Standard target     |
-| 200%   | Extended target     |
-| 261.8% | Aggressive target   |
+| 127.2% | Candidate extension coordinate |
+| 161.8% | Candidate extension coordinate |
+| 200%   | Range multiple coordinate |
+| 261.8% | Candidate extension coordinate |
 
 **Formula**: `Extension = High + Range * Ratio` (e.g., 127.2% = High + Range * 0.272)
 
 ## Drawing Rules
 
-- **Bullish**: draw from swing low to swing high. Retracements = buy zones, extensions = upside targets.
-- **Bearish**: draw from swing high to swing low. Retracements = sell zones, extensions = downside targets.
+- **Bullish measurement**: draw from an objectively confirmed swing low to high.
+- **Bearish measurement**: draw from an objectively confirmed swing high to low.
+- A coordinate is not an entry/target until a separately specified rule selects it.
 
 ## Workflow
 
@@ -78,17 +79,25 @@ Fibonacci ratios identify key retracement and extension levels for entries and t
    })
    ```
 
-5. **Wait for confirmation**: rejection candle, LTF structure break, or confluence with S/R at the Fib level
+5. **Apply a testable trigger**: define rejection/structure numerically and compare Fibonacci overlap with equal-width non-Fibonacci controls
+
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: A multi-market [empirical study](https://www.sciencedirect.com/science/article/abs/pii/S0957417421012495) found bounce rates at Fibonacci zones statistically indistinguishable from non-Fibonacci zones and no standalone outperformance.
 
 ## Key Rules
 
-- NEVER draw from unclear or micro swings; use only clear impulsive moves
-- NEVER trade Fib levels alone; require confluence (order block, S/R, MA, trendline)
-- 61.8% is the primary level; treat it as the strongest retracement zone
-- Stop loss beyond 78.6% (conservative) or 100% (aggressive)
-- Targets at extension levels: partial at 127.2%, remainder at 161.8%+
+- Define swing pivots, confirmation delay, and range before viewing the outcome.
+- Do not trade a Fibonacci coordinate alone or assume confluence creates independent evidence.
+- Never privilege 61.8% without held-out incremental results.
+- Place invalidation where the underlying price thesis fails, then size accordingly.
+- Set exits from tested structure/time rules; extensions are chart coordinates only.
 
 ## Related Skills
 
-- **supply-demand-zones** — Fib retracements into S/D zones provide high-probability entries
+- **supply-demand-zones** — test whether retracement coordinates overlap with objectively defined candle zones
 - **multi-timeframe-analysis** — use Fib across timeframes for precise entry and target levels

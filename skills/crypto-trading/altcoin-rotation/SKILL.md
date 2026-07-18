@@ -1,68 +1,61 @@
 ---
 name: altcoin-rotation
-description: Rotate between BTC, ETH, and altcoins based on market cycles. Use when optimizing portfolio allocation, riding altcoin seasons, or managing crypto exposure.
+description: Build and test survivorship-aware crypto rotation rankings. Use when allocating among BTC, ETH, and liquid altcoins with relative strength, breadth, liquidity, stress, turnover, and concentration controls.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
+  version: "4.0"
 ---
 
 # Altcoin Rotation Strategy
 
-Rotate between BTC, ETH, and altcoins based on market cycle phase and BTC dominance trends.
+Rank a liquid, survivorship-aware crypto universe and rotate only when relative strength and breadth improve without a BTC stress event.
 
-## Market Cycle Phases
+## Rotation Model
 
-| Phase        | BTC Dominance  | Strategy              | Allocation             |
-| ------------ | -------------- | --------------------- | ---------------------- |
-| Accumulation | High (>55%)    | BTC/ETH only, DCA     | 80% BTC, 20% ETH      |
-| Early Bull   | Stable (50-55%)| Begin alt research    | 70% BTC, 25% ETH, 5%  |
-| Mid Bull     | Falling (45-50%)| Rotate into alts     | 40% BTC, 30% ETH, 30% |
-| Peak Alt     | Low (<45%)     | Max alt exposure      | 20% BTC, 20% ETH, 60% |
-| Distribution | Spiking up     | Exit alts, back to BTC| Reduce to BTC/stables  |
+| Input | Reproducible measure | Use |
+| --- | --- | --- |
+| Relative strength | Candidate/BTC and candidate/ETH total return over frozen lookbacks | Rank, do not predict |
+| Breadth | Share of eligible alts outperforming BTC | Require broad participation |
+| Liquidity | Median dollar volume, spread, depth, listing age | Exclude untradeable winners |
+| BTC stress | BTC drawdown, realized volatility, and market breadth | De-risk when the common factor dominates |
+| Concentration | Pairwise correlation and BTC beta | Cap duplicated exposure |
 
-## Alt Selection Criteria
-
-| Factor     | Look For              |
-| ---------- | --------------------- |
-| Market cap | Top 50 for safety     |
-| Narrative  | Strong use case/trend |
-| Volume     | High liquidity        |
-| Technical  | Breaking out of base  |
+Build the universe from assets that were actually tradable at each historical date. Exclude stablecoins, wrapped duplicates, recent listings without sufficient history, and instruments that fail the account's liquidity floor. Do not use today's top coins in an old backtest.
 
 ## Workflow
 
-1. **Check BTC dominance trend** using news and price data:
+1. **Establish the BTC regime** from price history, not headlines:
 ```
-get_financial_news(topic="BTC dominance altcoin season")
-get_candles(symbol="BTC/USD", exchange="binance", interval="1d", count=1)
-```
-
-2. **Assess momentum** to identify cycle phase:
-```
-get_indicators(indicator_code="rsi", symbol="BTC/USD", exchange="binance", interval="1d")
-get_indicators(indicator_code="rsi", symbol="ETH/USD", exchange="binance", interval="1d")
+get_candles(symbol="BTC/USD", exchange="binance", interval="1d", count=120)
 ```
 
-3. **Evaluate ETH/BTC ratio** as alt season proxy:
+2. **Measure relative strength** on the same timestamps and venue:
 ```
-get_candles(symbol="ETH/BTC", exchange="binance", interval="1d", count=20)
-```
-
-4. **Screen alt candidates** matching selection criteria:
-```
-get_financial_news(topic="top performing altcoins crypto narrative")
+get_candles(symbol="ETH/BTC", exchange="binance", interval="1d", count=120)
+get_candles(symbol=<candidate_btc_pair>, exchange=<exchange>, interval="1d", count=120)
 ```
 
-5. **Report allocation recommendation** with cycle phase, dominance trend, and suggested weights.
+3. **Rank and gate** candidates by predeclared return lookbacks, breadth, liquidity, and correlation. Treat BTC dominance as optional context only when sourced from a consistent, documented series.
+
+4. **Rebalance on a fixed schedule** with a no-trade buffer so small rank changes do not create fee churn. Compare the rotation with BTC-only, ETH/BTC, and equal-weight eligible-universe benchmarks.
+
+5. **Report** universe date, excluded assets, lookbacks, ranks, breadth, BTC stress state, turnover, expected costs, proposed weights, and the condition that returns the portfolio to its defensive allocation.
+
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Liu, Tsyvinski & Wu](https://www.nber.org/papers/w25882) documented size and momentum factors in crypto returns; this supports relative-strength testing, not fixed BTC-dominance cutoffs or static allocations.
 
 ## Key Rules
 
-- NEVER hold alts through a BTC correction -- rotate back to BTC at first dominance spike
-- NEVER over-allocate to a single alt (cap at 10% of portfolio)
-- NEVER chase altcoins that have already pumped 3x+ without consolidation
-- Take profits on 2-3x alt moves; scale out, do not wait for tops
-- Rotation triggers: BTC consolidating after rally, dominance falling, ETH/BTC rising
+- NEVER backtest with a present-day survivor list or rank on information unavailable at the rebalance timestamp
+- NEVER treat BTC dominance thresholds as universal cycle boundaries
+- Size from the portfolio risk budget, liquidity, and correlation; do not copy fixed allocation percentages
+- Require a defensive exit for BTC stress, liquidity loss, delisting, or correlation convergence
 
 ## Related Skills
 

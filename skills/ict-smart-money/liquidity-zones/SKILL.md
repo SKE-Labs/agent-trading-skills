@@ -1,37 +1,29 @@
 ---
 name: liquidity-zones
-description: Identify liquidity pools and stop-hunt levels where retail stops cluster. Use when predicting price manipulation, understanding smart money targets, or timing entries after liquidity sweeps.
+description: Mark candidate liquidity levels and test sweep/reversal behavior. Use when analyzing equal highs/lows, swing levels, round-number clustering, or stop-loss cascade risk without inferring hidden intent.
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.0"
+  version: "4.0"
 ---
 
 # Liquidity Zones Trading
 
-Clustered stop losses that institutions target for order fills before reversing price.
+Observable price levels where stop or limit orders may cluster. Clustering can contribute to cascades, but candles alone cannot identify the orders, their owners, institutional targeting, or a guaranteed reversal.
 
 ## Identification
 
 ### Buy-Side Liquidity (BSL)
 - **Location**: Above swing highs, equal highs, resistance
-- **Contains**: Stop losses from short positions
-- **Action**: Smart money drives price up to trigger stops, then sells
+- **Hypothesis**: Some buy stops may rest above the level; verify with available order/trade data
 
 ### Sell-Side Liquidity (SSL)
 - **Location**: Below swing lows, equal lows, support
-- **Contains**: Stop losses from long positions
-- **Action**: Smart money drives price down to trigger stops, then buys
+- **Hypothesis**: Some sell stops may rest below the level; verify with available order/trade data
 
-### Formation Strength
+### Level Features
 
-| Formation     | Liquidity Type | Strength  |
-| ------------- | -------------- | --------- |
-| Equal highs   | BSL            | Very High |
-| Equal lows    | SSL            | Very High |
-| Swing highs   | BSL            | High      |
-| Swing lows    | SSL            | High      |
-| Round numbers | Both           | Medium    |
+Record formation type, number of touches, equality tolerance in ATR/ticks, age, visible depth if available, distance, and time of day. Calibrate these features rather than assigning ordinal strength.
 
 ## Workflow
 
@@ -41,18 +33,26 @@ Clustered stop losses that institutions target for order fills before reversing 
    ```
 2. **Mark levels** using `draw_chart_analysis`: `resistance` for BSL, `support` for SSL, `highlight` for sweep points
 3. **Wait for sweep** — price takes out the level
-4. **Confirm reversal**: LTF structure shift, strong rejection candle, return into previous range (within 1-3 candles)
+4. **Confirm reversal**: use an objective swing/rejection rule and a predeclared return window
 5. **Enter after confirmation**
 6. **Stop loss** beyond the sweep wick
 7. **Target** opposite liquidity pool
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Osler](https://www.newyorkfed.org/research/staff_reports/sr150.html) found clustered FX stop-loss orders can contribute to price cascades. This supports conditional liquidity hypotheses, not certainty that institutions target a visible level.
+
 ## Key Rules
 
-- NEVER trade before the sweep — anticipation leads to losses
-- Sweeps must be followed by quick reversal (1-3 candles) to be valid
-- Volume spike on the sweep adds confirmation
-- Not all sweeps reverse immediately; require LTF structure shift
-- Equal highs/lows are the strongest liquidity magnets
+- Define sweep distance, close condition, reversal window, and expiry before evaluation.
+- Compare anticipation, reversal, and continuation hypotheses on identical samples.
+- Use time-of-day relative volume; it is contextual, not proof of stop orders.
+- Equal highs/lows are candidate clustering coordinates, not known liquidity or magnets.
+- Return `no trade` when the level or trigger cannot be defined without hindsight.
 
 ## Related Skills
 

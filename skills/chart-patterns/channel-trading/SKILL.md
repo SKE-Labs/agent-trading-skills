@@ -4,7 +4,7 @@ description: Trade within ascending, descending, and horizontal channels. Use wh
 license: Apache-2.0
 metadata:
   author: ske-labs
-  version: "1.1"
+  version: "4.0"
 ---
 
 # Channel Trading
@@ -78,12 +78,20 @@ draw_chart_analysis(action="create", drawing={
 })
 ```
 
+## Evidence and Validation
+
+- Treat the setup as a testable hypothesis, not a prediction. Define thresholds, entry, invalidation, and exit before evaluating outcomes.
+- Calibrate on the same instrument, venue, session, and timeframe. Use closed candles and a held-out or walk-forward sample; record every variant tried.
+- Include spread, fees, slippage, borrow or funding, partial fills, and latency. Reject the setup when net expectancy is not positive or depends on one narrow parameter.
+- Return observed inputs, missing data, cost assumptions, entry, invalidation, exit, and a valid, watch, or no-trade status.
+- Research basis: [Lo, Mamaysky & Wang](https://www.nber.org/papers/w7613) found that some objectively defined chart patterns contain incremental information, while emphasizing that visual pattern recognition is subjective.
+
 ## Key Rules
 - Minimum 4 total touch points (2 per line) to validate a channel
 - Trade WITH channel direction: buy support in ascending, sell resistance in descending
 - Channel midline acts as interim S/R — price rejecting at midline signals weakening momentum
-- NEVER fade a breakout that closes outside the channel with volume
-- NEVER trade a channel where price fails to reach boundaries on consecutive touches — this signals weakening
+- Stop applying the fade rule after its predeclared closed-bar breakout invalidation.
+- Record incomplete boundary traversals as a feature; do not declare weakening without tested evidence.
 
 ## Related Skills
 - **multi-timeframe-analysis** — HTF channels define trend; LTF channels refine entries
